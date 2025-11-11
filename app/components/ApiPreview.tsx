@@ -241,7 +241,8 @@ ${Object.entries(params).map(([k, v]) => `        "${k}": ${typeof v === 'string
     fmt.Println(string(body))
 }`
 
-      case 'csharp':
+      case 'csharp': {
+        const methodName = method === 'POST' ? 'PostAsync' : method === 'GET' ? 'GetAsync' : method === 'PUT' ? 'PutAsync' : 'PostAsync'
         return `using System;
 using System.Net.Http;
 using System.Text;
@@ -249,22 +250,20 @@ using System.Threading.Tasks;
 
 class Program {
     static async Task Main() {
-        var client = new HttpClient();
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Authorization", "Bearer ${apiKey}");
 
         var json = @"${paramStringCompact.replace(/"/g, '""')}";
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        client.DefaultRequestHeaders.Add("Authorization", "Bearer ${apiKey}");
-
-        var response = await client.${method.charAt(0) + method.slice(1).toLowerCase()}Async(
-            "${absoluteUrl}",
-            content
-        );
+        var response = await client.${methodName}("${absoluteUrl}", content);
+        response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadAsStringAsync();
         Console.WriteLine(result);
     }
 }`
+      }
 
       case 'ruby':
         return `require 'net/http'
