@@ -265,25 +265,26 @@ class Program {
 }`
       }
 
-      case 'ruby':
+      case 'ruby': {
+        const methodClass = method === 'POST' ? 'Post' : method === 'GET' ? 'Get' : method === 'PUT' ? 'Put' : 'Post'
         return `require 'net/http'
 require 'json'
 require 'uri'
 
 uri = URI("${absoluteUrl}")
-
 data = ${paramStringCompact}
 
 http = Net::HTTP.new(uri.host, uri.port)
 http.use_ssl = (uri.scheme == 'https')
 
-request = Net::HTTP::${method.charAt(0) + method.slice(1).toLowerCase()}(uri.path)
-request["Content-Type"] = "application/json"
-request["Authorization"] = "Bearer ${apiKey}"
+request = Net::HTTP::${methodClass}.new(uri.path)
+request['Content-Type'] = 'application/json'
+request['Authorization'] = 'Bearer ${apiKey}'
 request.body = JSON.generate(data)
 
 response = http.request(request)
-puts JSON.parse(response.body)`
+puts JSON.pretty_generate(JSON.parse(response.body))`
+      }
 
       case 'php': {
         const escapedJson = paramStringCompact.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
