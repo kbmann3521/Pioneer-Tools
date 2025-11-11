@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import CopyFeedback from '@/app/components/CopyFeedback'
 import { createPassword } from '@/lib/tools/password-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
+import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, PasswordGeneratorResult } from '@/lib/types/tools'
@@ -19,8 +21,7 @@ export default function PasswordGeneratorPage({}: ToolPageProps) {
   const [useSpecialChars, setUseSpecialChars] = useState<boolean>(true)
   const [password, setPassword] = useState<string>('')
   const [strength, setStrength] = useState<PasswordGeneratorResult | null>(null)
-  const [copyMessage, setCopyMessage] = useState<string | null>(null)
-  const [copyPosition, setCopyPosition] = useState<{ x: number; y: number } | null>(null)
+  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
 
   // Generate initial password
   useEffect(() => {
@@ -51,12 +52,8 @@ export default function PasswordGeneratorPage({}: ToolPageProps) {
     }
   }
 
-  const copyToClipboard = (event: React.MouseEvent) => {
-    navigator.clipboard.writeText(password).then(() => {
-      setCopyPosition({ x: event.clientX, y: event.clientY })
-      setCopyMessage('Copied!')
-      setTimeout(() => setCopyMessage(null), 1200)
-    })
+  const handleCopyPassword = (event: React.MouseEvent) => {
+    copyToClipboard(password, event)
   }
 
   const getStrengthColor = (strengthLevel: string) => {
@@ -156,7 +153,7 @@ export default function PasswordGeneratorPage({}: ToolPageProps) {
                 <h3>Generated Password</h3>
                 <button
                   className="copy-btn"
-                  onClick={copyToClipboard}
+                  onClick={handleCopyPassword}
                   title="Copy password"
                   type="button"
                 >
@@ -188,19 +185,7 @@ export default function PasswordGeneratorPage({}: ToolPageProps) {
           </div>
         )}
 
-        {copyMessage && (
-          <div
-            className="copy-notification"
-            style={{
-              position: 'fixed',
-              left: `${copyPosition?.x}px`,
-              top: `${copyPosition?.y}px`,
-              pointerEvents: 'none',
-            }}
-          >
-            {copyMessage}
-          </div>
-        )}
+        <CopyFeedback message={copyMessage} position={copyPosition} />
       </div>
 
       <AboutToolAccordion
