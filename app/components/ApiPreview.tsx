@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import CodeLanguageSelector, { type CodeLanguage } from '@/app/components/CodeLanguageSelector'
 import CodePreview from '@/app/components/CodePreview'
 import PricingCard from '@/app/components/PricingCard'
-import { useAuth } from '@/app/context/AuthContext'
 import type { ToolParams } from '@/lib/types/tools'
 
 interface ApiPreviewProps {
@@ -16,16 +15,17 @@ interface ApiPreviewProps {
 }
 
 export default function ApiPreview({ endpoint, method = 'POST', params = {}, toolName, enableCodeExecution = false }: ApiPreviewProps) {
-  const { session } = useAuth()
   const [language, setLanguage] = useState<CodeLanguage>('fetch')
   const [activeTab, setActiveTab] = useState<'request' | 'response' | 'run-code'>('request')
   const [isRunning, setIsRunning] = useState(false)
   const [isFetchingResponse, setIsFetchingResponse] = useState(false)
   const [executionResult, setExecutionResult] = useState<{ success: boolean; output?: string; error?: string; executionTime?: number } | null>(null)
   const [liveResponse, setLiveResponse] = useState<{ success: boolean; result?: any; error?: any; meta?: any } | null>(null)
-  const [userApiKey, setUserApiKey] = useState<string | null>(null)
 
-  // Convert relative URLs to absolute URLs for code execution
+  // Always use the public demo API key for display
+  const publicDemoKey = 'pk_test_public_demo'
+
+  // Convert relative URLs to absolute URLs for code snippets
   const getAbsoluteUrl = (url: string): string => {
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return url
@@ -38,52 +38,6 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
 
   const fullUrl = endpoint
   const absoluteUrl = getAbsoluteUrl(endpoint)
-
-  // Fetch user's API key for displaying in code snippets
-  // If not logged in, use the public test key
-  useEffect(() => {
-    // If we already have a key, don't fetch again
-    if (userApiKey) return
-
-    // Use public test key if user is not logged in
-    if (!session?.access_token) {
-      setUserApiKey('pk_test_public_demo')
-      return
-    }
-
-    // For logged-in users, fetch their actual API keys
-    const fetchApiKey = async () => {
-      try {
-        const response = await fetch('/api/account/api-keys', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-        })
-
-        if (response.ok) {
-          const keys = await response.json()
-          if (Array.isArray(keys) && keys.length > 0) {
-            // Use the first key (most recent)
-            setUserApiKey(keys[0].key)
-          } else {
-            // User is logged in but has no API keys yet - fall back to test key
-            setUserApiKey('pk_test_public_demo')
-          }
-        } else {
-          // Fetch failed - fall back to test key
-          console.error('Failed to fetch API keys:', response.statusText)
-          setUserApiKey('pk_test_public_demo')
-        }
-      } catch (err) {
-        console.error('Failed to fetch API key:', err)
-        // Fall back to test key on error
-        setUserApiKey('pk_test_public_demo')
-      }
-    }
-
-    fetchApiKey()
-  }, [session?.access_token])
 
   // Clear execution result when language changes
   useEffect(() => {
