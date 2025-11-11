@@ -3,6 +3,7 @@ import { execSync, spawn } from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as os from 'os'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 type Language = 'fetch' | 'python' | 'nodejs' | 'java' | 'go' | 'csharp' | 'ruby' | 'php' | 'typescript'
 
