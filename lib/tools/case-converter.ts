@@ -8,7 +8,7 @@ export interface CaseConversionInput {
 }
 
 export interface CaseConversionOutput {
-  input: string
+  text: string
   lowercase: string
   uppercase: string
   capitalize: string
@@ -27,7 +27,7 @@ export function convertCase(input: CaseConversionInput): CaseConversionOutput {
   const { text } = input
 
   return {
-    input: text,
+    text: text,
     lowercase: text.toLowerCase(),
     uppercase: text.toUpperCase(),
     capitalize: text

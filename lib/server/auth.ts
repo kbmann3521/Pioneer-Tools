@@ -60,3 +60,53 @@ export function extractApiKey(authHeader: string | null): string | null {
   }
   return authHeader.slice(7)
 }
+
+/**
+ * Public demo API key - doesn't require database lookup
+ */
+const PUBLIC_DEMO_KEY = 'pk_demo_sandbox_ea3f199fe'
+
+/**
+ * Validate API key and return key record or demo user
+ * Returns { id, userId, isPublicDemo } on success, null on failure
+ */
+export async function validateApiKeyAndGetUser(
+  authHeader: string | null,
+  supabaseAdmin: any
+): Promise<{ id: string; userId: string; isPublicDemo: boolean } | null> {
+  const apiKey = extractApiKey(authHeader)
+  if (!apiKey) {
+    return null
+  }
+
+  // Special handling for public demo key
+  if (apiKey === PUBLIC_DEMO_KEY) {
+    return {
+      id: 'test',
+      userId: 'test',
+      isPublicDemo: true,
+    }
+  }
+
+  // Look up real API key in database
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('api_keys')
+      .select('id, user_id')
+      .eq('key', apiKey)
+      .single()
+
+    if (error || !data) {
+      return null
+    }
+
+    return {
+      id: data.id,
+      userId: data.user_id,
+      isPublicDemo: false,
+    }
+  } catch (err) {
+    console.error('Error validating API key:', err)
+    return null
+  }
+}

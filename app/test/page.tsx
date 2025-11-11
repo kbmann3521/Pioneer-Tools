@@ -49,6 +49,7 @@ export default function TestPage() {
     rateLimitHits: 0,
     startTime: 0,
     endTime: 0,
+    actualRps: 0,
   })
   const testAbortRef = useRef(false)
   const testAbortControllerRef = useRef<AbortController | null>(null)
@@ -195,7 +196,7 @@ export default function TestPage() {
         // Extract error message from new unified response format
         const errorMessage = typeof data?.error === 'object'
           ? data.error.message
-          : data?.error || errorMessage || `API error: ${response.status}`
+          : data?.error || `API error: ${response.status}`
 
         let finalError = errorMessage
         if (response.status === 401) {

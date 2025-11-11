@@ -6,14 +6,11 @@ import AboutToolAccordion from '@/app/components/AboutToolAccordion'
 import { generateOGTags, type OGGeneratorOutput } from '@/lib/tools/og-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useClipboard } from '@/app/hooks/useClipboard'
 import { toolDescriptions } from '@/config/tool-descriptions'
+import type { ToolPageProps } from '@/lib/types/tools'
 
-interface OGGeneratorProps {
-  isSaved?: boolean
-  toggleSave?: () => void
-}
-
-export default function OGGeneratorPage({}: OGGeneratorProps) {
+export default function OGGeneratorPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('og-generator')
   const [formData, setFormData] = useState({
@@ -26,8 +23,7 @@ export default function OGGeneratorPage({}: OGGeneratorProps) {
   })
 
   const [result, setResult] = useState<OGGeneratorOutput | null>(null)
-  const [copyMessage, setCopyMessage] = useState<string | null>(null)
-  const [copyPosition, setCopyPosition] = useState<{ x: number; y: number } | null>(null)
+  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
 
   // Update API params whenever form data changes
   useEffect(() => {
@@ -41,14 +37,6 @@ export default function OGGeneratorPage({}: OGGeneratorProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const copyToClipboard = (text: string, event: React.MouseEvent) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopyPosition({ x: event.clientX, y: event.clientY })
-      setCopyMessage('Copied!')
-      setTimeout(() => setCopyMessage(null), 1200)
-    })
   }
 
   const metaTags = result?.metaTags || ''

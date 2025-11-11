@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import CopyFeedback from '@/app/components/CopyFeedback'
 import { useFavorites } from '@/app/hooks/useFavorites'
+import { useClipboard } from '@/app/hooks/useClipboard'
 import { useAuth } from '@/app/context/AuthContext'
 import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
@@ -11,7 +13,7 @@ import type { ToolPageProps, BlogGeneratorResult } from '@/lib/types/tools'
 
 type BlogTitle = BlogGeneratorResult['titles'][number]
 
-export default function BlogGeneratorPage({}: ToolPageProps) {
+export default function BlogGeneratorPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('blog-generator')
   const { session } = useAuth()
@@ -19,9 +21,8 @@ export default function BlogGeneratorPage({}: ToolPageProps) {
   const [titles, setTitles] = useState<BlogTitle[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [copyMessage, setCopyMessage] = useState<string | null>(null)
-  const [copyPosition, setCopyPosition] = useState<{ x: number; y: number } | null>(null)
   const [apiKey, setApiKey] = useState<string | null>(null)
+  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
 
   // Get or create API key when session changes
   useEffect(() => {
@@ -92,8 +93,7 @@ export default function BlogGeneratorPage({}: ToolPageProps) {
     setTitles([])
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-      const response = await fetch(`${baseUrl}/api/tools/blog-generator`, {
+      const response = await fetch('/api/tools/blog-generator', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,13 +117,6 @@ export default function BlogGeneratorPage({}: ToolPageProps) {
     }
   }
 
-  const copyToClipboard = (text: string, event: React.MouseEvent) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopyPosition({ x: event.clientX, y: event.clientY })
-      setCopyMessage('Copied!')
-      setTimeout(() => setCopyMessage(null), 1200)
-    })
-  }
 
   return (
     <div className="tool-container">
@@ -214,14 +207,7 @@ export default function BlogGeneratorPage({}: ToolPageProps) {
           </div>
         )}
       </div>
-      {copyMessage && copyPosition && (
-        <div
-          className="copy-feedback-toast"
-          style={{ left: `${copyPosition.x}px`, top: `${copyPosition.y}px` }}
-        >
-          {copyMessage}
-        </div>
-      )}
+      <CopyFeedback message={copyMessage} position={copyPosition} />
 
       <AboutToolAccordion
         toolId="blog-generator"

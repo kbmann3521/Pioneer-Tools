@@ -1,10 +1,8 @@
 import { NextRequest } from 'next/server'
-import { extractApiKey } from '@/lib/server/auth'
-import { unauthorizedResponse, validationErrorResponse, insufficientBalanceResponse, internalErrorResponse, successResponse } from '@/lib/server/apiResponse'
+import { validateToolRequest, validateToolRequestBody, updateApiKeyLastUsed } from '@/lib/server/toolMiddleware'
+import { insufficientBalanceResponse, internalErrorResponse, successResponse } from '@/lib/server/apiResponse'
 import { convertCase, CaseConversionInput } from '@/lib/tools/case-converter'
-import { supabaseAdmin } from '@/lib/supabaseAdmin'
-import { checkRateLimits } from '@/lib/server/rateLimit'
-import { getUserProfile, checkBalance, checkMonthlyLimit, deductCredits } from '@/lib/server/billing'
+import { checkBalance, checkMonthlyLimit, deductCredits } from '@/lib/server/billing'
 import { handleAutoRecharge } from '@/lib/server/autoRecharge'
 import { getToolCost } from '@/config/pricing.config'
 
@@ -12,52 +10,28 @@ const TOOL_ID = 'case-converter'
 
 export async function POST(request: NextRequest) {
   try {
-    // Step 1: Extract API key from Authorization header
-    const authHeader = request.headers.get('Authorization')
-    const apiKey = extractApiKey(authHeader)
-
-    if (!apiKey) {
-      return unauthorizedResponse('Invalid or missing Authorization header')
+    // Validate tool request and get context
+    const { context, error } = await validateToolRequest(request, TOOL_ID)
+    if (error) {
+      return error
     }
 
-    // Step 2: Validate request body
+    const { keyId, userProfile, isPaid, isPublicDemo, rateLimitResult } = context!
+
+    // Validate request body
     const body = await request.json().catch(() => null)
-    if (!body || !body.text || typeof body.text !== 'string') {
-      return validationErrorResponse('Missing or invalid text parameter')
+    const bodyValidation = validateToolRequestBody(body, ['text'])
+    if (!bodyValidation.valid) {
+      return bodyValidation.error
     }
 
     const { text } = body as CaseConversionInput
 
-    // Step 3: Look up API key in database
-    const { data: keyRecord, error: keyError } = await supabaseAdmin
-      .from('api_keys')
-      .select('id, user_id')
-      .eq('key', apiKey)
-      .single()
-
-    if (keyError || !keyRecord) {
-      return unauthorizedResponse('Invalid API key')
-    }
-
-    // Step 4: Get user profile with billing info
-    const userProfile = await getUserProfile(keyRecord.user_id)
-    if (!userProfile) {
-      return unauthorizedResponse('User profile not found')
-    }
-
-    const isPaid = userProfile.balance > 0
-
-    // Step 5: Check rate limits
-    const rateLimitResult = await checkRateLimits(keyRecord.id, isPaid)
-    if (!rateLimitResult.allowed) {
-      return internalErrorResponse(rateLimitResult.message || 'Rate limit exceeded', undefined)
-    }
-
-    // Step 6: For paid users, check balance and deduct credits
-    let balanceAfterDeduction = userProfile.balance
+    // Handle billing for paid users
+    let balanceAfterDeduction = userProfile?.balance || 0
     let toolCost = 0
 
-    if (isPaid) {
+    if (isPaid && userProfile) {
       toolCost = getToolCost(TOOL_ID)
       const balanceCheckResult = await checkBalance(userProfile, TOOL_ID)
 
@@ -85,20 +59,17 @@ export async function POST(request: NextRequest) {
 
       balanceAfterDeduction = deductResult.newBalance!
 
-      // Step 7: Handle auto-recharge if triggered
+      // Handle auto-recharge if triggered
       const autoRechargeResult = await handleAutoRecharge(userProfile, balanceAfterDeduction)
       if (autoRechargeResult.triggered && autoRechargeResult.newBalance !== undefined) {
         balanceAfterDeduction = autoRechargeResult.newBalance
       }
-
-      // Update last_used timestamp
-      await supabaseAdmin
-        .from('api_keys')
-        .update({ last_used: new Date().toISOString() })
-        .eq('id', keyRecord.id)
     }
 
-    // Step 8: Process the tool request
+    // Update last_used timestamp
+    await updateApiKeyLastUsed(keyId, isPublicDemo)
+
+    // Process the tool request
     const result = convertCase({ text })
 
     return successResponse(result, {

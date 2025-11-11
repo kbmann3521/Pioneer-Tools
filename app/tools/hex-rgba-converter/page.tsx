@@ -3,21 +3,22 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import CopyFeedback from '@/app/components/CopyFeedback'
 import { convertColor } from '@/lib/tools/hex-rgba-converter'
 import { useFavorites } from '@/app/hooks/useFavorites'
+import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, HexRgbaConverterResult } from '@/lib/types/tools'
 
-export default function HexRgbaConverterPage({}: ToolPageProps) {
+export default function HexRgbaConverterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('hex-rgba-converter')
   const [hex, setHex] = useState<string>('#FF6B6B')
   const [rgb, setRgb] = useState<{ r: number; g: number; b: number }>({ r: 255, g: 107, b: 107 })
   const [alpha, setAlpha] = useState<number>(1)
   const [result, setResult] = useState<HexRgbaConverterResult | null>(null)
-  const [copyMessage, setCopyMessage] = useState<string | null>(null)
-  const [copyPosition, setCopyPosition] = useState<{ x: number; y: number } | null>(null)
+  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
 
   // Update API params whenever color changes
   useEffect(() => {
@@ -28,7 +29,18 @@ export default function HexRgbaConverterPage({}: ToolPageProps) {
     const value = e.target.value
     setHex(value)
     const converted = convertColor({ hex: value, alpha })
-    setRgb(converted.colors)
+    if (converted.success && converted.hex) {
+      // Extract RGB from hex if needed by parsing
+      const hexRegex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
+      const match = hexRegex.exec(converted.hex)
+      if (match) {
+        setRgb({
+          r: parseInt(match[1], 16),
+          g: parseInt(match[2], 16),
+          b: parseInt(match[3], 16),
+        })
+      }
+    }
     setResult(converted)
   }
 
@@ -37,7 +49,9 @@ export default function HexRgbaConverterPage({}: ToolPageProps) {
     const newRgb = { ...rgb, [component]: numValue }
     setRgb(newRgb)
     const converted = convertColor({ ...newRgb, alpha })
-    setHex(converted.hex)
+    if (converted.success && converted.hex) {
+      setHex(converted.hex)
+    }
     setResult(converted)
   }
 
@@ -49,14 +63,6 @@ export default function HexRgbaConverterPage({}: ToolPageProps) {
   }
 
   const rgbaString = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`
-
-  const copyToClipboard = (value: string, event: React.MouseEvent) => {
-    navigator.clipboard.writeText(value).then(() => {
-      setCopyPosition({ x: event.clientX, y: event.clientY })
-      setCopyMessage('Copied!')
-      setTimeout(() => setCopyMessage(null), 1200)
-    })
-  }
 
   return (
     <div className="tool-container">
@@ -141,40 +147,39 @@ export default function HexRgbaConverterPage({}: ToolPageProps) {
           </div>
         </div>
 
-        {result && (
+        {result && result.success && (
           <div className="output-section">
-            <div className="output-item">
-              <div className="output-label">HEX</div>
-              <code>{result.hex}</code>
-              <button className="copy-btn" onClick={(e) => copyToClipboard(result.hex, e)}>
-                Copy
-              </button>
-            </div>
-            <div className="output-item">
-              <div className="output-label">RGB</div>
-              <code>{result.rgb}</code>
-              <button className="copy-btn" onClick={(e) => copyToClipboard(result.rgb, e)}>
-                Copy
-              </button>
-            </div>
-            <div className="output-item">
-              <div className="output-label">RGBA</div>
-              <code>{result.rgba}</code>
-              <button className="copy-btn" onClick={(e) => copyToClipboard(result.rgba, e)}>
-                Copy
-              </button>
-            </div>
+            {result.hex && (
+              <div className="output-item">
+                <div className="output-label">HEX</div>
+                <code>{result.hex}</code>
+                <button className="copy-btn" onClick={(e) => copyToClipboard(result.hex!, e)}>
+                  Copy
+                </button>
+              </div>
+            )}
+            {result.rgb && (
+              <div className="output-item">
+                <div className="output-label">RGB</div>
+                <code>{result.rgb}</code>
+                <button className="copy-btn" onClick={(e) => copyToClipboard(result.rgb!, e)}>
+                  Copy
+                </button>
+              </div>
+            )}
+            {result.rgba && (
+              <div className="output-item">
+                <div className="output-label">RGBA</div>
+                <code>{result.rgba}</code>
+                <button className="copy-btn" onClick={(e) => copyToClipboard(result.rgba!, e)}>
+                  Copy
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
-      {copyMessage && copyPosition && (
-        <div
-          className="copy-feedback-toast"
-          style={{ left: `${copyPosition.x}px`, top: `${copyPosition.y}px` }}
-        >
-          {copyMessage}
-        </div>
-      )}
+      <CopyFeedback message={copyMessage} position={copyPosition} />
 
       <AboutToolAccordion
         toolId="hex-rgba-converter"

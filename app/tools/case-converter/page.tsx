@@ -6,17 +6,17 @@ import AboutToolAccordion from '@/app/components/AboutToolAccordion'
 import CopyFeedback from '@/app/components/CopyFeedback'
 import { convertCase } from '@/lib/tools/case-converter'
 import { useFavorites } from '@/app/hooks/useFavorites'
+import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, CaseConverterResult } from '@/lib/types/tools'
 
-export default function CaseConverterPage({}: ToolPageProps) {
+export default function CaseConverterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('case-converter')
   const [text, setText] = useState<string>('')
   const [results, setResults] = useState<CaseConverterResult | null>(null)
-  const [copyMessage, setCopyMessage] = useState<string | null>(null)
-  const [copyPosition, setCopyPosition] = useState<{ x: number; y: number } | null>(null)
+  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
 
   // Update API params whenever text changes
   useEffect(() => {
@@ -30,13 +30,6 @@ export default function CaseConverterPage({}: ToolPageProps) {
     }
   }
 
-  const copyToClipboard = (value: string, event: React.MouseEvent) => {
-    navigator.clipboard.writeText(value).then(() => {
-      setCopyPosition({ x: event.clientX, y: event.clientY })
-      setCopyMessage('Copied!')
-      setTimeout(() => setCopyMessage(null), 1200)
-    })
-  }
 
   return (
     <div className="tool-container">

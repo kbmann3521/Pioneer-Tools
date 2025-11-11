@@ -59,6 +59,8 @@ export interface SlugGeneratorParams {
 
 export interface SlugGeneratorResult {
   slug: string
+  length: number
+  original: string
 }
 
 export interface PasswordGeneratorParams {
@@ -72,6 +74,7 @@ export interface PasswordGeneratorParams {
 export interface PasswordGeneratorResult {
   password: string
   strength: 'weak' | 'fair' | 'good' | 'strong' | 'very-strong'
+  score: number
   metrics: {
     length: number
     hasUppercase: boolean
@@ -90,6 +93,10 @@ export interface UrlEncoderResult {
   result: string
   success: boolean
   error?: string
+  size: {
+    original: number
+    converted: number
+  }
 }
 
 export interface HexRgbaConverterParams {

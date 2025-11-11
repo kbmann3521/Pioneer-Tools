@@ -18,16 +18,11 @@ export interface RGBColor {
 }
 
 export interface ColorConversionOutput {
-  input: ColorConversionInput
-  hex: string
-  rgb: string
-  rgba: string
-  colors: {
-    r: number
-    g: number
-    b: number
-    alpha: number
-  }
+  success: boolean
+  hex?: string
+  rgb?: string
+  rgba?: string
+  error?: string
 }
 
 /**
@@ -64,42 +59,43 @@ function rgbToHex(r: number, g: number, b: number): string {
  * @returns Object with all color format variations
  */
 export function convertColor(input: ColorConversionInput): ColorConversionOutput {
-  let r = input.r ?? 255
-  let g = input.g ?? 107
-  let b = input.b ?? 107
-  let alpha = input.alpha ?? 1
-  let hex = input.hex ?? '#FF6B6B'
+  try {
+    let r = input.r ?? 255
+    let g = input.g ?? 107
+    let b = input.b ?? 107
+    let alpha = input.alpha ?? 1
+    let hex = input.hex ?? '#FF6B6B'
 
-  // If hex is provided, convert to RGB
-  if (input.hex) {
-    const rgb = hexToRgb(input.hex)
-    if (rgb) {
-      r = rgb.r
-      g = rgb.g
-      b = rgb.b
-      hex = input.hex
+    // If hex is provided, convert to RGB
+    if (input.hex) {
+      const rgb = hexToRgb(input.hex)
+      if (rgb) {
+        r = rgb.r
+        g = rgb.g
+        b = rgb.b
+        hex = input.hex
+      }
+    } else {
+      // Convert RGB to hex
+      hex = rgbToHex(r, g, b)
     }
-  } else {
-    // Convert RGB to hex
-    hex = rgbToHex(r, g, b)
-  }
 
-  // Clamp values
-  r = Math.max(0, Math.min(255, r))
-  g = Math.max(0, Math.min(255, g))
-  b = Math.max(0, Math.min(255, b))
-  alpha = Math.max(0, Math.min(1, alpha))
+    // Clamp values
+    r = Math.max(0, Math.min(255, r))
+    g = Math.max(0, Math.min(255, g))
+    b = Math.max(0, Math.min(255, b))
+    alpha = Math.max(0, Math.min(1, alpha))
 
-  return {
-    input,
-    hex,
-    rgb: `rgb(${r}, ${g}, ${b})`,
-    rgba: `rgba(${r}, ${g}, ${b}, ${alpha})`,
-    colors: {
-      r,
-      g,
-      b,
-      alpha,
-    },
+    return {
+      success: true,
+      hex,
+      rgb: `rgb(${r}, ${g}, ${b})`,
+      rgba: `rgba(${r}, ${g}, ${b}, ${alpha})`,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Color conversion failed',
+    }
   }
 }

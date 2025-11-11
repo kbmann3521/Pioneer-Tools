@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import CodeLanguageSelector, { type CodeLanguage } from '@/app/components/CodeLanguageSelector'
 import CodePreview from '@/app/components/CodePreview'
 import PricingCard from '@/app/components/PricingCard'
-import { useAuth } from '@/app/context/AuthContext'
 import type { ToolParams } from '@/lib/types/tools'
 
 interface ApiPreviewProps {
@@ -16,76 +15,68 @@ interface ApiPreviewProps {
 }
 
 export default function ApiPreview({ endpoint, method = 'POST', params = {}, toolName, enableCodeExecution = false }: ApiPreviewProps) {
-  const { session } = useAuth()
   const [language, setLanguage] = useState<CodeLanguage>('fetch')
-  const [activeTab, setActiveTab] = useState<'request' | 'response'>('request')
+  const [activeTab, setActiveTab] = useState<'request' | 'response' | 'run-code'>('request')
   const [isRunning, setIsRunning] = useState(false)
   const [isFetchingResponse, setIsFetchingResponse] = useState(false)
   const [executionResult, setExecutionResult] = useState<{ success: boolean; output?: string; error?: string; executionTime?: number } | null>(null)
   const [liveResponse, setLiveResponse] = useState<{ success: boolean; result?: any; error?: any; meta?: any } | null>(null)
-  const [userApiKey, setUserApiKey] = useState<string | null>(null)
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-  const fullUrl = `${baseUrl}${endpoint}`
+  const [validationStatus, setValidationStatus] = useState<{ status: 'success' | 'failure' | 'pending'; errorMessage?: string; lastValidatedAt?: string } | null>(null)
 
-  // Fetch user's API key for displaying in code snippets
-  // If not logged in, use the public test key
-  useEffect(() => {
-    // If we already have a key, don't fetch again
-    if (userApiKey) return
+  // Always use the public demo API key for display
+  const publicDemoKey = 'pk_demo_sandbox_ea3f199fe'
 
-    // Use public test key if user is not logged in
-    if (!session?.access_token) {
-      setUserApiKey('pk_test_public_demo')
-      return
+  // Convert relative URLs to absolute URLs for code snippets
+  const getAbsoluteUrl = (url: string): string => {
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url
     }
+    const baseUrl = typeof window !== 'undefined'
+      ? window.location.origin
+      : (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000')
+    return `${baseUrl}${url}`
+  }
 
-    // For logged-in users, fetch their actual API keys
-    const fetchApiKey = async () => {
+  const fullUrl = endpoint
+  const absoluteUrl = getAbsoluteUrl(endpoint)
+
+  // Convert toolName to toolId format (e.g., "Case Converter" -> "case-converter")
+  const toolId = toolName
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+
+  // Clear execution result and fetch validation status when language changes
+  useEffect(() => {
+    setExecutionResult(null)
+
+    // Fetch validation status for the selected language
+    const fetchValidationStatus = async () => {
       try {
-        const response = await fetch('/api/account/api-keys', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-        })
-
-        if (response.ok) {
-          const keys = await response.json()
-          if (Array.isArray(keys) && keys.length > 0) {
-            // Use the first key (most recent)
-            setUserApiKey(keys[0].key)
-          } else {
-            // User is logged in but has no API keys yet - fall back to test key
-            setUserApiKey('pk_test_public_demo')
-          }
+        const response = await fetch(
+          `/api/dev/validate-snippets?toolId=${toolId}&language=${language}`
+        )
+        const result = await response.json()
+        if (result.success && result.data) {
+          setValidationStatus({
+            status: result.data.status,
+            errorMessage: result.data.error_message,
+            lastValidatedAt: result.data.last_validated_at,
+          })
         } else {
-          // Fetch failed - fall back to test key
-          console.error('Failed to fetch API keys:', response.statusText)
-          setUserApiKey('pk_test_public_demo')
+          setValidationStatus(null)
         }
       } catch (err) {
-        console.error('Failed to fetch API key:', err)
-        // Fall back to test key on error
-        setUserApiKey('pk_test_public_demo')
+        console.debug('Failed to fetch validation status:', err)
+        setValidationStatus(null)
       }
     }
 
-    fetchApiKey()
-  }, [session?.access_token])
-
-  // Clear execution result when language changes
-  useEffect(() => {
-    setExecutionResult(null)
-  }, [language])
+    fetchValidationStatus()
+  }, [language, toolId])
 
   // Fetch live response whenever params change
   useEffect(() => {
-    // Only fetch if we have an API key and non-empty params
-    if (!userApiKey) {
-      setLiveResponse(null)
-      return
-    }
-
     // Don't fetch if no params are provided
     const hasParams = Object.keys(params).length > 0 && Object.values(params).some(v => v !== '' && v !== null && v !== undefined)
     if (!hasParams) {
@@ -96,14 +87,17 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
     const fetchLiveResponse = async () => {
       setIsFetchingResponse(true)
       try {
-        // Call the actual API endpoint with the user's API key
-        const response = await fetch(fullUrl, {
-          method,
+        // Call the proxy route which uses the demo API key
+        const response = await fetch('/api/dev/run-code-proxy', {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userApiKey}`,
           },
-          body: JSON.stringify(params),
+          body: JSON.stringify({
+            endpoint: fullUrl,
+            method,
+            params,
+          }),
         })
 
         const data = await response.json()
@@ -120,15 +114,15 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
     // Debounce the fetch to avoid too many requests
     const timer = setTimeout(fetchLiveResponse, 800)
     return () => clearTimeout(timer)
-  }, [params, userApiKey, fullUrl, method])
+  }, [params, fullUrl, method])
 
-  const generateCode = (lang: CodeLanguage, apiKey: string = userApiKey || 'pk_test_public_demo'): string => {
+  const generateCode = (lang: CodeLanguage, apiKey: string = publicDemoKey): string => {
     const paramString = JSON.stringify(params, null, 2)
     const paramStringCompact = JSON.stringify(params)
 
     switch (lang) {
       case 'fetch':
-        return `const response = await fetch('${fullUrl}', {
+        return `const response = await fetch('${absoluteUrl}', {
   method: '${method}',
   headers: {
     'Content-Type': 'application/json',
@@ -141,7 +135,7 @@ const data = await response.json()
 console.log(data)`
 
       case 'typescript':
-        return `const response = await fetch('${fullUrl}', {
+        return `const response = await fetch('${absoluteUrl}', {
   method: '${method}',
   headers: {
     'Content-Type': 'application/json',
@@ -156,7 +150,7 @@ console.log(data)`
       case 'nodejs':
         return `const data = ${paramStringCompact}
 
-const response = await fetch('${fullUrl}', {
+const response = await fetch('${absoluteUrl}', {
   method: '${method}',
   headers: {
     'Content-Type': 'application/json',
@@ -169,25 +163,38 @@ const result = await response.json()
 console.log(result)`
 
       case 'curl':
-        return `curl -X ${method} ${fullUrl} \\
+        return `curl -X ${method} ${absoluteUrl} \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer ${apiKey}" \\
   -d '${paramString.replace(/'/g, "'\\''")}'`
 
       case 'python':
-        return `import requests
+        return `import urllib.request
+import json
 
 headers = {
-    'Authorization': 'Bearer ${apiKey}'
+    'Authorization': 'Bearer ${apiKey}',
+    'Content-Type': 'application/json'
 }
 
-response = requests.${method.toLowerCase()}(
-    '${fullUrl}',
-    json=${paramString},
-    headers=headers
+data = ${paramStringCompact}
+json_data = json.dumps(data).encode('utf-8')
+
+request = urllib.request.Request(
+    '${absoluteUrl}',
+    data=json_data,
+    headers=headers,
+    method='${method}'
 )
 
-print(response.json())`
+try:
+    with urllib.request.urlopen(request, timeout=5) as response:
+        result = json.loads(response.read().decode('utf-8'))
+        print(json.dumps(result, indent=2))
+except urllib.error.HTTPError as e:
+    print(f"HTTP Error: {e.code} {e.reason}")
+except Exception as e:
+    print(f"Error: {type(e).__name__}: {str(e)}")`
 
       case 'java':
         return `import java.net.http.HttpClient;
@@ -200,7 +207,7 @@ HttpClient client = HttpClient.newHttpClient();
 String body = ${paramStringCompact.replace(/"/g, '\\"')};
 
 HttpRequest request = HttpRequest.newBuilder()
-    .uri(URI.create("${fullUrl}"))
+    .uri(URI.create("${absoluteUrl}"))
     .header("Content-Type", "application/json")
     .header("Authorization", "Bearer ${apiKey}")
     .method("${method}", HttpRequest.BodyPublishers.ofString(body))
@@ -229,7 +236,7 @@ ${Object.entries(params).map(([k, v]) => `        "${k}": ${typeof v === 'string
 
     jsonData, _ := json.Marshal(data)
 
-    req, _ := http.NewRequest("${method}", "${fullUrl}", bytes.NewBuffer(jsonData))
+    req, _ := http.NewRequest("${method}", "${absoluteUrl}", bytes.NewBuffer(jsonData))
     req.Header.Set("Content-Type", "application/json")
     req.Header.Set("Authorization", "Bearer ${apiKey}")
 
@@ -257,7 +264,7 @@ class Program {
         client.DefaultRequestHeaders.Add("Authorization", "Bearer ${apiKey}");
 
         var response = await client.${method.charAt(0) + method.slice(1).toLowerCase()}Async(
-            "${fullUrl}",
+            "${absoluteUrl}",
             content
         );
 
@@ -271,7 +278,7 @@ class Program {
 require 'json'
 require 'uri'
 
-uri = URI("${fullUrl}")
+uri = URI("${absoluteUrl}")
 
 data = ${paramStringCompact}
 
@@ -290,7 +297,7 @@ puts JSON.parse(response.body)`
         const escapedJson = paramStringCompact.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
         return `<?php
 
-$url = "${fullUrl}";
+$url = "${absoluteUrl}";
 $data = ${paramStringCompact};
 
 $ch = curl_init();
@@ -318,48 +325,56 @@ var_dump($result);
     }
   }
 
-  const apiKey = userApiKey || 'pk_test_public_demo'
-  const code = generateCode(language, apiKey)
+  const code = generateCode(language, publicDemoKey)
 
   const runCode = async () => {
-    // Wait a moment for API key to load if component just mounted
-    if (!userApiKey && enableCodeExecution) {
-      // Give it a moment to fetch the key
-      await new Promise(resolve => setTimeout(resolve, 100))
-      if (!userApiKey) {
-        setExecutionResult({
-          success: false,
-          error: 'Unable to load API key. Please refresh the page.',
-        })
-        return
-      }
-    }
-
     setIsRunning(true)
     setExecutionResult(null)
 
     try {
-      const actualApiKey = userApiKey || 'YOUR_API_KEY'
-      const codeWithRealKey = code.replace(/YOUR_API_KEY/g, actualApiKey)
-
-      const response = await fetch('/api/dev/run-code', {
+      // Call the proxy route which uses the demo API key to call the tool API
+      const response = await fetch('/api/dev/run-code-proxy', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          code: codeWithRealKey,
-          language,
-          apiKey: actualApiKey,
+          endpoint: fullUrl,
+          method,
+          params,
         }),
       })
 
+      if (!response.ok) {
+        const errorText = await response.text()
+        setExecutionResult({
+          success: false,
+          error: `Server error (${response.status}): ${errorText.substring(0, 100)}`,
+          executionTime: 0,
+        })
+        setIsRunning(false)
+        return
+      }
+
       const result = await response.json()
-      setExecutionResult(result)
+      if (result.success) {
+        setExecutionResult({
+          success: true,
+          output: JSON.stringify(result.result || result, null, 2),
+          executionTime: 0,
+        })
+      } else {
+        setExecutionResult({
+          success: false,
+          error: result.error || 'Unknown error occurred',
+          executionTime: 0,
+        })
+      }
     } catch (err) {
       setExecutionResult({
         success: false,
         error: err instanceof Error ? err.message : 'Failed to execute code',
+        executionTime: 0,
       })
     } finally {
       setIsRunning(false)
@@ -373,7 +388,25 @@ var_dump($result);
         <p className="api-endpoint">{method} {endpoint}</p>
       </div>
 
-      <CodeLanguageSelector language={language} onLanguageChange={setLanguage} />
+      <div className="language-selector-wrapper">
+        <CodeLanguageSelector language={language} onLanguageChange={setLanguage} />
+
+        {validationStatus && (
+          <div className={`validation-status validation-${validationStatus.status}`}>
+            <span className="validation-icon">
+              {validationStatus.status === 'success' ? '✅' : '❌'}
+            </span>
+            <span className="validation-text">
+              {validationStatus.status === 'success' ? 'Validated' : 'Failed'}
+            </span>
+            {validationStatus.lastValidatedAt && (
+              <span className="validation-time">
+                {new Date(validationStatus.lastValidatedAt).toLocaleDateString()} {new Date(validationStatus.lastValidatedAt).toLocaleTimeString()}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="api-preview-tabs">
         <button
@@ -686,6 +719,54 @@ var_dump($result);
           color: var(--text-secondary);
           opacity: 0.7;
           border-top: 1px solid var(--border-color);
+        }
+
+        .language-selector-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .validation-status {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem 0.75rem;
+          border-radius: 4px;
+          font-size: 0.85rem;
+          white-space: nowrap;
+        }
+
+        .validation-status.validation-success {
+          background: rgba(34, 170, 34, 0.1);
+          color: #22aa22;
+          border: 1px solid rgba(34, 170, 34, 0.3);
+        }
+
+        .validation-status.validation-failure {
+          background: rgba(255, 68, 68, 0.1);
+          color: #ff4444;
+          border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+
+        .validation-status.validation-pending {
+          background: rgba(170, 170, 34, 0.1);
+          color: #aaaa22;
+          border: 1px solid rgba(170, 170, 34, 0.3);
+        }
+
+        .validation-icon {
+          font-size: 1rem;
+        }
+
+        .validation-text {
+          font-weight: 600;
+        }
+
+        .validation-time {
+          font-size: 0.75rem;
+          opacity: 0.8;
         }
 
         @media (max-width: 768px) {

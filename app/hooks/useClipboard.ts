@@ -18,15 +18,45 @@ export function useClipboard(duration: number = 1200): UseClipboardReturn {
   const [copyPosition, setCopyPosition] = useState<CopyPosition | null>(null)
 
   const copyToClipboard = async (text: string, event: React.MouseEvent) => {
+    setCopyPosition({ x: event.clientX, y: event.clientY })
+
+    // Try modern Clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(text)
+        setCopyMessage('Copied!')
+        setTimeout(() => setCopyMessage(null), duration)
+        return
+      } catch (err) {
+        // Clipboard API failed, try fallback
+      }
+    }
+
+    // Fallback: use deprecated execCommand method
+    const textArea = document.createElement('textarea')
+    textArea.value = text
+    textArea.style.position = 'fixed'
+    textArea.style.left = '-999999px'
+    textArea.style.top = '-999999px'
+    document.body.appendChild(textArea)
+
     try {
-      await navigator.clipboard.writeText(text)
-      setCopyPosition({ x: event.clientX, y: event.clientY })
-      setCopyMessage('Copied!')
-      setTimeout(() => setCopyMessage(null), duration)
+      textArea.focus()
+      textArea.select()
+      const successful = document.execCommand('copy')
+
+      if (successful) {
+        setCopyMessage('Copied!')
+        setTimeout(() => setCopyMessage(null), duration)
+      } else {
+        setCopyMessage('Failed to copy')
+        setTimeout(() => setCopyMessage(null), duration)
+      }
     } catch (err) {
-      setCopyPosition({ x: event.clientX, y: event.clientY })
       setCopyMessage('Failed to copy')
       setTimeout(() => setCopyMessage(null), duration)
+    } finally {
+      document.body.removeChild(textArea)
     }
   }
 

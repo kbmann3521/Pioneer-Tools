@@ -3,6 +3,7 @@ import { execSync, spawn } from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as os from 'os'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 type Language = 'fetch' | 'python' | 'nodejs' | 'java' | 'go' | 'csharp' | 'ruby' | 'php' | 'typescript'
 
@@ -22,6 +23,32 @@ interface RunCodeResponse {
 // Sandbox restrictions: max execution time, disable dangerous operations
 const EXECUTION_TIMEOUT = 10000 // 10 seconds
 const MAX_OUTPUT_SIZE = 50000 // 50KB
+const PUBLIC_DEMO_KEY = 'pk_demo_sandbox_ea3f199fe'
+
+async function validateApiKey(apiKey: string | undefined): Promise<boolean> {
+  if (!apiKey) {
+    return false
+  }
+
+  // Allow public demo key
+  if (apiKey === PUBLIC_DEMO_KEY) {
+    return true
+  }
+
+  // Validate against database
+  try {
+    const { data: keyRecord, error } = await supabaseAdmin
+      .from('api_keys')
+      .select('id')
+      .eq('key', apiKey)
+      .single()
+
+    return !error && !!keyRecord
+  } catch (err) {
+    console.error('Error validating API key:', err)
+    return false
+  }
+}
 
 function sanitizeCode(code: string, language: Language): string {
   // Remove shebang lines
@@ -32,7 +59,7 @@ function sanitizeCode(code: string, language: Language): string {
     case 'python':
       // Block file operations and system calls
       const pythonBlocks = [
-        'open\\(',
+        '\\bopen\\(',  // Match open( as a word boundary (not urlopen)
         '__import__',
         'exec\\(',
         'eval\\(',
@@ -161,39 +188,8 @@ async function executeCode(code: string, language: Language): Promise<{ output: 
       }
 
       case 'python': {
-        const tempFile = path.join(tempDir, 'script.py')
-        fs.writeFileSync(tempFile, code)
-
-        return new Promise((resolve) => {
-          // Try 'python' first (Windows), then 'python3' (Linux/Mac)
-          const pythonCmd = process.platform === 'win32' ? 'python' : 'python3'
-          const child = spawn(pythonCmd, [tempFile], {
-            timeout: EXECUTION_TIMEOUT,
-            stdio: ['pipe', 'pipe', 'pipe'],
-          })
-
-          let output = ''
-          let error = ''
-
-          child.stdout?.on('data', (data) => {
-            output += data.toString()
-          })
-
-          child.stderr?.on('data', (data) => {
-            error += data.toString()
-          })
-
-          child.on('close', (code) => {
-            cleanup()
-            resolve({ output: output.substring(0, MAX_OUTPUT_SIZE), error: error.substring(0, MAX_OUTPUT_SIZE) })
-          })
-
-          setTimeout(() => {
-            child.kill()
-            cleanup()
-            resolve({ output: '', error: 'Execution timeout (10s exceeded)' })
-          }, EXECUTION_TIMEOUT)
-        })
+        cleanup()
+        return { output: '', error: 'Python execution is not supported in this deployment. Please use Node.js, TypeScript, or Fetch instead to test your API.' }
       }
 
       case 'ruby': {
@@ -276,20 +272,22 @@ async function executeCode(code: string, language: Language): Promise<{ output: 
 
 export async function POST(request: NextRequest): Promise<NextResponse<RunCodeResponse>> {
   try {
-    // Check if this is a development environment
-    if (process.env.NODE_ENV === 'production') {
+    const body: RunCodeRequest = await request.json()
+    const { code, language, apiKey } = body
+
+    // Validate API key
+    // Allow the public demo key or validate against database
+    const isValidKey = await validateApiKey(apiKey)
+    if (!isValidKey) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Code execution is disabled in production',
+          error: 'Invalid or missing API key. Please provide a valid API key.',
           executionTime: 0,
         },
-        { status: 403 }
+        { status: 401 }
       )
     }
-
-    const body: RunCodeRequest = await request.json()
-    const { code, language, apiKey } = body
 
     if (!code || !language) {
       return NextResponse.json(

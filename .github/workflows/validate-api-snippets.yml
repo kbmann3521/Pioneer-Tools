@@ -1,0 +1,48 @@
+name: Validate API Code Snippets
+
+on:
+  schedule:
+    # Run every day at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  validate-snippets:
+    runs-on: ubuntu-latest
+    
+    env:
+      DEMO_API_KEY: ${{ secrets.DEMO_API_KEY }}
+      API_BASE_URL: 'https://ea3f199fe2a34d64b21cbb86f83a93e7-5aec9aef666d4bafbc5ecac8d.fly.dev'
+      PISTON_API_URL: 'https://api.piston.codes/v1/execute'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate and validate snippets
+        id: validate
+        run: node .github/scripts/validate-snippets.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload validation results
+        if: success()
+        run: |
+          echo "Uploading ${{ steps.validate.outputs.result_count }} validation results..."
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.VALIDATION_API_TOKEN }}" \
+            -d @validation-results.json \
+            "${{ env.API_BASE_URL }}/api/dev/validate-snippets"
+
+      - name: Comment on failure
+        if: failure()
+        run: echo "Validation workflow failed - check logs for details"
