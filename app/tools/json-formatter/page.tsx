@@ -57,35 +57,39 @@ export default function JsonFormatterPage(): JSX.Element {
           <div className="results-container">
             {result.isValid ? (
               <>
-                <div className="result-section">
-                  <div className="section-header">
-                    <h3>Formatted JSON</h3>
-                    <button
-                      className="copy-btn"
-                      onClick={(e) => copyToClipboard(result.formatted, e)}
-                      title="Copy formatted JSON"
-                      type="button"
-                    >
-                      Copy
-                    </button>
+                {result.formatted && (
+                  <div className="result-section">
+                    <div className="section-header">
+                      <h3>Formatted JSON</h3>
+                      <button
+                        className="copy-btn"
+                        onClick={(e) => copyToClipboard(result.formatted!, e)}
+                        title="Copy formatted JSON"
+                        type="button"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre className="code-output">{result.formatted}</pre>
                   </div>
-                  <pre className="code-output">{result.formatted}</pre>
-                </div>
+                )}
 
-                <div className="result-section">
-                  <div className="section-header">
-                    <h3>Minified JSON</h3>
-                    <button
-                      className="copy-btn"
-                      onClick={(e) => copyToClipboard(result.minified, e)}
-                      title="Copy minified JSON"
-                      type="button"
-                    >
-                      Copy
-                    </button>
+                {result.minified && (
+                  <div className="result-section">
+                    <div className="section-header">
+                      <h3>Minified JSON</h3>
+                      <button
+                        className="copy-btn"
+                        onClick={(e) => copyToClipboard(result.minified!, e)}
+                        title="Copy minified JSON"
+                        type="button"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre className="code-output">{result.minified}</pre>
                   </div>
-                  <pre className="code-output">{result.minified}</pre>
-                </div>
+                )}
 
                 {result.stats && (
                   <div className="stats-grid">
