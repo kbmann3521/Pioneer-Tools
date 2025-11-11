@@ -59,6 +59,8 @@ export interface SlugGeneratorParams {
 
 export interface SlugGeneratorResult {
   slug: string
+  length: number
+  original: string
 }
 
 export interface PasswordGeneratorParams {
