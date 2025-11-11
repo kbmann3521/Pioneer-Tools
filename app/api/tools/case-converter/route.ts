@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { extractApiKey } from '@/lib/server/auth'
+import { validateApiKeyAndGetUser } from '@/lib/server/auth'
 import { unauthorizedResponse, validationErrorResponse, insufficientBalanceResponse, internalErrorResponse, successResponse } from '@/lib/server/apiResponse'
 import { convertCase, CaseConversionInput } from '@/lib/tools/case-converter'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
