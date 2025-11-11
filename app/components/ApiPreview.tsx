@@ -199,14 +199,14 @@ data = ${paramStringCompact}
 json_data = json.dumps(data).encode('utf-8')
 
 request = urllib.request.Request(
-    '${absoluteUrl}',
+    '${endpoint}',
     data=json_data,
     headers=headers,
     method='${method}'
 )
 
 try:
-    with urllib.request.urlopen(request, timeout=25) as response:
+    with urllib.request.urlopen(request, timeout=10) as response:
         result = json.loads(response.read().decode('utf-8'))
         print(json.dumps(result, indent=2))
 except urllib.error.HTTPError as e:
