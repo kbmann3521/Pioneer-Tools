@@ -71,6 +71,11 @@ function getClientIp(request: NextRequest): string {
 function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false
 
+  // Allow any localhost origin for development
+  if (origin.startsWith('http://localhost:')) {
+    return true
+  }
+
   // Remove trailing slashes for comparison
   const normalizeUrl = (url: string) => url.replace(/\/$/, '')
 
