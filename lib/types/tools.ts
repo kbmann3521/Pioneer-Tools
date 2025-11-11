@@ -93,6 +93,10 @@ export interface UrlEncoderResult {
   result: string
   success: boolean
   error?: string
+  size: {
+    original: number
+    converted: number
+  }
 }
 
 export interface HexRgbaConverterParams {
