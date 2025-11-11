@@ -24,7 +24,20 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
   const [executionResult, setExecutionResult] = useState<{ success: boolean; output?: string; error?: string; executionTime?: number } | null>(null)
   const [liveResponse, setLiveResponse] = useState<{ success: boolean; result?: any; error?: any; meta?: any } | null>(null)
   const [userApiKey, setUserApiKey] = useState<string | null>(null)
+
+  // Convert relative URLs to absolute URLs for code execution
+  const getAbsoluteUrl = (url: string): string => {
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url
+    }
+    const baseUrl = typeof window !== 'undefined'
+      ? window.location.origin
+      : (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000')
+    return `${baseUrl}${url}`
+  }
+
   const fullUrl = endpoint
+  const absoluteUrl = getAbsoluteUrl(endpoint)
 
   // Fetch user's API key for displaying in code snippets
   // If not logged in, use the public test key
