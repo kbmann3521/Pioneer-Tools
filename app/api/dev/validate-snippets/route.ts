@@ -17,7 +17,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // Verify the request is from GitHub Actions
     const token = request.headers.get('Authorization')?.replace('Bearer ', '')
-    const expectedToken = process.env.GITHUB_ACTIONS_TOKEN
+    const expectedToken = process.env.VALIDATION_API_TOKEN
 
     if (!expectedToken || token !== expectedToken) {
       console.warn('Unauthorized validation request - invalid token')
