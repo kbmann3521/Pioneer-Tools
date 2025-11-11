@@ -147,29 +147,35 @@ export default function HexRgbaConverterPage(): JSX.Element {
           </div>
         </div>
 
-        {result && (
+        {result && result.success && (
           <div className="output-section">
-            <div className="output-item">
-              <div className="output-label">HEX</div>
-              <code>{result.hex}</code>
-              <button className="copy-btn" onClick={(e) => copyToClipboard(result.hex, e)}>
-                Copy
-              </button>
-            </div>
-            <div className="output-item">
-              <div className="output-label">RGB</div>
-              <code>{result.rgb}</code>
-              <button className="copy-btn" onClick={(e) => copyToClipboard(result.rgb, e)}>
-                Copy
-              </button>
-            </div>
-            <div className="output-item">
-              <div className="output-label">RGBA</div>
-              <code>{result.rgba}</code>
-              <button className="copy-btn" onClick={(e) => copyToClipboard(result.rgba, e)}>
-                Copy
-              </button>
-            </div>
+            {result.hex && (
+              <div className="output-item">
+                <div className="output-label">HEX</div>
+                <code>{result.hex}</code>
+                <button className="copy-btn" onClick={(e) => copyToClipboard(result.hex!, e)}>
+                  Copy
+                </button>
+              </div>
+            )}
+            {result.rgb && (
+              <div className="output-item">
+                <div className="output-label">RGB</div>
+                <code>{result.rgb}</code>
+                <button className="copy-btn" onClick={(e) => copyToClipboard(result.rgb!, e)}>
+                  Copy
+                </button>
+              </div>
+            )}
+            {result.rgba && (
+              <div className="output-item">
+                <div className="output-label">RGBA</div>
+                <code>{result.rgba}</code>
+                <button className="copy-btn" onClick={(e) => copyToClipboard(result.rgba!, e)}>
+                  Copy
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
