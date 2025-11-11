@@ -12,7 +12,7 @@ jobs:
     
     env:
       DEMO_API_KEY: ${{ secrets.DEMO_API_KEY }}
-      API_BASE_URL: ${{ secrets.API_BASE_URL || 'https://ea3f199fe2a34d64b21cbb86f83a93e7-5aec9aef666d4bafbc5ecac8d.fly.dev' }}
+      API_BASE_URL: 'https://ea3f199fe2a34d64b21cbb86f83a93e7-5aec9aef666d4bafbc5ecac8d.fly.dev'
       PISTON_API_URL: 'https://api.piston.codes/v1/execute'
     
     steps:
