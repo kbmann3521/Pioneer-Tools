@@ -21,6 +21,7 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
   const [isFetchingResponse, setIsFetchingResponse] = useState(false)
   const [executionResult, setExecutionResult] = useState<{ success: boolean; output?: string; error?: string; executionTime?: number } | null>(null)
   const [liveResponse, setLiveResponse] = useState<{ success: boolean; result?: any; error?: any; meta?: any } | null>(null)
+  const [validationStatus, setValidationStatus] = useState<{ status: 'success' | 'failure' | 'pending'; errorMessage?: string; lastValidatedAt?: string } | null>(null)
 
   // Always use the public demo API key for display
   const publicDemoKey = 'pk_demo_sandbox_ea3f199fe'
