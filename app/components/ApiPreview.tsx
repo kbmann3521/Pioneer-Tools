@@ -199,7 +199,7 @@ data = ${paramStringCompact}
 json_data = json.dumps(data).encode('utf-8')
 
 request = urllib.request.Request(
-    '${endpoint}',
+    '${absoluteUrl}',
     data=json_data,
     headers=headers,
     method='${method}'
