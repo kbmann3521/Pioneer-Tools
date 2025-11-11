@@ -39,7 +39,7 @@ jobs:
           echo "Uploading ${{ steps.validate.outputs.result_count }} validation results..."
           curl -X POST \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_ACTIONS_TOKEN }}" \
+            -H "Authorization: Bearer ${{ secrets.VALIDATION_API_TOKEN }}" \
             -d @validation-results.json \
             "${{ env.API_BASE_URL }}/api/dev/validate-snippets"
 
