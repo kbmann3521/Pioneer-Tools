@@ -19,25 +19,25 @@ interface Tool {
 
 const toolsByCategory = {
   'Text Tools': [
-    { id: 'case-converter', name: 'Case Converter', icon: '🔤' },
-    { id: 'word-counter', name: 'Letter/Word Counter', icon: '📊' },
-    { id: 'json-formatter', name: 'JSON Formatter', icon: '{}' },
-    { id: 'base64-converter', name: 'Base64 Encoder/Decoder', icon: '🔐' },
-    { id: 'url-encoder', name: 'URL Encoder/Decoder', icon: '🔗' },
-    { id: 'slug-generator', name: 'Slug Generator', icon: '📝' },
-    { id: 'password-generator', name: 'Password Generator', icon: '🔑' },
+    { id: 'case-converter', name: 'Case Converter', icon: '🔤', category: 'Text Tools' },
+    { id: 'word-counter', name: 'Letter/Word Counter', icon: '📊', category: 'Text Tools' },
+    { id: 'json-formatter', name: 'JSON Formatter', icon: '{}', category: 'Text Tools' },
+    { id: 'base64-converter', name: 'Base64 Encoder/Decoder', icon: '🔐', category: 'Text Tools' },
+    { id: 'url-encoder', name: 'URL Encoder/Decoder', icon: '🔗', category: 'Text Tools' },
+    { id: 'slug-generator', name: 'Slug Generator', icon: '📝', category: 'Text Tools' },
+    { id: 'password-generator', name: 'Password Generator', icon: '🔑', category: 'Text Tools' },
   ],
   'Image Tools': [
-    { id: 'image-resizer', name: 'Image Resizer', icon: '🖼️' },
+    { id: 'image-resizer', name: 'Image Resizer', icon: '🖼️', category: 'Image Tools' },
   ],
   'Color Tools': [
-    { id: 'hex-rgba-converter', name: 'HEX ↔ RGBA', icon: '🎨' },
+    { id: 'hex-rgba-converter', name: 'HEX ↔ RGBA', icon: '🎨', category: 'Color Tools' },
   ],
   'Social Media Tools': [
-    { id: 'og-generator', name: 'OG Meta Tag Gen', icon: '🏷️' },
+    { id: 'og-generator', name: 'OG Meta Tag Gen', icon: '🏷️', category: 'Social Media Tools' },
   ],
   'Blog Tools': [
-    { id: 'blog-generator', name: 'Blog Title Gen', icon: '✨' },
+    { id: 'blog-generator', name: 'Blog Title Gen', icon: '✨', category: 'Blog Tools' },
   ],
 }
 
