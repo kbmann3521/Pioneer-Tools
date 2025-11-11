@@ -1,10 +1,8 @@
 import { NextRequest } from 'next/server'
-import { extractApiKey } from '@/lib/server/auth'
-import { unauthorizedResponse, validationErrorResponse, insufficientBalanceResponse, internalErrorResponse, successResponse } from '@/lib/server/apiResponse'
+import { validateToolRequest, updateApiKeyLastUsed } from '@/lib/server/toolMiddleware'
+import { validationErrorResponse, insufficientBalanceResponse, internalErrorResponse, successResponse } from '@/lib/server/apiResponse'
 import { convertColor, ColorConversionInput } from '@/lib/tools/hex-rgba-converter'
-import { supabaseAdmin } from '@/lib/supabaseAdmin'
-import { checkRateLimits } from '@/lib/server/rateLimit'
-import { getUserProfile, checkBalance, checkMonthlyLimit, deductCredits } from '@/lib/server/billing'
+import { checkBalance, checkMonthlyLimit, deductCredits } from '@/lib/server/billing'
 import { handleAutoRecharge } from '@/lib/server/autoRecharge'
 import { getToolCost } from '@/config/pricing.config'
 
@@ -12,12 +10,10 @@ const TOOL_ID = 'hex-rgba-converter'
 
 export async function POST(request: NextRequest) {
   try {
-    // Step 1: Validate authentication
-    const authHeader = request.headers.get('Authorization')
-    const apiKey = extractApiKey(authHeader)
-
-    if (!apiKey) {
-      return unauthorizedResponse('Invalid or missing Authorization header')
+    // Step 1: Validate tool request and get context
+    const { context, error } = await validateToolRequest(request, TOOL_ID)
+    if (error) {
+      return error
     }
 
     // Step 2: Validate request body
@@ -33,52 +29,27 @@ export async function POST(request: NextRequest) {
       return validationErrorResponse('Provide either hex or RGB values (r, g, b)')
     }
 
-    // Step 3: Look up API key
-    const { data: keyRecord, error: keyError } = await supabaseAdmin
-      .from('api_keys')
-      .select('id, user_id')
-      .eq('key', apiKey)
-      .single()
-
-    if (keyError || !keyRecord) {
-      return unauthorizedResponse('Invalid API key')
-    }
-
-    // Step 4: Get user profile with billing info
-    const userProfile = await getUserProfile(keyRecord.user_id)
-    if (!userProfile) {
-      return unauthorizedResponse('User profile not found')
-    }
-
-    const isPaid = userProfile.balance > 0
-
-    // Step 5: Check rate limits
-    const rateLimitResult = await checkRateLimits(keyRecord.id, isPaid)
-    if (!rateLimitResult.allowed) {
-      return internalErrorResponse(rateLimitResult.message || 'Rate limit exceeded')
-    }
-
-    // Step 6: For paid users, check balance and deduct credits
-    let balanceAfterDeduction = userProfile.balance
+    // Step 3: For paid users, check balance and deduct credits
+    let balanceAfterDeduction = context!.userProfile?.balance || 0
     let toolCost = 0
 
-    if (isPaid) {
+    if (context!.isPaid) {
       toolCost = getToolCost(TOOL_ID)
-      const balanceCheckResult = await checkBalance(userProfile, TOOL_ID)
+      const balanceCheckResult = await checkBalance(context!.userProfile, TOOL_ID)
 
       if (!balanceCheckResult.allowed) {
         return insufficientBalanceResponse(balanceCheckResult.error!)
       }
 
       // Check monthly limit
-      const monthlyCheckResult = await checkMonthlyLimit(userProfile, balanceCheckResult.centsDeducted)
+      const monthlyCheckResult = await checkMonthlyLimit(context!.userProfile, balanceCheckResult.centsDeducted)
       if (!monthlyCheckResult.allowed) {
         return insufficientBalanceResponse(monthlyCheckResult.error!)
       }
 
       // Deduct credits
       const deductResult = await deductCredits(
-        userProfile,
+        context!.userProfile,
         balanceCheckResult.centsDeducted,
         balanceCheckResult.remainingFractional,
         TOOL_ID
@@ -90,20 +61,17 @@ export async function POST(request: NextRequest) {
 
       balanceAfterDeduction = deductResult.newBalance!
 
-      // Step 7: Handle auto-recharge if triggered
-      const autoRechargeResult = await handleAutoRecharge(userProfile, balanceAfterDeduction)
+      // Step 4: Handle auto-recharge if triggered
+      const autoRechargeResult = await handleAutoRecharge(context!.userProfile, balanceAfterDeduction)
       if (autoRechargeResult.triggered && autoRechargeResult.newBalance !== undefined) {
         balanceAfterDeduction = autoRechargeResult.newBalance
       }
 
       // Update last_used timestamp
-      await supabaseAdmin
-        .from('api_keys')
-        .update({ last_used: new Date().toISOString() })
-        .eq('id', keyRecord.id)
+      await updateApiKeyLastUsed(context!.keyId, context!.isPublicDemo)
     }
 
-    // Step 8: Process the tool request
+    // Step 5: Process the tool request
     const result = convertColor(input)
 
     return successResponse(result, {
