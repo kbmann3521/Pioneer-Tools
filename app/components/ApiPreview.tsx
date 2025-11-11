@@ -85,7 +85,7 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
     return () => clearTimeout(timer)
   }, [params, fullUrl, method])
 
-  const generateCode = (lang: CodeLanguage, apiKey: string = userApiKey || 'pk_test_public_demo'): string => {
+  const generateCode = (lang: CodeLanguage, apiKey: string = publicDemoKey): string => {
     const paramString = JSON.stringify(params, null, 2)
     const paramStringCompact = JSON.stringify(params)
 
