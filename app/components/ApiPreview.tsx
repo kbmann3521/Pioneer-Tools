@@ -46,12 +46,6 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
 
   // Fetch live response whenever params change
   useEffect(() => {
-    // Only fetch if we have an API key and non-empty params
-    if (!userApiKey) {
-      setLiveResponse(null)
-      return
-    }
-
     // Don't fetch if no params are provided
     const hasParams = Object.keys(params).length > 0 && Object.values(params).some(v => v !== '' && v !== null && v !== undefined)
     if (!hasParams) {
@@ -62,14 +56,17 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
     const fetchLiveResponse = async () => {
       setIsFetchingResponse(true)
       try {
-        // Call the actual API endpoint with the user's API key
-        const response = await fetch(fullUrl, {
-          method,
+        // Call the proxy route which uses the demo API key
+        const response = await fetch('/api/dev/run-code-proxy', {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userApiKey}`,
           },
-          body: JSON.stringify(params),
+          body: JSON.stringify({
+            endpoint: fullUrl,
+            method,
+            params,
+          }),
         })
 
         const data = await response.json()
@@ -86,7 +83,7 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
     // Debounce the fetch to avoid too many requests
     const timer = setTimeout(fetchLiveResponse, 800)
     return () => clearTimeout(timer)
-  }, [params, userApiKey, fullUrl, method])
+  }, [params, fullUrl, method])
 
   const generateCode = (lang: CodeLanguage, apiKey: string = userApiKey || 'pk_test_public_demo'): string => {
     const paramString = JSON.stringify(params, null, 2)
