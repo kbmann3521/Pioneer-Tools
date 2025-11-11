@@ -12,13 +12,15 @@ const TOOL_ID = 'case-converter'
 
 export async function POST(request: NextRequest) {
   try {
-    // Step 1: Extract API key from Authorization header
+    // Step 1: Extract and validate API key from Authorization header
     const authHeader = request.headers.get('Authorization')
-    const apiKey = extractApiKey(authHeader)
+    const keyRecord = await validateApiKeyAndGetUser(authHeader, supabaseAdmin)
 
-    if (!apiKey) {
-      return unauthorizedResponse('Invalid or missing Authorization header')
+    if (!keyRecord) {
+      return unauthorizedResponse('Invalid or missing API key')
     }
+
+    const { id: keyId, userId, isPublicDemo } = keyRecord
 
     // Step 2: Validate request body
     const body = await request.json().catch(() => null)
@@ -27,27 +29,6 @@ export async function POST(request: NextRequest) {
     }
 
     const { text } = body as CaseConversionInput
-
-    // Step 3: Look up API key in database
-    // Special handling for public demo key
-    let keyRecord: { id: string; user_id: string } | null = null
-    let isPublicDemo = false
-
-    if (apiKey === 'pk_test_public_demo') {
-      isPublicDemo = true
-      keyRecord = { id: 'test', user_id: 'test' }
-    } else {
-      const { data, error } = await supabaseAdmin
-        .from('api_keys')
-        .select('id, user_id')
-        .eq('key', apiKey)
-        .single()
-
-      if (error || !data) {
-        return unauthorizedResponse('Invalid API key')
-      }
-      keyRecord = data
-    }
 
     // Step 4: Get user profile with billing info
     let userProfile: any = null
