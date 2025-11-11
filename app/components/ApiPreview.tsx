@@ -40,10 +40,40 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
   const fullUrl = endpoint
   const absoluteUrl = getAbsoluteUrl(endpoint)
 
-  // Clear execution result when language changes
+  // Convert toolName to toolId format (e.g., "Case Converter" -> "case-converter")
+  const toolId = toolName
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+
+  // Clear execution result and fetch validation status when language changes
   useEffect(() => {
     setExecutionResult(null)
-  }, [language])
+
+    // Fetch validation status for the selected language
+    const fetchValidationStatus = async () => {
+      try {
+        const response = await fetch(
+          `/api/dev/validate-snippets?toolId=${toolId}&language=${language}`
+        )
+        const result = await response.json()
+        if (result.success && result.data) {
+          setValidationStatus({
+            status: result.data.status,
+            errorMessage: result.data.error_message,
+            lastValidatedAt: result.data.last_validated_at,
+          })
+        } else {
+          setValidationStatus(null)
+        }
+      } catch (err) {
+        console.debug('Failed to fetch validation status:', err)
+        setValidationStatus(null)
+      }
+    }
+
+    fetchValidationStatus()
+  }, [language, toolId])
 
   // Fetch live response whenever params change
   useEffect(() => {
