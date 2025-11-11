@@ -8,13 +8,9 @@ import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { toolDescriptions } from '@/config/tool-descriptions'
+import type { ToolPageProps } from '@/lib/types/tools'
 
-interface OGGeneratorProps {
-  isSaved?: boolean
-  toggleSave?: () => void
-}
-
-export default function OGGeneratorPage({}: OGGeneratorProps) {
+export default function OGGeneratorPage({}: ToolPageProps): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('og-generator')
   const [formData, setFormData] = useState({
