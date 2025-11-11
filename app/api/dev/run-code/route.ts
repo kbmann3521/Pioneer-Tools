@@ -32,7 +32,7 @@ function sanitizeCode(code: string, language: Language): string {
     case 'python':
       // Block file operations and system calls
       const pythonBlocks = [
-        'open\\(',
+        '\\bopen\\(',  // Match open( as a word boundary (not urlopen)
         '__import__',
         'exec\\(',
         'eval\\(',
