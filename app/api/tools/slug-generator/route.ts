@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { extractApiKey } from '@/lib/server/auth'
+import { validateApiKeyAndGetUser } from '@/lib/server/auth'
 import { unauthorizedResponse, validationErrorResponse, insufficientBalanceResponse, internalErrorResponse, successResponse } from '@/lib/server/apiResponse'
 import { createSlug } from '@/lib/tools/slug-generator'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
@@ -12,13 +12,15 @@ const TOOL_ID = 'slug-generator'
 
 export async function POST(request: NextRequest) {
   try {
-    // Step 1: Validate authentication
+    // Step 1: Extract and validate API key from Authorization header
     const authHeader = request.headers.get('Authorization')
-    const apiKey = extractApiKey(authHeader)
+    const keyRecord = await validateApiKeyAndGetUser(authHeader, supabaseAdmin)
 
-    if (!apiKey) {
-      return unauthorizedResponse('Invalid or missing Authorization header')
+    if (!keyRecord) {
+      return unauthorizedResponse('Invalid or missing API key')
     }
+
+    const { id: keyId, userId, isPublicDemo } = keyRecord
 
     // Step 2: Validate request body
     const body = await request.json().catch(() => null)
@@ -28,36 +30,33 @@ export async function POST(request: NextRequest) {
 
     const { text, separator } = body
 
-    // Step 3: Look up API key
-    const { data: keyRecord, error: keyError } = await supabaseAdmin
-      .from('api_keys')
-      .select('id, user_id')
-      .eq('key', apiKey)
-      .single()
+    // Step 3: Get user profile with billing info
+    let userProfile: any = null
+    let isPaid = false
+    let rateLimitResult: any = null
+    
+    if (!isPublicDemo) {
+      userProfile = await getUserProfile(userId)
+      if (!userProfile) {
+        return unauthorizedResponse('User profile not found')
+      }
+      isPaid = userProfile.balance > 0
 
-    if (keyError || !keyRecord) {
-      return unauthorizedResponse('Invalid API key')
+      // Step 4: Check rate limits
+      rateLimitResult = await checkRateLimits(keyId, isPaid)
+      if (!rateLimitResult.allowed) {
+        return internalErrorResponse(rateLimitResult.message || 'Rate limit exceeded')
+      }
+    } else {
+      // For public demo key, skip rate limit checks and billing
+      rateLimitResult = { allowed: true, remainingDaily: 100 }
     }
 
-    // Step 4: Get user profile with billing info
-    const userProfile = await getUserProfile(keyRecord.user_id)
-    if (!userProfile) {
-      return unauthorizedResponse('User profile not found')
-    }
-
-    const isPaid = userProfile.balance > 0
-
-    // Step 5: Check rate limits
-    const rateLimitResult = await checkRateLimits(keyRecord.id, isPaid)
-    if (!rateLimitResult.allowed) {
-      return internalErrorResponse(rateLimitResult.message || 'Rate limit exceeded')
-    }
-
-    // Step 6: For paid users, check balance and deduct credits
-    let balanceAfterDeduction = userProfile.balance
+    // Step 5: For paid users, check balance and deduct credits
+    let balanceAfterDeduction = userProfile?.balance || 0
     let toolCost = 0
 
-    if (isPaid) {
+    if (isPaid && userProfile) {
       toolCost = getToolCost(TOOL_ID)
       const balanceCheckResult = await checkBalance(userProfile, TOOL_ID)
 
@@ -85,20 +84,22 @@ export async function POST(request: NextRequest) {
 
       balanceAfterDeduction = deductResult.newBalance!
 
-      // Step 7: Handle auto-recharge if triggered
+      // Step 6: Handle auto-recharge if triggered
       const autoRechargeResult = await handleAutoRecharge(userProfile, balanceAfterDeduction)
       if (autoRechargeResult.triggered && autoRechargeResult.newBalance !== undefined) {
         balanceAfterDeduction = autoRechargeResult.newBalance
       }
 
-      // Update last_used timestamp
-      await supabaseAdmin
-        .from('api_keys')
-        .update({ last_used: new Date().toISOString() })
-        .eq('id', keyRecord.id)
+      // Update last_used timestamp (skip for demo key)
+      if (!isPublicDemo) {
+        await supabaseAdmin
+          .from('api_keys')
+          .update({ last_used: new Date().toISOString() })
+          .eq('id', keyId)
+      }
     }
 
-    // Step 8: Process the tool request
+    // Step 7: Process the tool request
     const sep = separator || '-'
     const result = createSlug(text, sep)
 
