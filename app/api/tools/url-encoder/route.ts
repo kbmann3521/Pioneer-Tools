@@ -75,10 +75,10 @@ export async function POST(request: NextRequest) {
     const result = convertUrl(url, mode as 'encode' | 'decode')
 
     return successResponse(result, {
-      remaining: isPaid ? balanceAfterDeduction : rateLimitResult.remainingDaily || 0,
+      remaining: context!.isPaid ? balanceAfterDeduction : context!.rateLimitResult.remainingDaily || 0,
       balance: balanceAfterDeduction,
       costThisCall: toolCost,
-      requestsPerSecond: isPaid ? 10 : 1,
+      requestsPerSecond: context!.isPaid ? 10 : 1,
     })
   } catch (error) {
     console.error('URL encoder error:', error)
