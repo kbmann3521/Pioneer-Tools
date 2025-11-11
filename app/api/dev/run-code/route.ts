@@ -21,7 +21,7 @@ interface RunCodeResponse {
 }
 
 // Sandbox restrictions: max execution time, disable dangerous operations
-const EXECUTION_TIMEOUT = 30000 // 30 seconds
+const EXECUTION_TIMEOUT = 10000 // 10 seconds
 const MAX_OUTPUT_SIZE = 50000 // 50KB
 const PUBLIC_DEMO_KEY = 'pk_test_public_demo'
 
