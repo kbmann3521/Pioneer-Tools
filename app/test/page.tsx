@@ -49,6 +49,7 @@ export default function TestPage() {
     rateLimitHits: 0,
     startTime: 0,
     endTime: 0,
+    actualRps: 0,
   })
   const testAbortRef = useRef(false)
   const testAbortControllerRef = useRef<AbortController | null>(null)
