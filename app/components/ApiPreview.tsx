@@ -291,12 +291,11 @@ puts JSON.pretty_generate(JSON.parse(response.body))`
         return `<?php
 
 $url = "${absoluteUrl}";
-$data = ${paramStringCompact};
+$data = json_decode('${escapedJson}', true);
 
 $ch = curl_init();
-
 curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, '${method}');
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -305,11 +304,10 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 ));
 
 $response = curl_exec($ch);
-$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 $result = json_decode($response, true);
-var_dump($result);
+echo json_encode($result, JSON_PRETTY_PRINT);
 ?>`
       }
 
