@@ -277,20 +277,22 @@ async function executeCode(code: string, language: Language): Promise<{ output: 
 
 export async function POST(request: NextRequest): Promise<NextResponse<RunCodeResponse>> {
   try {
-    // Check if this is a development environment
-    if (process.env.NODE_ENV === 'production') {
+    const body: RunCodeRequest = await request.json()
+    const { code, language, apiKey } = body
+
+    // Validate API key
+    // Allow the public demo key or validate against database
+    const isValidKey = await validateApiKey(apiKey)
+    if (!isValidKey) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Code execution is disabled in production',
+          error: 'Invalid or missing API key. Please provide a valid API key.',
           executionTime: 0,
         },
-        { status: 403 }
+        { status: 401 }
       )
     }
-
-    const body: RunCodeRequest = await request.json()
-    const { code, language, apiKey } = body
 
     if (!code || !language) {
       return NextResponse.json(
