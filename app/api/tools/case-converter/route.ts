@@ -50,24 +50,32 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 4: Get user profile with billing info
-    const userProfile = await getUserProfile(keyRecord.user_id)
-    if (!userProfile) {
-      return unauthorizedResponse('User profile not found')
-    }
+    let userProfile: any = null
+    let isPaid = false
+    let rateLimitResult: any = null
 
-    const isPaid = userProfile.balance > 0
+    if (!isPublicDemo) {
+      userProfile = await getUserProfile(keyRecord.user_id)
+      if (!userProfile) {
+        return unauthorizedResponse('User profile not found')
+      }
+      isPaid = userProfile.balance > 0
 
-    // Step 5: Check rate limits
-    const rateLimitResult = await checkRateLimits(keyRecord.id, isPaid)
-    if (!rateLimitResult.allowed) {
-      return internalErrorResponse(rateLimitResult.message || 'Rate limit exceeded', undefined)
+      // Step 5: Check rate limits
+      rateLimitResult = await checkRateLimits(keyRecord.id, isPaid)
+      if (!rateLimitResult.allowed) {
+        return internalErrorResponse(rateLimitResult.message || 'Rate limit exceeded', undefined)
+      }
+    } else {
+      // For public demo key, skip rate limit checks and billing
+      rateLimitResult = { allowed: true, remainingDaily: 100 }
     }
 
     // Step 6: For paid users, check balance and deduct credits
-    let balanceAfterDeduction = userProfile.balance
+    let balanceAfterDeduction = userProfile?.balance || 0
     let toolCost = 0
 
-    if (isPaid) {
+    if (isPaid && userProfile) {
       toolCost = getToolCost(TOOL_ID)
       const balanceCheckResult = await checkBalance(userProfile, TOOL_ID)
 
