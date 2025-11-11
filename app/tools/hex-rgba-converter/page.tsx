@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import CopyFeedback from '@/app/components/CopyFeedback'
 import { convertColor } from '@/lib/tools/hex-rgba-converter'
 import { useFavorites } from '@/app/hooks/useFavorites'
+import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, HexRgbaConverterResult } from '@/lib/types/tools'
@@ -16,8 +18,7 @@ export default function HexRgbaConverterPage({}: ToolPageProps) {
   const [rgb, setRgb] = useState<{ r: number; g: number; b: number }>({ r: 255, g: 107, b: 107 })
   const [alpha, setAlpha] = useState<number>(1)
   const [result, setResult] = useState<HexRgbaConverterResult | null>(null)
-  const [copyMessage, setCopyMessage] = useState<string | null>(null)
-  const [copyPosition, setCopyPosition] = useState<{ x: number; y: number } | null>(null)
+  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
 
   // Update API params whenever color changes
   useEffect(() => {
@@ -49,14 +50,6 @@ export default function HexRgbaConverterPage({}: ToolPageProps) {
   }
 
   const rgbaString = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`
-
-  const copyToClipboard = (value: string, event: React.MouseEvent) => {
-    navigator.clipboard.writeText(value).then(() => {
-      setCopyPosition({ x: event.clientX, y: event.clientY })
-      setCopyMessage('Copied!')
-      setTimeout(() => setCopyMessage(null), 1200)
-    })
-  }
 
   return (
     <div className="tool-container">
@@ -167,14 +160,7 @@ export default function HexRgbaConverterPage({}: ToolPageProps) {
           </div>
         )}
       </div>
-      {copyMessage && copyPosition && (
-        <div
-          className="copy-feedback-toast"
-          style={{ left: `${copyPosition.x}px`, top: `${copyPosition.y}px` }}
-        >
-          {copyMessage}
-        </div>
-      )}
+      <CopyFeedback message={copyMessage} position={copyPosition} />
 
       <AboutToolAccordion
         toolId="hex-rgba-converter"
