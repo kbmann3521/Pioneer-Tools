@@ -24,8 +24,7 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
   const [executionResult, setExecutionResult] = useState<{ success: boolean; output?: string; error?: string; executionTime?: number } | null>(null)
   const [liveResponse, setLiveResponse] = useState<{ success: boolean; result?: any; error?: any; meta?: any } | null>(null)
   const [userApiKey, setUserApiKey] = useState<string | null>(null)
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-  const fullUrl = `${baseUrl}${endpoint}`
+  const fullUrl = endpoint
 
   // Fetch user's API key for displaying in code snippets
   // If not logged in, use the public test key

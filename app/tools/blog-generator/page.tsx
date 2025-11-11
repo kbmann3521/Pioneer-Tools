@@ -92,8 +92,7 @@ export default function BlogGeneratorPage({}: ToolPageProps) {
     setTitles([])
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-      const response = await fetch(`${baseUrl}/api/tools/blog-generator`, {
+      const response = await fetch('/api/tools/blog-generator', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
