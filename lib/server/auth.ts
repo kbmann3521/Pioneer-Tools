@@ -64,7 +64,7 @@ export function extractApiKey(authHeader: string | null): string | null {
 /**
  * Public demo API key - doesn't require database lookup
  */
-const PUBLIC_DEMO_KEY = 'pk_test_public_demo'
+const PUBLIC_DEMO_KEY = 'pk_demo_sandbox_ea3f199fe'
 
 /**
  * Validate API key and return key record or demo user
