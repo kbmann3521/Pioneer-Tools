@@ -23,7 +23,7 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
   const [liveResponse, setLiveResponse] = useState<{ success: boolean; result?: any; error?: any; meta?: any } | null>(null)
 
   // Always use the public demo API key for display
-  const publicDemoKey = 'pk_test_public_demo'
+  const publicDemoKey = 'pk_demo_sandbox_ea3f199fe'
 
   // Convert relative URLs to absolute URLs for code snippets
   const getAbsoluteUrl = (url: string): string => {

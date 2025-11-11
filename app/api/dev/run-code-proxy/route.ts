@@ -71,12 +71,18 @@ function getClientIp(request: NextRequest): string {
 function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false
 
+  // Remove trailing slashes for comparison
+  const normalizeUrl = (url: string) => url.replace(/\/$/, '')
+
   const allowedOrigins = [
     process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
     process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
-  ]
+    // Allow deployed domain (Fly.io)
+    'https://ea3f199fe2a34d64b21cbb86f83a93e7-5aec9aef666d4bafbc5ecac8d.fly.dev',
+  ].map(normalizeUrl)
 
-  return allowedOrigins.some(allowed => origin.startsWith(allowed.replace(/\/$/, '')))
+  const originBase = normalizeUrl(origin)
+  return allowedOrigins.some(allowed => originBase.startsWith(allowed))
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
