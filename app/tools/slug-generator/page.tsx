@@ -11,7 +11,7 @@ import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, SlugGeneratorResult } from '@/lib/types/tools'
 
-export default function SlugGeneratorPage({}: ToolPageProps) {
+export default function SlugGeneratorPage({}: ToolPageProps): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('slug-generator')
   const [text, setText] = useState<string>('')

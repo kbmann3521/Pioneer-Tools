@@ -11,7 +11,7 @@ import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, HexRgbaConverterResult } from '@/lib/types/tools'
 
-export default function HexRgbaConverterPage({}: ToolPageProps) {
+export default function HexRgbaConverterPage({}: ToolPageProps): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('hex-rgba-converter')
   const [hex, setHex] = useState<string>('#FF6B6B')
