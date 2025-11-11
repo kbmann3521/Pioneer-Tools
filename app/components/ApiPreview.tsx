@@ -100,6 +100,11 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
           }),
         })
 
+        if (!response.ok) {
+          setLiveResponse(null)
+          return
+        }
+
         const data = await response.json()
         setLiveResponse(data)
       } catch (error) {
