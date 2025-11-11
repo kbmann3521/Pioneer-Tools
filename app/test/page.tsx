@@ -251,6 +251,7 @@ export default function TestPage() {
       rateLimitHits: 0,
       startTime,
       endTime: 0,
+      actualRps: 0,
     })
 
     const logs: RateLimitTestLog[] = []
