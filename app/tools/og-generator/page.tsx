@@ -27,8 +27,7 @@ export default function OGGeneratorPage({}: OGGeneratorProps) {
   })
 
   const [result, setResult] = useState<OGGeneratorOutput | null>(null)
-  const [copyMessage, setCopyMessage] = useState<string | null>(null)
-  const [copyPosition, setCopyPosition] = useState<{ x: number; y: number } | null>(null)
+  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
 
   // Update API params whenever form data changes
   useEffect(() => {
@@ -42,14 +41,6 @@ export default function OGGeneratorPage({}: OGGeneratorProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const copyToClipboard = (text: string, event: React.MouseEvent) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopyPosition({ x: event.clientX, y: event.clientY })
-      setCopyMessage('Copied!')
-      setTimeout(() => setCopyMessage(null), 1200)
-    })
   }
 
   const metaTags = result?.metaTags || ''
