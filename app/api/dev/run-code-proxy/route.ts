@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { Redis } from '@upstash/redis'
 
 interface ProxyRequest {
   endpoint: string
@@ -6,8 +7,79 @@ interface ProxyRequest {
   params: Record<string, any>
 }
 
+// Initialize Redis for rate limiting
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL || '',
+  token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
+})
+
+// Rate limit: 30 requests per minute for demo key
+const DEMO_RATE_LIMIT = 30
+const DEMO_RATE_WINDOW = 60 // seconds
+
+async function checkDemoKeyRateLimit(ip: string): Promise<boolean> {
+  try {
+    const key = `demo-api-limit:${ip}`
+    const current = await redis.incr(key)
+
+    if (current === 1) {
+      // First request in this window, set expiration
+      await redis.expire(key, DEMO_RATE_WINDOW)
+    }
+
+    return current <= DEMO_RATE_LIMIT
+  } catch (err) {
+    console.error('Rate limit check failed:', err)
+    // If Redis fails, allow the request but log it
+    return true
+  }
+}
+
+function getClientIp(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for')
+  const ip = forwarded ? forwarded.split(',')[0] : request.ip || 'unknown'
+  return ip.trim()
+}
+
+function isAllowedOrigin(origin: string | null): boolean {
+  if (!origin) return false
+
+  const allowedOrigins = [
+    process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+  ]
+
+  return allowedOrigins.some(allowed => origin.startsWith(allowed.replace(/\/$/, '')))
+}
+
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
+    // Check origin for same-site requests only
+    const origin = request.headers.get('origin')
+    if (!isAllowedOrigin(origin)) {
+      console.warn(`Rejected request from unauthorized origin: ${origin}`)
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Origin not allowed',
+        },
+        { status: 403 }
+      )
+    }
+
+    // Check rate limit for demo key
+    const clientIp = getClientIp(request)
+    const withinRateLimit = await checkDemoKeyRateLimit(clientIp)
+    if (!withinRateLimit) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Rate limit exceeded. Maximum ${DEMO_RATE_LIMIT} requests per ${DEMO_RATE_WINDOW} seconds.`,
+        },
+        { status: 429 }
+      )
+    }
+
     const body: ProxyRequest = await request.json()
     const { endpoint, method, params } = body
 
