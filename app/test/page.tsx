@@ -195,7 +195,7 @@ export default function TestPage() {
         // Extract error message from new unified response format
         const errorMessage = typeof data?.error === 'object'
           ? data.error.message
-          : data?.error || errorMessage || `API error: ${response.status}`
+          : data?.error || `API error: ${response.status}`
 
         let finalError = errorMessage
         if (response.status === 401) {
