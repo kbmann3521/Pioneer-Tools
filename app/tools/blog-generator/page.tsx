@@ -13,7 +13,7 @@ import type { ToolPageProps, BlogGeneratorResult } from '@/lib/types/tools'
 
 type BlogTitle = BlogGeneratorResult['titles'][number]
 
-export default function BlogGeneratorPage({}: ToolPageProps): JSX.Element {
+export default function BlogGeneratorPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('blog-generator')
   const { session } = useAuth()

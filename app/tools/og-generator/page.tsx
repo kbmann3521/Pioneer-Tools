@@ -10,7 +10,7 @@ import { useClipboard } from '@/app/hooks/useClipboard'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps } from '@/lib/types/tools'
 
-export default function OGGeneratorPage({}: ToolPageProps): JSX.Element {
+export default function OGGeneratorPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('og-generator')
   const [formData, setFormData] = useState({

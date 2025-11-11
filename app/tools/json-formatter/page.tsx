@@ -11,7 +11,7 @@ import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, JsonFormatterResult } from '@/lib/types/tools'
 
-export default function JsonFormatterPage({}: ToolPageProps): JSX.Element {
+export default function JsonFormatterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('json-formatter')
   const { copyMessage, copyPosition, copyToClipboard } = useClipboard()

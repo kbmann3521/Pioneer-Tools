@@ -11,7 +11,7 @@ import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, PasswordGeneratorResult } from '@/lib/types/tools'
 
-export default function PasswordGeneratorPage({}: ToolPageProps): JSX.Element {
+export default function PasswordGeneratorPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('password-generator')
   const [length, setLength] = useState<number>(16)
