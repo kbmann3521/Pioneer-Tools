@@ -314,6 +314,17 @@ var_dump($result);
         }),
       })
 
+      if (!response.ok) {
+        const errorText = await response.text()
+        setExecutionResult({
+          success: false,
+          error: `Server error (${response.status}): ${errorText.substring(0, 100)}`,
+          executionTime: 0,
+        })
+        setIsRunning(false)
+        return
+      }
+
       const result = await response.json()
       if (result.success) {
         setExecutionResult({
