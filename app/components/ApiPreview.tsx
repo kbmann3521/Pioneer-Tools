@@ -18,7 +18,7 @@ interface ApiPreviewProps {
 export default function ApiPreview({ endpoint, method = 'POST', params = {}, toolName, enableCodeExecution = false }: ApiPreviewProps) {
   const { session } = useAuth()
   const [language, setLanguage] = useState<CodeLanguage>('fetch')
-  const [activeTab, setActiveTab] = useState<'request' | 'response'>('request')
+  const [activeTab, setActiveTab] = useState<'request' | 'response' | 'run-code'>('request')
   const [isRunning, setIsRunning] = useState(false)
   const [isFetchingResponse, setIsFetchingResponse] = useState(false)
   const [executionResult, setExecutionResult] = useState<{ success: boolean; output?: string; error?: string; executionTime?: number } | null>(null)
