@@ -187,19 +187,30 @@ console.log(result)`
   -d '${paramString.replace(/'/g, "'\\''")}'`
 
       case 'python':
-        return `import requests
+        return `import urllib.request
+import json
 
 headers = {
-    'Authorization': 'Bearer ${apiKey}'
+    'Authorization': 'Bearer ${apiKey}',
+    'Content-Type': 'application/json'
 }
 
-response = requests.${method.toLowerCase()}(
+data = ${paramStringCompact}
+json_data = json.dumps(data).encode('utf-8')
+
+request = urllib.request.Request(
     '${absoluteUrl}',
-    json=${paramString},
-    headers=headers
+    data=json_data,
+    headers=headers,
+    method='${method}'
 )
 
-print(response.json())`
+try:
+    with urllib.request.urlopen(request) as response:
+        result = json.loads(response.read().decode('utf-8'))
+        print(json.dumps(result, indent=2))
+except urllib.error.HTTPError as e:
+    print(f"Error: {e.code} {e.reason}")`
 
       case 'java':
         return `import java.net.http.HttpClient;
