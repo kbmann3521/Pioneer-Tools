@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Redis } from '@upstash/redis'
 
 interface ProxyRequest {
   endpoint: string
@@ -7,27 +6,55 @@ interface ProxyRequest {
   params: Record<string, any>
 }
 
-// Initialize Redis for rate limiting
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || '',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
-})
-
 // Rate limit: 30 requests per minute for demo key
 const DEMO_RATE_LIMIT = 30
 const DEMO_RATE_WINDOW = 60 // seconds
 
+const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN
+
+async function redisCommand(command: string[]): Promise<any> {
+  if (!UPSTASH_URL || !UPSTASH_TOKEN) {
+    return null
+  }
+
+  try {
+    const body = JSON.stringify(command)
+    const response = await fetch(UPSTASH_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${UPSTASH_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body,
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error(`Upstash error [${response.status}]: ${errorText}`)
+      throw new Error(`Redis error: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data.result !== undefined ? data.result : data
+  } catch (error) {
+    console.error('Redis command error:', error)
+    return null
+  }
+}
+
 async function checkDemoKeyRateLimit(ip: string): Promise<boolean> {
   try {
     const key = `demo-api-limit:${ip}`
-    const current = await redis.incr(key)
+    const current = await redisCommand(['INCR', key])
+    const count = (current ? parseInt(current) : 0)
 
-    if (current === 1) {
+    if (count === 1) {
       // First request in this window, set expiration
-      await redis.expire(key, DEMO_RATE_WINDOW)
+      await redisCommand(['EXPIRE', key, DEMO_RATE_WINDOW.toString()])
     }
 
-    return current <= DEMO_RATE_LIMIT
+    return count <= DEMO_RATE_LIMIT
   } catch (err) {
     console.error('Rate limit check failed:', err)
     // If Redis fails, allow the request but log it
