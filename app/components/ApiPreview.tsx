@@ -285,12 +285,17 @@ class Program {
 
       case 'ruby': {
         const methodClass = method === 'POST' ? 'Post' : method === 'GET' ? 'Get' : method === 'PUT' ? 'Put' : 'Post'
+        // Convert JSON to Ruby hash syntax with hash rockets (=>)
+        const jsonToRubyHash = (json: string) => {
+          return json.replace(/"/g, "'").replace(/:/g, ' =>')
+        }
+        const rubyHashSyntax = jsonToRubyHash(paramStringCompact)
         return `require 'net/http'
 require 'json'
 require 'uri'
 
 uri = URI("${absoluteUrl}")
-data = ${paramStringCompact}
+data = ${rubyHashSyntax}
 
 http = Net::HTTP.new(uri.host, uri.port)
 http.use_ssl = (uri.scheme == 'https')
