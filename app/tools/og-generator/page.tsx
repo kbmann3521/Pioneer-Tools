@@ -6,6 +6,7 @@ import AboutToolAccordion from '@/app/components/AboutToolAccordion'
 import { generateOGTags, type OGGeneratorOutput } from '@/lib/tools/og-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useClipboard } from '@/app/hooks/useClipboard'
 import { toolDescriptions } from '@/config/tool-descriptions'
 
 interface OGGeneratorProps {
