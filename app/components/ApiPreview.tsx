@@ -388,7 +388,25 @@ var_dump($result);
         <p className="api-endpoint">{method} {endpoint}</p>
       </div>
 
-      <CodeLanguageSelector language={language} onLanguageChange={setLanguage} />
+      <div className="language-selector-wrapper">
+        <CodeLanguageSelector language={language} onLanguageChange={setLanguage} />
+
+        {validationStatus && (
+          <div className={`validation-status validation-${validationStatus.status}`}>
+            <span className="validation-icon">
+              {validationStatus.status === 'success' ? '✅' : '❌'}
+            </span>
+            <span className="validation-text">
+              {validationStatus.status === 'success' ? 'Validated' : 'Failed'}
+            </span>
+            {validationStatus.lastValidatedAt && (
+              <span className="validation-time">
+                {new Date(validationStatus.lastValidatedAt).toLocaleDateString()} {new Date(validationStatus.lastValidatedAt).toLocaleTimeString()}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="api-preview-tabs">
         <button
