@@ -11,7 +11,7 @@ import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, CaseConverterResult } from '@/lib/types/tools'
 
-export default function CaseConverterPage({}: ToolPageProps) {
+export default function CaseConverterPage({}: ToolPageProps): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('case-converter')
   const [text, setText] = useState<string>('')

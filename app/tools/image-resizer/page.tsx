@@ -9,7 +9,7 @@ import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps } from '@/lib/types/tools'
 
-export default function ImageResizerPage({}: ToolPageProps) {
+export default function ImageResizerPage({}: ToolPageProps): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('image-resizer')
   const [image, setImage] = useState<string | null>(null)
