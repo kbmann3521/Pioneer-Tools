@@ -72,6 +72,7 @@ export interface PasswordGeneratorParams {
 export interface PasswordGeneratorResult {
   password: string
   strength: 'weak' | 'fair' | 'good' | 'strong' | 'very-strong'
+  score: number
   metrics: {
     length: number
     hasUppercase: boolean
@@ -79,7 +80,6 @@ export interface PasswordGeneratorResult {
     hasNumbers: boolean
     hasSpecialChars: boolean
   }
-  score?: number
 }
 
 export interface UrlEncoderParams {
