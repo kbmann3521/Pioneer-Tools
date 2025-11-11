@@ -79,6 +79,7 @@ export interface PasswordGeneratorResult {
     hasNumbers: boolean
     hasSpecialChars: boolean
   }
+  score?: number
 }
 
 export interface UrlEncoderParams {
