@@ -206,7 +206,7 @@ request = urllib.request.Request(
 )
 
 try:
-    with urllib.request.urlopen(request, timeout=8) as response:
+    with urllib.request.urlopen(request, timeout=25) as response:
         result = json.loads(response.read().decode('utf-8'))
         print(json.dumps(result, indent=2))
 except urllib.error.HTTPError as e:
