@@ -23,6 +23,32 @@ interface RunCodeResponse {
 // Sandbox restrictions: max execution time, disable dangerous operations
 const EXECUTION_TIMEOUT = 10000 // 10 seconds
 const MAX_OUTPUT_SIZE = 50000 // 50KB
+const PUBLIC_DEMO_KEY = 'pk_test_public_demo'
+
+async function validateApiKey(apiKey: string | undefined): Promise<boolean> {
+  if (!apiKey) {
+    return false
+  }
+
+  // Allow public demo key
+  if (apiKey === PUBLIC_DEMO_KEY) {
+    return true
+  }
+
+  // Validate against database
+  try {
+    const { data: keyRecord, error } = await supabaseAdmin
+      .from('api_keys')
+      .select('id')
+      .eq('key', apiKey)
+      .single()
+
+    return !error && !!keyRecord
+  } catch (err) {
+    console.error('Error validating API key:', err)
+    return false
+  }
+}
 
 function sanitizeCode(code: string, language: Language): string {
   // Remove shebang lines
