@@ -29,14 +29,24 @@ export async function POST(request: NextRequest) {
     const { text } = body as CaseConversionInput
 
     // Step 3: Look up API key in database
-    const { data: keyRecord, error: keyError } = await supabaseAdmin
-      .from('api_keys')
-      .select('id, user_id')
-      .eq('key', apiKey)
-      .single()
+    // Special handling for public demo key
+    let keyRecord: { id: string; user_id: string } | null = null
+    let isPublicDemo = false
 
-    if (keyError || !keyRecord) {
-      return unauthorizedResponse('Invalid API key')
+    if (apiKey === 'pk_test_public_demo') {
+      isPublicDemo = true
+      keyRecord = { id: 'test', user_id: 'test' }
+    } else {
+      const { data, error } = await supabaseAdmin
+        .from('api_keys')
+        .select('id, user_id')
+        .eq('key', apiKey)
+        .single()
+
+      if (error || !data) {
+        return unauthorizedResponse('Invalid API key')
+      }
+      keyRecord = data
     }
 
     // Step 4: Get user profile with billing info
