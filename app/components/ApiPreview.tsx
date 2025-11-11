@@ -721,6 +721,54 @@ var_dump($result);
           border-top: 1px solid var(--border-color);
         }
 
+        .language-selector-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .validation-status {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem 0.75rem;
+          border-radius: 4px;
+          font-size: 0.85rem;
+          white-space: nowrap;
+        }
+
+        .validation-status.validation-success {
+          background: rgba(34, 170, 34, 0.1);
+          color: #22aa22;
+          border: 1px solid rgba(34, 170, 34, 0.3);
+        }
+
+        .validation-status.validation-failure {
+          background: rgba(255, 68, 68, 0.1);
+          color: #ff4444;
+          border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+
+        .validation-status.validation-pending {
+          background: rgba(170, 170, 34, 0.1);
+          color: #aaaa22;
+          border: 1px solid rgba(170, 170, 34, 0.3);
+        }
+
+        .validation-icon {
+          font-size: 1rem;
+        }
+
+        .validation-text {
+          font-weight: 600;
+        }
+
+        .validation-time {
+          font-size: 0.75rem;
+          opacity: 0.8;
+        }
+
         @media (max-width: 768px) {
           .api-preview {
             max-height: auto;
