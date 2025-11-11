@@ -60,6 +60,12 @@ export function createPassword(options: PasswordOptions) {
   return {
     password,
     strength: strength.strength,
-    score: strength.score,
+    metrics: {
+      length: password.length,
+      hasUppercase: /[A-Z]/.test(password),
+      hasLowercase: /[a-z]/.test(password),
+      hasNumbers: /[0-9]/.test(password),
+      hasSpecialChars: /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(password),
+    },
   }
 }
