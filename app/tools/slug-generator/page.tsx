@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import CopyFeedback from '@/app/components/CopyFeedback'
 import { createSlug, generateSlug } from '@/lib/tools/slug-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
+import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, SlugGeneratorResult } from '@/lib/types/tools'
@@ -15,8 +17,7 @@ export default function SlugGeneratorPage({}: ToolPageProps) {
   const [text, setText] = useState<string>('')
   const [separator, setSeparator] = useState<string>('-')
   const [result, setResult] = useState<SlugGeneratorResult | null>(null)
-  const [copyMessage, setCopyMessage] = useState<string | null>(null)
-  const [copyPosition, setCopyPosition] = useState<{ x: number; y: number } | null>(null)
+  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
 
   // Update API params and generate slug
   useEffect(() => {
@@ -30,13 +31,6 @@ export default function SlugGeneratorPage({}: ToolPageProps) {
     }
   }, [text, separator, updateParams])
 
-  const copyToClipboard = (value: string, event: React.MouseEvent) => {
-    navigator.clipboard.writeText(value).then(() => {
-      setCopyPosition({ x: event.clientX, y: event.clientY })
-      setCopyMessage('Copied!')
-      setTimeout(() => setCopyMessage(null), 1200)
-    })
-  }
 
   return (
     <div className="tool-container">
@@ -109,19 +103,7 @@ export default function SlugGeneratorPage({}: ToolPageProps) {
           </div>
         )}
 
-        {copyMessage && (
-          <div
-            className="copy-notification"
-            style={{
-              position: 'fixed',
-              left: `${copyPosition?.x}px`,
-              top: `${copyPosition?.y}px`,
-              pointerEvents: 'none',
-            }}
-          >
-            {copyMessage}
-          </div>
-        )}
+        <CopyFeedback message={copyMessage} position={copyPosition} />
       </div>
 
       <AboutToolAccordion
