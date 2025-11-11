@@ -188,51 +188,8 @@ async function executeCode(code: string, language: Language): Promise<{ output: 
       }
 
       case 'python': {
-        const tempFile = path.join(tempDir, 'script.py')
-        fs.writeFileSync(tempFile, code)
-
-        return new Promise((resolve) => {
-          // Try 'python' first (Windows), then 'python3' (Linux/Mac)
-          const pythonCmd = process.platform === 'win32' ? 'python' : 'python3'
-          const child = spawn(pythonCmd, [tempFile], {
-            timeout: EXECUTION_TIMEOUT,
-            stdio: ['pipe', 'pipe', 'pipe'],
-          })
-
-          let output = ''
-          let error = ''
-          let processStarted = false
-
-          child.stdout?.on('data', (data) => {
-            processStarted = true
-            output += data.toString()
-          })
-
-          child.stderr?.on('data', (data) => {
-            processStarted = true
-            error += data.toString()
-          })
-
-          child.on('close', (code) => {
-            cleanup()
-            resolve({ output: output.substring(0, MAX_OUTPUT_SIZE), error: error.substring(0, MAX_OUTPUT_SIZE) })
-          })
-
-          child.on('error', (err: any) => {
-            cleanup()
-            resolve({ output: '', error: `Failed to start Python: ${err.message}. Python may not be available in this environment.` })
-          })
-
-          setTimeout(() => {
-            child.kill()
-            cleanup()
-            if (!processStarted) {
-              resolve({ output: '', error: 'Python execution failed: Process did not start or produce output. Python may not be available in this environment.' })
-            } else {
-              resolve({ output: '', error: 'Execution timeout (10s exceeded)' })
-            }
-          }, EXECUTION_TIMEOUT)
-        })
+        cleanup()
+        return { output: '', error: 'Python execution is not supported in this deployment. Please use Node.js, TypeScript, or Fetch instead to test your API.' }
       }
 
       case 'ruby': {
