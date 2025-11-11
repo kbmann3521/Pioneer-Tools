@@ -23,7 +23,7 @@ interface RunCodeResponse {
 // Sandbox restrictions: max execution time, disable dangerous operations
 const EXECUTION_TIMEOUT = 10000 // 10 seconds
 const MAX_OUTPUT_SIZE = 50000 // 50KB
-const PUBLIC_DEMO_KEY = 'pk_test_public_demo'
+const PUBLIC_DEMO_KEY = 'pk_demo_sandbox_ea3f199fe'
 
 async function validateApiKey(apiKey: string | undefined): Promise<boolean> {
   if (!apiKey) {
