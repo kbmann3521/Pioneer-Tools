@@ -195,21 +195,26 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
 
-HttpClient client = HttpClient.newHttpClient();
+try {
+    HttpClient client = HttpClient.newHttpClient();
 
-String body = ${paramStringCompact.replace(/"/g, '\\"')};
+    String body = ${paramStringCompact.replace(/"/g, '\\"')};
 
-HttpRequest request = HttpRequest.newBuilder()
-    .uri(URI.create("${absoluteUrl}"))
-    .header("Content-Type", "application/json")
-    .header("Authorization", "Bearer ${apiKey}")
-    .method("${method}", HttpRequest.BodyPublishers.ofString(body))
-    .build();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("${absoluteUrl}"))
+        .header("Content-Type", "application/json")
+        .header("Authorization", "Bearer ${apiKey}")
+        .method("${method}", HttpRequest.BodyPublishers.ofString(body))
+        .timeout(java.time.Duration.ofSeconds(10))
+        .build();
 
-HttpResponse<String> response = client.send(request,
-    HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> response = client.send(request,
+        HttpResponse.BodyHandlers.ofString());
 
-System.out.println(response.body());`
+    System.out.println(response.body());
+} catch (Exception e) {
+    System.err.println("Error: " + e.getMessage());
+}`
 
       case 'go':
         return `package main
