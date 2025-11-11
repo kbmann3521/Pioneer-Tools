@@ -294,48 +294,45 @@ var_dump($result);
     }
   }
 
-  const apiKey = userApiKey || 'pk_test_public_demo'
-  const code = generateCode(language, apiKey)
+  const code = generateCode(language, publicDemoKey)
 
   const runCode = async () => {
-    // Wait a moment for API key to load if component just mounted
-    if (!userApiKey && enableCodeExecution) {
-      // Give it a moment to fetch the key
-      await new Promise(resolve => setTimeout(resolve, 100))
-      if (!userApiKey) {
-        setExecutionResult({
-          success: false,
-          error: 'Unable to load API key. Please refresh the page.',
-        })
-        return
-      }
-    }
-
     setIsRunning(true)
     setExecutionResult(null)
 
     try {
-      const actualApiKey = userApiKey || 'YOUR_API_KEY'
-      const codeWithRealKey = code.replace(/YOUR_API_KEY/g, actualApiKey)
-
-      const response = await fetch('/api/dev/run-code', {
+      // Call the proxy route which uses the demo API key to call the tool API
+      const response = await fetch('/api/dev/run-code-proxy', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          code: codeWithRealKey,
-          language,
-          apiKey: actualApiKey,
+          endpoint: fullUrl,
+          method,
+          params,
         }),
       })
 
       const result = await response.json()
-      setExecutionResult(result)
+      if (result.success) {
+        setExecutionResult({
+          success: true,
+          output: JSON.stringify(result.result || result, null, 2),
+          executionTime: 0,
+        })
+      } else {
+        setExecutionResult({
+          success: false,
+          error: result.error || 'Unknown error occurred',
+          executionTime: 0,
+        })
+      }
     } catch (err) {
       setExecutionResult({
         success: false,
         error: err instanceof Error ? err.message : 'Failed to execute code',
+        executionTime: 0,
       })
     } finally {
       setIsRunning(false)
