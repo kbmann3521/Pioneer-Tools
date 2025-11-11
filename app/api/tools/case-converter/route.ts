@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
         await supabaseAdmin
           .from('api_keys')
           .update({ last_used: new Date().toISOString() })
-          .eq('id', keyRecord.id)
+          .eq('id', keyId)
       }
     }
 
