@@ -30,20 +30,20 @@ export async function POST(request: NextRequest) {
 
     const { text } = body as CaseConversionInput
 
-    // Step 4: Get user profile with billing info
+    // Step 3: Get user profile with billing info
     let userProfile: any = null
     let isPaid = false
     let rateLimitResult: any = null
 
     if (!isPublicDemo) {
-      userProfile = await getUserProfile(keyRecord.user_id)
+      userProfile = await getUserProfile(userId)
       if (!userProfile) {
         return unauthorizedResponse('User profile not found')
       }
       isPaid = userProfile.balance > 0
 
-      // Step 5: Check rate limits
-      rateLimitResult = await checkRateLimits(keyRecord.id, isPaid)
+      // Step 4: Check rate limits
+      rateLimitResult = await checkRateLimits(keyId, isPaid)
       if (!rateLimitResult.allowed) {
         return internalErrorResponse(rateLimitResult.message || 'Rate limit exceeded', undefined)
       }
