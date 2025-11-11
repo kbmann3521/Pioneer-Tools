@@ -153,7 +153,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       body: JSON.stringify(params),
     })
 
-    const data = await response.json()
+    // Check content-type to determine how to parse response
+    const contentType = response.headers.get('content-type') || ''
+    let data: any
+
+    if (contentType.includes('application/json')) {
+      data = await response.json()
+    } else {
+      // If not JSON, try to read as text
+      const text = await response.text()
+      data = { error: `Unexpected response format: ${text.substring(0, 100)}` }
+    }
 
     // If the API call was successful, return the data
     if (response.ok) {
