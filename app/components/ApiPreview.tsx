@@ -168,7 +168,7 @@ console.log(data)`
       case 'nodejs':
         return `const data = ${paramStringCompact}
 
-const response = await fetch('${fullUrl}', {
+const response = await fetch('${absoluteUrl}', {
   method: '${method}',
   headers: {
     'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ const result = await response.json()
 console.log(result)`
 
       case 'curl':
-        return `curl -X ${method} ${fullUrl} \\
+        return `curl -X ${method} ${absoluteUrl} \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer ${apiKey}" \\
   -d '${paramString.replace(/'/g, "'\\''")}'`
@@ -194,7 +194,7 @@ headers = {
 }
 
 response = requests.${method.toLowerCase()}(
-    '${fullUrl}',
+    '${absoluteUrl}',
     json=${paramString},
     headers=headers
 )
@@ -212,7 +212,7 @@ HttpClient client = HttpClient.newHttpClient();
 String body = ${paramStringCompact.replace(/"/g, '\\"')};
 
 HttpRequest request = HttpRequest.newBuilder()
-    .uri(URI.create("${fullUrl}"))
+    .uri(URI.create("${absoluteUrl}"))
     .header("Content-Type", "application/json")
     .header("Authorization", "Bearer ${apiKey}")
     .method("${method}", HttpRequest.BodyPublishers.ofString(body))
@@ -241,7 +241,7 @@ ${Object.entries(params).map(([k, v]) => `        "${k}": ${typeof v === 'string
 
     jsonData, _ := json.Marshal(data)
 
-    req, _ := http.NewRequest("${method}", "${fullUrl}", bytes.NewBuffer(jsonData))
+    req, _ := http.NewRequest("${method}", "${absoluteUrl}", bytes.NewBuffer(jsonData))
     req.Header.Set("Content-Type", "application/json")
     req.Header.Set("Authorization", "Bearer ${apiKey}")
 
@@ -269,7 +269,7 @@ class Program {
         client.DefaultRequestHeaders.Add("Authorization", "Bearer ${apiKey}");
 
         var response = await client.${method.charAt(0) + method.slice(1).toLowerCase()}Async(
-            "${fullUrl}",
+            "${absoluteUrl}",
             content
         );
 
@@ -283,7 +283,7 @@ class Program {
 require 'json'
 require 'uri'
 
-uri = URI("${fullUrl}")
+uri = URI("${absoluteUrl}")
 
 data = ${paramStringCompact}
 
@@ -302,7 +302,7 @@ puts JSON.parse(response.body)`
         const escapedJson = paramStringCompact.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
         return `<?php
 
-$url = "${fullUrl}";
+$url = "${absoluteUrl}";
 $data = ${paramStringCompact};
 
 $ch = curl_init();
