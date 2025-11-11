@@ -18,7 +18,7 @@ const TOOLS = [
   { id: 'blog-generator', endpoint: '/api/tools/blog-generator', testParams: { topic: 'AI' } },
 ];
 
-const LANGUAGES = ['fetch', 'typescript', 'nodejs', 'curl', 'python', 'java', 'go', 'csharp', 'ruby', 'php'];
+const LANGUAGES = ['curl', 'python', 'nodejs', 'typescript', 'java', 'go', 'csharp', 'ruby', 'php'];
 const PISTON_URL = process.env.PISTON_API_URL || 'https://api.piston.codes/v1/execute';
 const API_BASE_URL = process.env.API_BASE_URL;
 const DEMO_API_KEY = process.env.DEMO_API_KEY;
