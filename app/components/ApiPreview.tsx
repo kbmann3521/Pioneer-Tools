@@ -350,19 +350,20 @@ var_dump($result);
         }),
       })
 
-      if (!response.ok) {
-        const errorText = await response.text()
+      let result: any
+      try {
+        result = await response.json()
+      } catch (parseErr) {
         setExecutionResult({
           success: false,
-          error: `Server error (${response.status}): ${errorText.substring(0, 100)}`,
+          error: `Failed to parse response: ${parseErr instanceof Error ? parseErr.message : 'Invalid JSON'}`,
           executionTime: 0,
         })
         setIsRunning(false)
         return
       }
 
-      const result = await response.json()
-      if (result.success) {
+      if (response.ok && result.success) {
         setExecutionResult({
           success: true,
           output: JSON.stringify(result.result || result, null, 2),
@@ -371,7 +372,7 @@ var_dump($result);
       } else {
         setExecutionResult({
           success: false,
-          error: result.error || 'Unknown error occurred',
+          error: result.error || `Server error (${response.status}): ${response.statusText}`,
           executionTime: 0,
         })
       }
