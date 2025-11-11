@@ -206,11 +206,13 @@ request = urllib.request.Request(
 )
 
 try:
-    with urllib.request.urlopen(request) as response:
+    with urllib.request.urlopen(request, timeout=8) as response:
         result = json.loads(response.read().decode('utf-8'))
         print(json.dumps(result, indent=2))
 except urllib.error.HTTPError as e:
-    print(f"Error: {e.code} {e.reason}")`
+    print(f"Error: {e.code} {e.reason}")
+except Exception as e:
+    print(f"Error: {str(e)}")`
 
       case 'java':
         return `import java.net.http.HttpClient;
