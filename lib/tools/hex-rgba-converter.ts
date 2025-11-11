@@ -18,16 +18,11 @@ export interface RGBColor {
 }
 
 export interface ColorConversionOutput {
-  input: ColorConversionInput
-  hex: string
-  rgb: string
-  rgba: string
-  colors: {
-    r: number
-    g: number
-    b: number
-    alpha: number
-  }
+  success: boolean
+  hex?: string
+  rgb?: string
+  rgba?: string
+  error?: string
 }
 
 /**
