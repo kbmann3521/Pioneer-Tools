@@ -6,9 +6,7 @@ if (!stripeSecretKey) {
   throw new Error('Missing Stripe Secret Key')
 }
 
-export const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2025-10-29',
-})
+export const stripe = new Stripe(stripeSecretKey)
 
 export const STRIPE_PLANS = {
   free: {
