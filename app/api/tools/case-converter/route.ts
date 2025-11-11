@@ -1,10 +1,8 @@
 import { NextRequest } from 'next/server'
-import { validateApiKeyAndGetUser } from '@/lib/server/auth'
-import { unauthorizedResponse, validationErrorResponse, insufficientBalanceResponse, internalErrorResponse, successResponse } from '@/lib/server/apiResponse'
+import { validateToolRequest, validateToolRequestBody, updateApiKeyLastUsed } from '@/lib/server/toolMiddleware'
+import { insufficientBalanceResponse, internalErrorResponse, successResponse } from '@/lib/server/apiResponse'
 import { convertCase, CaseConversionInput } from '@/lib/tools/case-converter'
-import { supabaseAdmin } from '@/lib/supabaseAdmin'
-import { checkRateLimits } from '@/lib/server/rateLimit'
-import { getUserProfile, checkBalance, checkMonthlyLimit, deductCredits } from '@/lib/server/billing'
+import { checkBalance, checkMonthlyLimit, deductCredits } from '@/lib/server/billing'
 import { handleAutoRecharge } from '@/lib/server/autoRecharge'
 import { getToolCost } from '@/config/pricing.config'
 
@@ -12,47 +10,24 @@ const TOOL_ID = 'case-converter'
 
 export async function POST(request: NextRequest) {
   try {
-    // Step 1: Extract and validate API key from Authorization header
-    const authHeader = request.headers.get('Authorization')
-    const keyRecord = await validateApiKeyAndGetUser(authHeader, supabaseAdmin)
-
-    if (!keyRecord) {
-      return unauthorizedResponse('Invalid or missing API key')
+    // Validate tool request and get context
+    const { context, error } = await validateToolRequest(request, TOOL_ID)
+    if (error) {
+      return error
     }
 
-    const { id: keyId, userId, isPublicDemo } = keyRecord
+    const { keyId, userProfile, isPaid, isPublicDemo, rateLimitResult } = context!
 
-    // Step 2: Validate request body
+    // Validate request body
     const body = await request.json().catch(() => null)
-    if (!body || !body.text || typeof body.text !== 'string') {
-      return validationErrorResponse('Missing or invalid text parameter')
+    const bodyValidation = validateToolRequestBody(body, ['text'])
+    if (!bodyValidation.valid) {
+      return bodyValidation.error
     }
 
     const { text } = body as CaseConversionInput
 
-    // Step 3: Get user profile with billing info
-    let userProfile: any = null
-    let isPaid = false
-    let rateLimitResult: any = null
-
-    if (!isPublicDemo) {
-      userProfile = await getUserProfile(userId)
-      if (!userProfile) {
-        return unauthorizedResponse('User profile not found')
-      }
-      isPaid = userProfile.balance > 0
-
-      // Step 4: Check rate limits
-      rateLimitResult = await checkRateLimits(keyId, isPaid)
-      if (!rateLimitResult.allowed) {
-        return internalErrorResponse(rateLimitResult.message || 'Rate limit exceeded', undefined)
-      }
-    } else {
-      // For public demo key, skip rate limit checks and billing
-      rateLimitResult = { allowed: true, remainingDaily: 100 }
-    }
-
-    // Step 6: For paid users, check balance and deduct credits
+    // Handle billing for paid users
     let balanceAfterDeduction = userProfile?.balance || 0
     let toolCost = 0
 
@@ -84,22 +59,17 @@ export async function POST(request: NextRequest) {
 
       balanceAfterDeduction = deductResult.newBalance!
 
-      // Step 7: Handle auto-recharge if triggered
+      // Handle auto-recharge if triggered
       const autoRechargeResult = await handleAutoRecharge(userProfile, balanceAfterDeduction)
       if (autoRechargeResult.triggered && autoRechargeResult.newBalance !== undefined) {
         balanceAfterDeduction = autoRechargeResult.newBalance
       }
-
-      // Update last_used timestamp (skip for demo key)
-      if (!isPublicDemo) {
-        await supabaseAdmin
-          .from('api_keys')
-          .update({ last_used: new Date().toISOString() })
-          .eq('id', keyId)
-      }
     }
 
-    // Step 8: Process the tool request
+    // Update last_used timestamp
+    await updateApiKeyLastUsed(keyId, isPublicDemo)
+
+    // Process the tool request
     const result = convertCase({ text })
 
     return successResponse(result, {
