@@ -29,7 +29,18 @@ export default function HexRgbaConverterPage(): JSX.Element {
     const value = e.target.value
     setHex(value)
     const converted = convertColor({ hex: value, alpha })
-    setRgb(converted.colors)
+    if (converted.success && converted.hex) {
+      // Extract RGB from hex if needed by parsing
+      const hexRegex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
+      const match = hexRegex.exec(converted.hex)
+      if (match) {
+        setRgb({
+          r: parseInt(match[1], 16),
+          g: parseInt(match[2], 16),
+          b: parseInt(match[3], 16),
+        })
+      }
+    }
     setResult(converted)
   }
 
@@ -38,7 +49,9 @@ export default function HexRgbaConverterPage(): JSX.Element {
     const newRgb = { ...rgb, [component]: numValue }
     setRgb(newRgb)
     const converted = convertColor({ ...newRgb, alpha })
-    setHex(converted.hex)
+    if (converted.success && converted.hex) {
+      setHex(converted.hex)
+    }
     setResult(converted)
   }
 
