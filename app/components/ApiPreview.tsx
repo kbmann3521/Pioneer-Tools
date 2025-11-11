@@ -189,7 +189,6 @@ console.log(result)`
       case 'python':
         return `import urllib.request
 import json
-import sys
 
 headers = {
     'Authorization': 'Bearer ${apiKey}',
@@ -199,7 +198,6 @@ headers = {
 data = ${paramStringCompact}
 json_data = json.dumps(data).encode('utf-8')
 
-print("Starting request...", file=sys.stderr)
 request = urllib.request.Request(
     '${absoluteUrl}',
     data=json_data,
@@ -208,15 +206,11 @@ request = urllib.request.Request(
 )
 
 try:
-    print("Sending HTTP request...", file=sys.stderr)
     with urllib.request.urlopen(request, timeout=5) as response:
-        print("Got response, reading...", file=sys.stderr)
         result = json.loads(response.read().decode('utf-8'))
         print(json.dumps(result, indent=2))
 except urllib.error.HTTPError as e:
     print(f"HTTP Error: {e.code} {e.reason}")
-except socket.timeout:
-    print("Error: Request timeout")
 except Exception as e:
     print(f"Error: {type(e).__name__}: {str(e)}")`
 
