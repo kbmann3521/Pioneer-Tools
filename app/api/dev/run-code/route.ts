@@ -201,12 +201,15 @@ async function executeCode(code: string, language: Language): Promise<{ output: 
 
           let output = ''
           let error = ''
+          let processStarted = false
 
           child.stdout?.on('data', (data) => {
+            processStarted = true
             output += data.toString()
           })
 
           child.stderr?.on('data', (data) => {
+            processStarted = true
             error += data.toString()
           })
 
@@ -215,10 +218,19 @@ async function executeCode(code: string, language: Language): Promise<{ output: 
             resolve({ output: output.substring(0, MAX_OUTPUT_SIZE), error: error.substring(0, MAX_OUTPUT_SIZE) })
           })
 
+          child.on('error', (err: any) => {
+            cleanup()
+            resolve({ output: '', error: `Failed to start Python: ${err.message}. Python may not be available in this environment.` })
+          })
+
           setTimeout(() => {
             child.kill()
             cleanup()
-            resolve({ output: '', error: 'Execution timeout (10s exceeded)' })
+            if (!processStarted) {
+              resolve({ output: '', error: 'Python execution failed: Process did not start or produce output. Python may not be available in this environment.' })
+            } else {
+              resolve({ output: '', error: 'Execution timeout (10s exceeded)' })
+            }
           }, EXECUTION_TIMEOUT)
         })
       }
