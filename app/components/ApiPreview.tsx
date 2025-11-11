@@ -140,7 +140,7 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
 
     switch (lang) {
       case 'fetch':
-        return `const response = await fetch('${fullUrl}', {
+        return `const response = await fetch('${absoluteUrl}', {
   method: '${method}',
   headers: {
     'Content-Type': 'application/json',
@@ -153,7 +153,7 @@ const data = await response.json()
 console.log(data)`
 
       case 'typescript':
-        return `const response = await fetch('${fullUrl}', {
+        return `const response = await fetch('${absoluteUrl}', {
   method: '${method}',
   headers: {
     'Content-Type': 'application/json',
