@@ -224,6 +224,7 @@ import (
     "encoding/json"
     "fmt"
     "io"
+    "log"
     "net/http"
 )
 
@@ -232,17 +233,29 @@ func main() {
 ${Object.entries(params).map(([k, v]) => `        "${k}": ${typeof v === 'string' ? `"${v}"` : v},`).join('\n')}
     }
 
-    jsonData, _ := json.Marshal(data)
+    jsonData, err := json.Marshal(data)
+    if err != nil {
+        log.Fatal("Marshal error:", err)
+    }
 
-    req, _ := http.NewRequest("${method}", "${absoluteUrl}", bytes.NewBuffer(jsonData))
+    req, err := http.NewRequest("${method}", "${absoluteUrl}", bytes.NewBuffer(jsonData))
+    if err != nil {
+        log.Fatal("Request error:", err)
+    }
     req.Header.Set("Content-Type", "application/json")
     req.Header.Set("Authorization", "Bearer ${apiKey}")
 
     client := &http.Client{}
-    resp, _ := client.Do(req)
+    resp, err := client.Do(req)
+    if err != nil {
+        log.Fatal("Do error:", err)
+    }
     defer resp.Body.Close()
 
-    body, _ := io.ReadAll(resp.Body)
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        log.Fatal("ReadAll error:", err)
+    }
     fmt.Println(string(body))
 }`
 
