@@ -109,11 +109,13 @@ export async function POST(request: NextRequest) {
         balanceAfterDeduction = autoRechargeResult.newBalance
       }
 
-      // Update last_used timestamp
-      await supabaseAdmin
-        .from('api_keys')
-        .update({ last_used: new Date().toISOString() })
-        .eq('id', keyRecord.id)
+      // Update last_used timestamp (skip for demo key)
+      if (!isPublicDemo) {
+        await supabaseAdmin
+          .from('api_keys')
+          .update({ last_used: new Date().toISOString() })
+          .eq('id', keyRecord.id)
+      }
     }
 
     // Step 8: Process the tool request
