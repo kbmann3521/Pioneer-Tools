@@ -11,7 +11,7 @@ import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, Base64ConverterResult } from '@/lib/types/tools'
 
-export default function Base64ConverterPage({}: ToolPageProps): JSX.Element {
+export default function Base64ConverterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('base64-converter')
   const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
