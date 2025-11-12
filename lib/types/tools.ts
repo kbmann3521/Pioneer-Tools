@@ -232,6 +232,7 @@ export type ToolParams =
   | WordCounterParams
   | BlogGeneratorParams
   | ImageAverageColorParams
+  | ImageColorExtractorParams
 
 export type ToolResult =
   | CaseConverterResult
@@ -246,6 +247,7 @@ export type ToolResult =
   | WordCounterResult
   | BlogGeneratorResult
   | ImageAverageColorResult
+  | ImageColorExtractorResult
 
 /* ============================================
    API RESPONSE TYPES
