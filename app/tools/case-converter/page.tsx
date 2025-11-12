@@ -74,8 +74,8 @@ export default function CaseConverterPage(): JSX.Element {
                   </div>
                   <button
                     className="copy-btn"
-                    onClick={async () => {
-                      await copyToClipboard(value as string)
+                    onClick={() => {
+                      copyToClipboard(value as string)
                       setCopiedKey(key)
                       setTimeout(() => setCopiedKey(null), 3000)
                     }}
