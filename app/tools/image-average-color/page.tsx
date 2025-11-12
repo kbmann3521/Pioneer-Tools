@@ -308,14 +308,6 @@ export default function ImageAverageColorPage(): JSX.Element {
             </div>
 
             <div className={styles.colorBlockContainer}>
-              <div
-                className={styles.colorSwatch}
-                style={{ backgroundColor: colors?.hex || '#000000' }}
-                title={colors?.rgb}
-              />
-            </div>
-
-            <div className={styles.everythingElseContainer}>
               <div className={styles.algorithmSelector}>
                 <label className={styles.algoLabel}>Algorithm:</label>
                 <div className={styles.algoButtons}>
@@ -330,6 +322,14 @@ export default function ImageAverageColorPage(): JSX.Element {
                   ))}
                 </div>
               </div>
+              <div
+                className={styles.colorSwatch}
+                style={{ backgroundColor: colors?.hex || '#000000' }}
+                title={colors?.rgb}
+              />
+            </div>
+
+            <div className={styles.everythingElseContainer}>
 
               {colors && !colors.error && (
                 <div className={styles.colorValuesDisplay}>
