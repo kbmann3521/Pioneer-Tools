@@ -17,7 +17,6 @@ interface CensorBox {
 }
 
 export default function PhotoCensorPage(): JSX.Element {
-  const onParamsChange = undefined as unknown as ((params: Record<string, any>) => void) | undefined
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('photo-censor')
   const { session } = useAuth()
@@ -49,8 +48,7 @@ export default function PhotoCensorPage(): JSX.Element {
       isCensored,
     }
     updateParams(params)
-    onParamsChange?.(params)
-  }, [censorType, intensity, censorBox, isCensored, updateParams, onParamsChange])
+  }, [censorType, intensity, censorBox, isCensored, updateParams])
 
   // Redraw overlay canvas when censor box changes
   useEffect(() => {
