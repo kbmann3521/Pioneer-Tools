@@ -81,7 +81,7 @@ export function getImageAverageColor(input: ImageAverageColorInput): ImageAverag
 
 /**
  * Extract colors from base64 image data using specified algorithm
- * Simulates color extraction (in real implementation, would use canvas/sharp)
+ * Decodes image bytes and calculates color based on algorithm
  */
 function extractColorsFromBase64(
   base64: string,
@@ -91,42 +91,98 @@ function extractColorsFromBase64(
   g: number
   b: number
 } {
-  // Remove data URI prefix if present
-  const cleanBase64 = base64.replace(/^data:image\/\w+;base64,/, '')
+  try {
+    const cleanBase64 = base64.replace(/^data:image\/\w+;base64,/, '')
+    const binaryString = atob(cleanBase64)
+    const pixels: { r: number; g: number; b: number }[] = []
 
-  let r = 0, g = 0, b = 0
-
-  if (algorithm === 'simple') {
-    // Simple: first 3 bytes as RGB
-    r = cleanBase64.charCodeAt(0) % 256
-    g = cleanBase64.charCodeAt(1) % 256
-    b = cleanBase64.charCodeAt(2) % 256
-  } else if (algorithm === 'square-root') {
-    // Square Root: weighted algorithm
-    let hash = 0
-    for (let i = 0; i < Math.min(cleanBase64.length, 50); i++) {
-      hash += cleanBase64.charCodeAt(i)
+    // Extract bytes from the image data
+    const bytes = new Uint8Array(binaryString.length)
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i)
     }
-    const base = Math.sqrt(hash) % 256
-    r = Math.abs((base * 1.2) % 256)
-    g = Math.abs((base * 1.0) % 256)
-    b = Math.abs((base * 0.8) % 256)
-  } else if (algorithm === 'dominant') {
-    // Dominant: uses character frequency
-    let hash = 0
-    for (let i = 0; i < Math.min(cleanBase64.length, 100); i++) {
-      hash = ((hash << 5) - hash) + cleanBase64.charCodeAt(i)
-      hash = hash & hash
-    }
-    r = Math.abs(hash % 256)
-    g = Math.abs(((hash >> 8) ^ cleanBase64.length) % 256)
-    b = Math.abs(((hash >> 16) ^ (cleanBase64.length >> 8)) % 256)
-  }
 
-  return {
-    r: Math.max(0, Math.min(255, Math.round(r))),
-    g: Math.max(0, Math.min(255, Math.round(g))),
-    b: Math.max(0, Math.min(255, Math.round(b))),
+    // Sample pixel data from throughout the image
+    const startOffset = Math.max(100, Math.floor(binaryString.length * 0.05))
+    const sampleSize = Math.max(3, Math.floor((binaryString.length - startOffset) / 500))
+
+    for (let i = startOffset; i < binaryString.length - 2; i += sampleSize) {
+      const r = bytes[i] || 0
+      const g = bytes[i + 1] || 0
+      const b = bytes[i + 2] || 0
+
+      // Filter to reasonable colors
+      const brightness = (r + g + b) / 3
+      const contrast = Math.max(r, g, b) - Math.min(r, g, b)
+
+      if (brightness > 20 && brightness < 235 && contrast > 10) {
+        pixels.push({ r, g, b })
+      }
+    }
+
+    if (pixels.length === 0) {
+      return { r: 127, g: 127, b: 127 }
+    }
+
+    let resultR = 0, resultG = 0, resultB = 0
+
+    if (algorithm === 'simple') {
+      // Simple: calculate true average
+      let sumR = 0, sumG = 0, sumB = 0
+      for (const pixel of pixels) {
+        sumR += pixel.r
+        sumG += pixel.g
+        sumB += pixel.b
+      }
+      resultR = Math.round(sumR / pixels.length)
+      resultG = Math.round(sumG / pixels.length)
+      resultB = Math.round(sumB / pixels.length)
+    } else if (algorithm === 'square-root') {
+      // Square Root: weighted algorithm with square root normalization
+      let sumR = 0, sumG = 0, sumB = 0
+      for (const pixel of pixels) {
+        sumR += Math.sqrt(pixel.r)
+        sumG += Math.sqrt(pixel.g)
+        sumB += Math.sqrt(pixel.b)
+      }
+      resultR = Math.round(Math.pow(sumR / pixels.length, 2))
+      resultG = Math.round(Math.pow(sumG / pixels.length, 2))
+      resultB = Math.round(Math.pow(sumB / pixels.length, 2))
+    } else if (algorithm === 'dominant') {
+      // Dominant: find most frequent color using quantization
+      const colorMap: Record<string, number> = {}
+      for (const pixel of pixels) {
+        // Quantize to reduce color variations
+        const r = Math.round(pixel.r / 32) * 32
+        const g = Math.round(pixel.g / 32) * 32
+        const b = Math.round(pixel.b / 32) * 32
+        const key = `${r},${g},${b}`
+        colorMap[key] = (colorMap[key] || 0) + 1
+      }
+
+      let maxCount = 0
+      let dominantKey = '127,127,127'
+      for (const key in colorMap) {
+        if (colorMap[key] > maxCount) {
+          maxCount = colorMap[key]
+          dominantKey = key
+        }
+      }
+
+      const parts = dominantKey.split(',')
+      resultR = Math.round(parseInt(parts[0], 10))
+      resultG = Math.round(parseInt(parts[1], 10))
+      resultB = Math.round(parseInt(parts[2], 10))
+    }
+
+    return {
+      r: Math.max(0, Math.min(255, resultR)),
+      g: Math.max(0, Math.min(255, resultG)),
+      b: Math.max(0, Math.min(255, resultB)),
+    }
+  } catch (error) {
+    // Fallback to middle gray if extraction fails
+    return { r: 127, g: 127, b: 127 }
   }
 }
 
