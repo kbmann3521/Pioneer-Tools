@@ -198,6 +198,7 @@
   background: var(--color-border, #3a3a3a);
   height: 6px;
   border-radius: 3px;
+  border: none;
 }
 
 .slider::-moz-range-track {
