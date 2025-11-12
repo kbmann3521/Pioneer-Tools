@@ -702,7 +702,7 @@ export default function DashboardPage() {
                 type="checkbox"
                 id="enable-recharge"
                 checked={autoRechargeEnabled}
-                onChange={(e) => setAutoRechargeEnabled(e.target.checked)}
+                onChange={(e) => toggleAutoRecharge(e.target.checked)}
               />
               <label htmlFor="enable-recharge">Enable auto-recharge when balance drops below threshold</label>
             </div>
