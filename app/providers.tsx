@@ -196,6 +196,7 @@ export function RootProvider({ children }: ProvidersProps) {
       'word-counter': '/api/tools/word-counter',
       'hex-rgba-converter': '/api/tools/hex-rgba-converter',
       'image-resizer': '/api/tools/image-resizer',
+      'image-average-color': '/api/tools/image-average-color',
       'og-generator': '/api/tools/og-generator',
       'blog-generator': '/api/tools/blog-generator',
       'json-formatter': '/api/tools/json-formatter',
