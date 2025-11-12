@@ -3170,10 +3170,9 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 280px;
-  height: 280px;
   grid-column: 1;
   grid-row: 1;
+  padding: 24px;
 }
 
 .image-preview-thumbnail {
@@ -3191,12 +3190,15 @@ select:focus {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1.5rem;
+  padding: 24px;
   background-color: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   grid-column: 2;
   grid-row: 1;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  width: 100%;
 }
 
 .color-swatch {
