@@ -157,7 +157,7 @@
 }
 
 .typeButton:hover:not(:disabled) {
-  border-color: var(--color-primary, #4a9eff);
+  border-color: var(--color-primary, #7c3aed);
   background: var(--color-background, #0a0a0a);
 }
 
