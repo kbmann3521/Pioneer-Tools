@@ -973,9 +973,9 @@ export default function DashboardPage() {
                     <div className="actions-cell">
                       <button
                         className="btn-secondary"
-                        onClick={(e) => copyKeyToClipboard(key.key, e)}
+                        onClick={() => copyKeyToClipboard(key.key, key.id)}
                       >
-                        Copy
+                        {copiedKeyId === key.id ? 'Copied!' : 'Copy'}
                       </button>
                       <button className="btn-delete" onClick={() => deleteKey(key.id)}>
                         Delete
