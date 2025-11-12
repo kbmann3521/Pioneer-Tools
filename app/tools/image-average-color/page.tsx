@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import { getImageAverageColor, type ColorAlgorithm } from '@/lib/tools/image-average-color'
+import { type ColorAlgorithm } from '@/lib/tools/image-average-color'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
