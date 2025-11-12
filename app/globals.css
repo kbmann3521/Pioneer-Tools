@@ -3158,6 +3158,7 @@ select:focus {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto auto;
   gap: 2rem;
+  align-items: stretch;
 }
 
 .image-preview-wrapper {
