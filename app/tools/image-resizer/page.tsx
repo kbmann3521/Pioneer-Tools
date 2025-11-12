@@ -151,28 +151,27 @@ export default function ImageResizerPage(): JSX.Element {
       />
 
       <div className="tool-content">
-        <div
-          className={`upload-dropzone ${dragActive ? 'drag-active' : ''}`}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <input
-            ref={fileInputRef}
-            id="image-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="file-input"
-          />
-          <label htmlFor="image-upload" className="upload-label">
-            <div className="upload-icon">📁</div>
-            <div className="upload-text">
-              <div className="upload-title">Upload Image or Drag & Drop</div>
-              <div className="upload-hint">PNG, JPG, GIF - any size</div>
-            </div>
-          </label>
+        <div className="upload-section">
+          <label htmlFor="image-upload">Upload an image:</label>
+          <div
+            className={`file-input-wrapper ${dragActive ? 'drag-active' : ''}`}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            <input
+              ref={fileInputRef}
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="file-input"
+            />
+            <label htmlFor="image-upload" className="file-input-label">
+              Choose Image or Drag & Drop
+            </label>
+          </div>
         </div>
 
         {image && (
