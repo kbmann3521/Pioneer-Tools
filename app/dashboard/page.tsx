@@ -333,9 +333,22 @@ export default function DashboardPage() {
           .eq('id', user?.id)
 
         if (updateError) throw updateError
-        setSuccess('Auto-recharge disabled')
+
+        // Update local state instead of reloading
+        if (profile) {
+          setProfile({
+            ...profile,
+            auto_recharge_enabled: false,
+            auto_recharge_threshold: null,
+            auto_recharge_amount: null,
+          })
+        }
+
+        setAutoRechargeSaveMessage('Auto-recharge disabled')
         setShowAutoRechargeForm(false)
-        loadData()
+
+        // Auto-clear message after 3 seconds
+        setTimeout(() => setAutoRechargeSaveMessage(null), 3000)
       } else {
         // When checking, just show the form to configure
         setShowAutoRechargeForm(true)
