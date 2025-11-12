@@ -39,15 +39,20 @@ export default function PhotoCensorPage(): JSX.Element {
 
   // Update API params
   useEffect(() => {
+    // Sample 1x1 pixel PNG in base64 for API preview (only for demo/testing)
+    const sampleImageBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+
     const params = {
+      imageData: image || sampleImageBase64, // Use actual image if uploaded, otherwise sample
       censorType,
       intensity,
       boxWidth: censorBox.width,
       boxHeight: censorBox.height,
       isCensored,
+      regions: image ? [censorBox] : [], // Only include regions if image is uploaded
     }
     updateParams(params)
-  }, [censorType, intensity, censorBox, isCensored, updateParams])
+  }, [censorType, intensity, censorBox, isCensored, image, updateParams])
 
   // Redraw overlay canvas when censor box changes
   useEffect(() => {
