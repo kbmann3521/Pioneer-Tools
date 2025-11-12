@@ -28,8 +28,9 @@ export interface ImageAverageColorOutput {
  * @returns Object with color in multiple formats
  */
 export function getImageAverageColor(input: ImageAverageColorInput): ImageAverageColorOutput {
+  const { imageData, algorithm = 'simple' } = input
+
   try {
-    const { imageData, algorithm = 'simple' } = input
 
     if (!imageData) {
       return {
