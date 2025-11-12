@@ -55,11 +55,11 @@
 }
 
 .boxInfo {
-  font-size: 12px;
-  color: var(--color-text-secondary, #a0a0a0);
-  padding: 8px 12px;
-  background: var(--color-background-secondary, #1a1a1a);
-  border: 1px solid var(--color-border, #3a3a3a);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-family: monospace;
   text-align: center;
