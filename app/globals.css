@@ -3493,10 +3493,27 @@ select:focus {
   }
 }
 
+@media (max-width: 768px) {
+  .color-analyzer-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .color-values-display {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 480px) {
   .color-analyzer-container {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .image-preview-wrapper {
+    min-height: 250px;
+    height: 250px;
   }
 
   .algo-buttons {
@@ -3508,8 +3525,12 @@ select:focus {
   }
 
   .color-swatch {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
+  }
+
+  .color-values-display {
+    grid-template-columns: 1fr;
   }
 }
 
