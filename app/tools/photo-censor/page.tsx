@@ -23,6 +23,7 @@ interface PhotoCensorPageProps {
 export default function PhotoCensorPage({ onParamsChange }: PhotoCensorPageProps = {}): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('photo-censor')
+  const { session } = useAuth()
 
   const [image, setImage] = useState<string | null>(null)
   const [originalImageData, setOriginalImageData] = useState<string | null>(null)
