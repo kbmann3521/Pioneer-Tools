@@ -302,7 +302,7 @@ export default function ImageAverageColorPage(): JSX.Element {
           <div className={styles.container}>
             <div className={styles.photoContainer}>
               <img src={image} alt="Uploaded preview" className={styles.imagePreviewThumbnail} />
-              <button className="clear-image-btn" onClick={handleClearImage}>
+              <button className={styles.clearImageBtn} onClick={handleClearImage}>
                 ✕ Change Image
               </button>
             </div>
