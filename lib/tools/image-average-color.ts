@@ -73,11 +73,12 @@ export function getImageAverageColor(input: ImageAverageColorInput): ImageAverag
 }
 
 /**
- * Extract colors from base64 image data
+ * Extract colors from base64 image data using specified algorithm
  * Simulates color extraction (in real implementation, would use canvas/sharp)
  */
 function extractColorsFromBase64(
   base64: string,
+  algorithm: ColorAlgorithm = 'simple',
 ): {
   r: number
   g: number
@@ -86,19 +87,40 @@ function extractColorsFromBase64(
   // Remove data URI prefix if present
   const cleanBase64 = base64.replace(/^data:image\/\w+;base64,/, '')
 
-  // Simple hash-based color extraction from base64 data
-  // This is a fallback when actual image processing isn't available
-  let hash = 0
-  for (let i = 0; i < Math.min(cleanBase64.length, 100); i++) {
-    hash = ((hash << 5) - hash) + cleanBase64.charCodeAt(i)
-    hash = hash & hash // Convert to 32-bit integer
+  let r = 0, g = 0, b = 0
+
+  if (algorithm === 'simple') {
+    // Simple: first 3 bytes as RGB
+    r = cleanBase64.charCodeAt(0) % 256
+    g = cleanBase64.charCodeAt(1) % 256
+    b = cleanBase64.charCodeAt(2) % 256
+  } else if (algorithm === 'square-root') {
+    // Square Root: weighted algorithm
+    let hash = 0
+    for (let i = 0; i < Math.min(cleanBase64.length, 50); i++) {
+      hash += cleanBase64.charCodeAt(i)
+    }
+    const base = Math.sqrt(hash) % 256
+    r = Math.abs((base * 1.2) % 256)
+    g = Math.abs((base * 1.0) % 256)
+    b = Math.abs((base * 0.8) % 256)
+  } else if (algorithm === 'dominant') {
+    // Dominant: uses character frequency
+    let hash = 0
+    for (let i = 0; i < Math.min(cleanBase64.length, 100); i++) {
+      hash = ((hash << 5) - hash) + cleanBase64.charCodeAt(i)
+      hash = hash & hash
+    }
+    r = Math.abs(hash % 256)
+    g = Math.abs(((hash >> 8) ^ cleanBase64.length) % 256)
+    b = Math.abs(((hash >> 16) ^ (cleanBase64.length >> 8)) % 256)
   }
 
-  const r = Math.abs(hash % 256)
-  const g = Math.abs((hash >> 8) % 256)
-  const b = Math.abs((hash >> 16) % 256)
-
-  return { r, g, b }
+  return {
+    r: Math.max(0, Math.min(255, Math.round(r))),
+    g: Math.max(0, Math.min(255, Math.round(g))),
+    b: Math.max(0, Math.min(255, Math.round(b))),
+  }
 }
 
 /**
