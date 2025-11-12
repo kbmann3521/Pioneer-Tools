@@ -157,19 +157,22 @@ function decodeBase64ImagePixels(base64: string): { r: number; g: number; b: num
 }
 
 /**
- * Quantize colors to a target palette size using k-means clustering
- * Returns colors with frequency counts
+ * Quantize colors using k-means clustering
+ * Finds the most dominant colors in a pixel array
  */
-function quantizeColors(
+function quantizeColorsWithKMeans(
   pixels: { r: number; g: number; b: number }[],
   targetSize: number,
 ): Array<{ r: number; g: number; b: number; frequency: number }> {
-  
+
   if (pixels.length === 0) {
     return []
   }
 
-  // Initialize cluster centers by random sampling
+  // Limit target size to actual pixel count
+  const k = Math.min(targetSize, Math.min(pixels.length, 256))
+
+  // Initialize cluster centers using k-means++ initialization
   const clusters: Array<{
     r: number
     g: number
@@ -177,34 +180,47 @@ function quantizeColors(
     pixels: { r: number; g: number; b: number }[]
   }> = []
 
-  // First cluster center is the average of all pixels
-  let sumR = 0, sumG = 0, sumB = 0
-  for (const pixel of pixels) {
-    sumR += pixel.r
-    sumG += pixel.g
-    sumB += pixel.b
-  }
-
+  // First center: pick a random pixel
+  const firstIdx = Math.floor(Math.random() * pixels.length)
   clusters.push({
-    r: Math.round(sumR / pixels.length),
-    g: Math.round(sumG / pixels.length),
-    b: Math.round(sumB / pixels.length),
+    r: pixels[firstIdx].r,
+    g: pixels[firstIdx].g,
+    b: pixels[firstIdx].b,
     pixels: [],
   })
 
-  // Additional random cluster centers
-  for (let i = 1; i < targetSize; i++) {
-    const randomPixel = pixels[Math.floor(Math.random() * pixels.length)]
+  // Initialize remaining centers with k-means++
+  for (let i = 1; i < k; i++) {
+    let maxDistance = 0
+    let farthestPixelIdx = 0
+
+    for (let p = 0; p < pixels.length; p++) {
+      const pixel = pixels[p]
+      let minDistanceToCluster = Infinity
+
+      for (const cluster of clusters) {
+        const distance = colorDistance(pixel, cluster)
+        minDistanceToCluster = Math.min(minDistanceToCluster, distance)
+      }
+
+      if (minDistanceToCluster > maxDistance) {
+        maxDistance = minDistanceToCluster
+        farthestPixelIdx = p
+      }
+    }
+
+    const newCenter = pixels[farthestPixelIdx]
     clusters.push({
-      r: randomPixel.r + (Math.random() - 0.5) * 50,
-      g: randomPixel.g + (Math.random() - 0.5) * 50,
-      b: randomPixel.b + (Math.random() - 0.5) * 50,
+      r: newCenter.r,
+      g: newCenter.g,
+      b: newCenter.b,
       pixels: [],
     })
   }
 
-  // K-means iterations (simplified - 2 iterations is usually enough)
-  for (let iteration = 0; iteration < 2; iteration++) {
+  // Run k-means iterations
+  const maxIterations = 10
+  for (let iteration = 0; iteration < maxIterations; iteration++) {
     // Clear pixel assignments
     for (const cluster of clusters) {
       cluster.pixels = []
@@ -216,9 +232,7 @@ function quantizeColors(
       let minDistance = Infinity
 
       for (let i = 0; i < clusters.length; i++) {
-        const cluster = clusters[i]
-        const distance = colorDistance(pixel, cluster)
-
+        const distance = colorDistance(pixel, clusters[i])
         if (distance < minDistance) {
           minDistance = distance
           nearestClusterIdx = i
@@ -229,6 +243,7 @@ function quantizeColors(
     }
 
     // Update cluster centers
+    let centersChanged = false
     for (const cluster of clusters) {
       if (cluster.pixels.length > 0) {
         let sumR = 0, sumG = 0, sumB = 0
@@ -239,10 +254,23 @@ function quantizeColors(
           sumB += pixel.b
         }
 
-        cluster.r = Math.round(sumR / cluster.pixels.length)
-        cluster.g = Math.round(sumG / cluster.pixels.length)
-        cluster.b = Math.round(sumB / cluster.pixels.length)
+        const newR = Math.round(sumR / cluster.pixels.length)
+        const newG = Math.round(sumG / cluster.pixels.length)
+        const newB = Math.round(sumB / cluster.pixels.length)
+
+        if (newR !== cluster.r || newG !== cluster.g || newB !== cluster.b) {
+          centersChanged = true
+        }
+
+        cluster.r = newR
+        cluster.g = newG
+        cluster.b = newB
       }
+    }
+
+    // Stop if centers didn't change
+    if (!centersChanged) {
+      break
     }
   }
 
