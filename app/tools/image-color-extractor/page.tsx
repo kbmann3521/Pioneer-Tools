@@ -435,6 +435,34 @@ export default function ImageColorExtractorPage(): JSX.Element {
                         </div>
 
                         <div className={styles.colorValueItem}>
+                          <div className={styles.valueLabel}>HSL</div>
+                          <div className={styles.valueContent}>
+                            <code>{selectedColor.hsl}</code>
+                            <button
+                              className={styles.miniCopyBtn}
+                              onClick={() => copyColor(selectedColor.hsl, selectedColorIndex, 'hsl')}
+                              title="Copy HSL"
+                            >
+                              {copiedKey === `color-${selectedColorIndex}-hsl` ? '✓' : '📋'}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className={styles.colorValueItem}>
+                          <div className={styles.valueLabel}>HSLA</div>
+                          <div className={styles.valueContent}>
+                            <code>{selectedColor.hsla}</code>
+                            <button
+                              className={styles.miniCopyBtn}
+                              onClick={() => copyColor(selectedColor.hsla, selectedColorIndex, 'hsla')}
+                              title="Copy HSLA"
+                            >
+                              {copiedKey === `color-${selectedColorIndex}-hsla` ? '✓' : '📋'}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className={styles.colorValueItem}>
                           <div className={styles.valueLabel}>Components</div>
                           <div className={styles.rgbComponents}>
                             <div className={styles.component}>
