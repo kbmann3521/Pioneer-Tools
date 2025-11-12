@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import CopyFeedback from '@/app/components/CopyFeedback'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useAuth } from '@/app/context/AuthContext'
@@ -22,7 +21,8 @@ export default function BlogGeneratorPage(): JSX.Element {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [apiKey, setApiKey] = useState<string | null>(null)
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const [copiedId, setCopiedId] = useState<string | null>(null)
+  const { isCopied, copyToClipboard } = useClipboard()
 
   // Get or create API key when session changes
   useEffect(() => {
@@ -181,10 +181,14 @@ export default function BlogGeneratorPage(): JSX.Element {
                   <div className="title-actions">
                     <button
                       className="copy-btn"
-                      onClick={(e) => copyToClipboard(item.title, e)}
+                      onClick={async () => {
+                        await copyToClipboard(item.title)
+                        setCopiedId(item.id)
+                        setTimeout(() => setCopiedId(null), 3000)
+                      }}
                       title="Copy to clipboard"
                     >
-                      Copy Title
+                      {copiedId === item.id ? 'Copied!' : 'Copy Title'}
                     </button>
                   </div>
                 </div>
@@ -207,7 +211,6 @@ export default function BlogGeneratorPage(): JSX.Element {
           </div>
         )}
       </div>
-      <CopyFeedback message={copyMessage} position={copyPosition} />
 
       <AboutToolAccordion
         toolId="blog-generator"
