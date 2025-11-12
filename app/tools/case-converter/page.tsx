@@ -52,9 +52,6 @@ export default function CaseConverterPage(): JSX.Element {
             className="text-input"
             rows={5}
           />
-          <button className="convert-btn" onClick={handleConvert}>
-            Convert
-          </button>
         </div>
 
         {results && (
