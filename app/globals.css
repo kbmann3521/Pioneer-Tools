@@ -3106,19 +3106,18 @@ select:focus {
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background-color: var(--bg-tertiary);
-  border: 2px dashed var(--border-color);
+  background-color: rgba(124, 58, 237, 0.05);
+  border: 2px dashed var(--color-primary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--text-secondary);
+  color: var(--color-primary);
   font-weight: 500;
 }
 
 .file-input-label:hover {
-  border-color: var(--color-primary);
-  background-color: rgba(124, 58, 237, 0.05);
-  color: var(--color-primary);
+  background-color: rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.15);
 }
 
 .file-input-wrapper.drag-active .file-input-label {
