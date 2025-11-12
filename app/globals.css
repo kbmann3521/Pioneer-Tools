@@ -3241,65 +3241,7 @@ select:focus {
 
 /* Color Extractor tool styles are now in CSS modules for isolation */
 
-@media (max-width: 768px) {
-  .colors-grid {
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-  }
-
-  .selected-color-details {
-    grid-template-columns: 1fr;
-  }
-
-  .color-count-selector {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .color-count-dropdown {
-    width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .color-analyzer-container {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .color-values-display {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .color-analyzer-container {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: 1.5rem;
-  }
-
-  .image-preview-wrapper {
-    min-height: 250px;
-    height: 250px;
-  }
-
-  .algo-buttons {
-    flex-direction: column;
-  }
-
-  .algo-btn {
-    padding: 1rem;
-  }
-
-  .color-swatch {
-    width: 120px;
-    height: 120px;
-  }
-
-  .color-values-display {
-    grid-template-columns: 1fr;
-  }
-}
+/* Media queries for image tools are now in their respective CSS modules */
 
 /* Image Color Extractor */
 .color-extractor-container {
