@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import CopyFeedback from '@/app/components/CopyFeedback'
 import { generateOGTags, type OGGeneratorOutput } from '@/lib/tools/og-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
