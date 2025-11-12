@@ -210,6 +210,24 @@ export interface ImageColorExtractorResult {
   error?: string
 }
 
+export interface PhotoCensorParams {
+  censorType: 'pixelate' | 'blur' | 'blackbar'
+  intensity: number
+  boxWidth: number
+  boxHeight: number
+  isCensored: boolean
+}
+
+export interface PhotoCensorResult {
+  censoredImageUrl?: string
+  censoredImageData?: string
+  regionsApplied: number
+  imageWidth: number
+  imageHeight: number
+  expiresIn?: number
+  error?: string
+}
+
 /* ============================================
    GENERIC TOOL TYPES
    ============================================ */
