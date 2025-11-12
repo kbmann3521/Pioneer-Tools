@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import CopyFeedback from '@/app/components/CopyFeedback'
 import { convertUrl } from '@/lib/tools/url-encoder'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
@@ -17,7 +16,7 @@ export default function UrlEncoderPage(): JSX.Element {
   const [text, setText] = useState<string>('')
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
   const [result, setResult] = useState<UrlEncoderResult | null>(null)
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const { isCopied, copyToClipboard } = useClipboard()
 
   // Update API params and convert
   useEffect(() => {
@@ -81,11 +80,11 @@ export default function UrlEncoderPage(): JSX.Element {
                     <h3>{mode === 'encode' ? 'Encoded URL' : 'Decoded URL'}</h3>
                     <button
                       className="copy-btn"
-                      onClick={(e) => copyToClipboard(result.result, e)}
+                      onClick={() => copyToClipboard(result.result)}
                       title="Copy result"
                       type="button"
                     >
-                      Copy
+                      {isCopied ? 'Copied!' : 'Copy'}
                     </button>
                   </div>
                   <pre className="code-output">{result.result}</pre>
@@ -110,8 +109,6 @@ export default function UrlEncoderPage(): JSX.Element {
             )}
           </div>
         )}
-
-        <CopyFeedback message={copyMessage} position={copyPosition} />
       </div>
 
       <AboutToolAccordion
