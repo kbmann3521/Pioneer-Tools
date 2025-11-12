@@ -1216,8 +1216,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <CopyFeedback message={copyMessage} position={copyPosition} />
-
       <style jsx>{`
         .dashboard-wrapper {
           min-height: 100vh;
