@@ -217,6 +217,9 @@ export default function ImageResizerPage(): JSX.Element {
                     alt="Preview"
                     style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
                   />
+                  <button className="clear-image-btn" onClick={handleClearImage}>
+                    ✕ Change Image
+                  </button>
                 </div>
                 <div className="dimensions">
                   {width}px × {height}px
