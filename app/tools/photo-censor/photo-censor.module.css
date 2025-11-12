@@ -1,55 +1,55 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
-.imageEditorSection {
+.editorWrapper {
   display: flex;
   gap: 24px;
-  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 .canvasContainer {
   flex: 1;
-  min-width: 300px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
 }
 
 .canvasWrapper {
   position: relative;
-  display: inline-block;
-  background: var(--color-border, #2a2a2a);
+  background: var(--color-background-secondary, #1a1a1a);
+  border: 1px solid var(--color-border, #3a3a3a);
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid var(--color-border, #3a3a3a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 600px;
 }
 
 .canvas {
   display: block;
   max-width: 100%;
-  max-height: 500px;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   cursor: crosshair;
 }
 
-.coordinatesInfo {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+.boxInfo {
   font-size: 12px;
   color: var(--color-text-secondary, #a0a0a0);
-}
-
-.coordinateItem {
-  padding: 6px 12px;
+  padding: 8px 12px;
   background: var(--color-background-secondary, #1a1a1a);
-  border-radius: 4px;
   border: 1px solid var(--color-border, #3a3a3a);
+  border-radius: 4px;
+  font-family: monospace;
 }
 
-.controlsSection {
+.controlPanel {
   flex: 0 0 280px;
   display: flex;
   flex-direction: column;
@@ -59,7 +59,7 @@
 .uploadSection {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .uploadLabel {
@@ -67,14 +67,13 @@
   font-size: 14px;
   font-weight: 500;
   color: var(--color-text, #ffffff);
-  margin-bottom: 4px;
 }
 
 .fileInputWrapper {
   position: relative;
   border: 2px dashed var(--color-border, #3a3a3a);
   border-radius: 8px;
-  padding: 20px;
+  padding: 40px 20px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -83,7 +82,7 @@
 
 .fileInputWrapper:hover {
   border-color: var(--color-primary, #4a9eff);
-  background: var(--color-background, #0a0a0a);
+  background: rgba(74, 158, 255, 0.05);
 }
 
 .fileInputWrapper.dragActive {
@@ -102,19 +101,21 @@
   color: var(--color-text-secondary, #a0a0a0);
 }
 
-.censorTypeSection {
+.section {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
 .sectionLabel {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--color-text, #ffffff);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.typeButtonGroup {
+.buttonGroup {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -130,7 +131,6 @@
   font-size: 13px;
   font-weight: 500;
   transition: all 0.2s ease;
-  text-align: left;
 }
 
 .typeButton:hover {
@@ -144,20 +144,13 @@
   color: white;
 }
 
-.intensitySection {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .intensityLabel {
   font-size: 13px;
-  color: var(--color-text-secondary, #a0a0a0);
-  display: flex;
-  justify-content: space-between;
+  color: var(--color-text, #ffffff);
+  font-weight: 500;
 }
 
-.intensitySlider {
+.slider {
   width: 100%;
   height: 4px;
   border-radius: 2px;
@@ -167,7 +160,7 @@
   appearance: none;
 }
 
-.intensitySlider::-webkit-slider-thumb {
+.slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 16px;
@@ -175,182 +168,95 @@
   border-radius: 50%;
   background: var(--color-primary, #4a9eff);
   cursor: pointer;
-  box-shadow: 0 0 4px rgba(74, 158, 255, 0.5);
+  box-shadow: 0 0 8px rgba(74, 158, 255, 0.5);
 }
 
-.intensitySlider::-moz-range-thumb {
+.slider::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background: var(--color-primary, #4a9eff);
   cursor: pointer;
   border: none;
-  box-shadow: 0 0 4px rgba(74, 158, 255, 0.5);
+  box-shadow: 0 0 8px rgba(74, 158, 255, 0.5);
 }
 
-.buttonsGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.button {
-  padding: 10px 12px;
+.downloadButton {
+  padding: 12px;
   border: none;
   border-radius: 6px;
+  background: var(--color-primary, #4a9eff);
+  color: white;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.buttonPrimary {
-  background: var(--color-primary, #4a9eff);
-  color: white;
-}
-
-.buttonPrimary:hover {
-  background: var(--color-primary-hover, #3a8ee0);
+.downloadButton:hover {
+  background: #3a8ee0;
   box-shadow: 0 0 12px rgba(74, 158, 255, 0.3);
 }
 
-.buttonPrimary:active {
+.downloadButton:active {
   transform: scale(0.98);
 }
 
-.buttonSecondary {
-  background: var(--color-background-secondary, #1a1a1a);
-  color: var(--color-text, #ffffff);
-  border: 1px solid var(--color-border, #3a3a3a);
-}
-
-.buttonSecondary:hover {
-  background: var(--color-background, #0a0a0a);
-  border-color: var(--color-primary, #4a9eff);
-}
-
-.buttonDanger {
-  background: #d64545;
-  color: white;
-}
-
-.buttonDanger:hover {
-  background: #c03a3a;
-}
-
-.buttonDanger:disabled {
-  background: #6a2a2a;
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.regionsSection {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.regionsList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.regionItem {
-  padding: 10px;
-  background: var(--color-background-secondary, #1a1a1a);
+.changeButton {
+  padding: 10px 12px;
   border: 1px solid var(--color-border, #3a3a3a);
   border-radius: 6px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-}
-
-.regionInfo {
-  flex: 1;
-}
-
-.regionType {
-  display: inline-block;
-  padding: 2px 6px;
-  background: var(--color-primary, #4a9eff);
-  color: white;
-  border-radius: 3px;
-  font-size: 11px;
+  background: var(--color-background-secondary, #1a1a1a);
+  color: var(--color-text, #ffffff);
+  font-size: 13px;
   font-weight: 500;
-  margin-bottom: 4px;
-}
-
-.regionRemoveBtn {
-  padding: 4px 8px;
-  background: #d64545;
-  color: white;
-  border: none;
-  border-radius: 4px;
   cursor: pointer;
-  font-size: 11px;
   transition: all 0.2s ease;
 }
 
-.regionRemoveBtn:hover {
-  background: #c03a3a;
+.changeButton:hover {
+  border-color: var(--color-primary, #4a9eff);
+  background: var(--color-background, #0a0a0a);
 }
 
-.noRegions {
-  text-align: center;
-  padding: 16px;
-  color: var(--color-text-secondary, #a0a0a0);
-  font-size: 12px;
-  background: var(--color-background-secondary, #1a1a1a);
-  border-radius: 6px;
-  border: 1px dashed var(--color-border, #3a3a3a);
-}
-
-.instructionsSection {
-  padding: 16px;
+.instructionsBox {
+  padding: 12px;
   background: var(--color-background-secondary, #1a1a1a);
   border: 1px solid var(--color-border, #3a3a3a);
-  border-radius: 8px;
-  font-size: 13px;
+  border-radius: 6px;
+  font-size: 12px;
   color: var(--color-text-secondary, #a0a0a0);
-  line-height: 1.5;
 }
 
-.instructionsTitle {
-  font-weight: 600;
+.instructionsBox strong {
+  display: block;
   color: var(--color-text, #ffffff);
   margin-bottom: 8px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-.instructionsList {
+.instructionsBox ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.instructionsList li {
-  margin-bottom: 6px;
+.instructionsBox li {
+  padding: 4px 0;
 }
 
-.instructionsList li strong {
-  color: var(--color-text, #ffffff);
+.instructionsBox li:before {
+  content: '• ';
+  color: var(--color-primary, #4a9eff);
+  margin-right: 6px;
 }
 
-@media (max-width: 768px) {
-  .imageEditorSection {
+@media (max-width: 1024px) {
+  .editorWrapper {
     flex-direction: column;
   }
 
-  .controlsSection {
+  .controlPanel {
     flex: 1;
-  }
-
-  .canvasContainer {
-    min-width: auto;
   }
 }
