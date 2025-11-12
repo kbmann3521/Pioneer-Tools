@@ -246,6 +246,7 @@ export type ToolParams =
   | BlogGeneratorParams
   | ImageAverageColorParams
   | ImageColorExtractorParams
+  | PhotoCensorParams
 
 export type ToolResult =
   | CaseConverterResult
@@ -261,6 +262,7 @@ export type ToolResult =
   | BlogGeneratorResult
   | ImageAverageColorResult
   | ImageColorExtractorResult
+  | PhotoCensorResult
 
 /* ============================================
    API RESPONSE TYPES
