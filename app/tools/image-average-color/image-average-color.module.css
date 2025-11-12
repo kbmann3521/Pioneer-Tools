@@ -273,25 +273,14 @@
 @media (max-width: 480px) {
   .container {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
     gap: 1.5rem;
   }
 
   .photoContainer {
-    grid-column: 1;
-    grid-row: 1;
     padding: 1.5rem;
   }
 
   .colorBlockContainer {
-    grid-column: 1;
-    grid-row: 2;
-    padding: 1.5rem;
-  }
-
-  .everythingElseContainer {
-    grid-column: 1;
-    grid-row: 3;
     padding: 1.5rem;
   }
 
@@ -300,17 +289,27 @@
     padding: 1.5rem;
   }
 
-  .algoButtons {
+  .algorithmSelector {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .algoLabel {
+    order: -1;
+  }
+
+  .algoButtons {
+    width: 100%;
   }
 
   .algoBtn {
-    padding: 0.875rem;
+    padding: 0.6rem;
+    font-size: 0.75rem;
   }
 
   .colorSwatch {
-    width: 120px;
-    height: 120px;
+    width: 80px;
+    height: 80px;
   }
 
   .colorValuesDisplay {
