@@ -125,15 +125,15 @@
 
 .algoBtn {
   flex: 1;
-  padding: 1rem;
+  padding: 0.6rem 0.75rem;
   background-color: var(--bg-secondary);
   color: var(--text-secondary);
-  border: 2px solid var(--border-color);
-  border-radius: 10px;
-  font-weight: 700;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
+  font-size: 0.8rem;
+  letter-spacing: 0.4px;
   transition: all 0.2s ease;
   text-transform: capitalize;
 }
