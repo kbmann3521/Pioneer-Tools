@@ -3194,6 +3194,8 @@ select:focus {
   background-color: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .color-swatch {
