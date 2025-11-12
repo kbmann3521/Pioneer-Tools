@@ -190,6 +190,25 @@ export interface ImageAverageColorResult {
   error?: string
 }
 
+export interface ExtractedColor {
+  hex: string
+  rgb: string
+  r: number
+  g: number
+  b: number
+  percentage: number
+}
+
+export interface ImageColorExtractorParams {
+  imageData: string
+  colorCount: number
+}
+
+export interface ImageColorExtractorResult {
+  colors: ExtractedColor[]
+  error?: string
+}
+
 /* ============================================
    GENERIC TOOL TYPES
    ============================================ */
@@ -207,6 +226,7 @@ export type ToolParams =
   | WordCounterParams
   | BlogGeneratorParams
   | ImageAverageColorParams
+  | ImageColorExtractorParams
 
 export type ToolResult =
   | CaseConverterResult
@@ -221,6 +241,7 @@ export type ToolResult =
   | WordCounterResult
   | BlogGeneratorResult
   | ImageAverageColorResult
+  | ImageColorExtractorResult
 
 /* ============================================
    API RESPONSE TYPES
