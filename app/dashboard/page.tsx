@@ -56,6 +56,7 @@ export default function DashboardPage() {
   // Save feedback messages for each section
   const [budgetSaveMessage, setBudgetSaveMessage] = useState<string | null>(null)
   const [autoRechargeSaveMessage, setAutoRechargeSaveMessage] = useState<string | null>(null)
+  const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null)
 
   // Auto-recharge form state
   const [showAutoRechargeForm, setShowAutoRechargeForm] = useState(false)
