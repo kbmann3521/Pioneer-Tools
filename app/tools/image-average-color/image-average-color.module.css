@@ -256,11 +256,23 @@
 @media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
     gap: 1.5rem;
+  }
+
+  .photoContainer {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .colorBlockContainer {
+    grid-column: 1;
+    grid-row: 2;
   }
 
   .everythingElseContainer {
     grid-column: 1;
+    grid-row: 3;
   }
 
   .colorValuesDisplay {
