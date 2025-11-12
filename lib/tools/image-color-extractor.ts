@@ -65,14 +65,19 @@ export function extractColorFromImage(input: ImageColorExtractorInput): ImageCol
     // Calculate percentages
     const totalFrequency = quantizedColors.reduce((sum, c) => sum + c.frequency, 0)
 
-    const colors: ExtractedColor[] = quantizedColors.map(color => ({
-      hex: rgbToHex(color.r, color.g, color.b),
-      rgb: `rgb(${color.r}, ${color.g}, ${color.b})`,
-      r: color.r,
-      g: color.g,
-      b: color.b,
-      percentage: Math.round((color.frequency / totalFrequency) * 100),
-    }))
+    const colors: ExtractedColor[] = quantizedColors.map(color => {
+      const hsl = rgbToHsl(color.r, color.g, color.b)
+      return {
+        hex: rgbToHex(color.r, color.g, color.b),
+        rgb: `rgb(${color.r}, ${color.g}, ${color.b})`,
+        hsl: hsl,
+        hsla: hsl.replace(')', ', 1)'),
+        r: color.r,
+        g: color.g,
+        b: color.b,
+        percentage: Math.round((color.frequency / totalFrequency) * 100),
+      }
+    })
 
     return { colors }
   } catch (error) {
