@@ -115,47 +115,61 @@ export function RootProvider({ children }: ProvidersProps) {
     )
 
     // Sync to Supabase if user is logged in
-    if (user && session?.access_token) {
-      try {
-        if (isFavorited) {
-          // Remove from favorites
-          const response = await fetch(`/api/favorites/${toolId}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${session.access_token}`,
-            },
-          })
+    if (!user) {
+      console.log('Not logged in - favorite will not persist')
+      return
+    }
 
-          if (!response.ok) {
-            console.error('Error removing favorite:', response.status)
-            // Revert local change on error
-            setFavorites(prev => [...prev, toolId])
-          }
+    if (!session?.access_token) {
+      console.log('No access token available')
+      return
+    }
+
+    try {
+      if (isFavorited) {
+        // Remove from favorites
+        const response = await fetch(`/api/favorites/${toolId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+        })
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          console.error(`Error removing favorite: ${response.status}`, errorText)
+          // Revert local change on error
+          setFavorites(prev => [...prev, toolId])
         } else {
-          // Add to favorites
-          const response = await fetch('/api/favorites', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${session.access_token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ toolId }),
-          })
-
-          // 409 means already favorited, which is fine - just continue
-          if (!response.ok && response.status !== 409) {
-            console.error('Error adding favorite:', response.status)
-            // Revert local change on error
-            setFavorites(prev => prev.filter(id => id !== toolId))
-          }
+          console.log(`Successfully removed ${toolId} from favorites`)
         }
-      } catch (error) {
-        console.error('Error syncing favorite to Supabase:', error)
-        // Revert local change on error
-        setFavorites(prev =>
-          prev.includes(toolId) ? prev.filter(id => id !== toolId) : [...prev, toolId]
-        )
+      } else {
+        // Add to favorites
+        const response = await fetch('/api/favorites', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ toolId }),
+        })
+
+        // 409 means already favorited, which is fine - just continue
+        if (!response.ok && response.status !== 409) {
+          const errorText = await response.text()
+          console.error(`Error adding favorite: ${response.status}`, errorText)
+          // Revert local change on error
+          setFavorites(prev => prev.filter(id => id !== toolId))
+        } else {
+          console.log(`Successfully added ${toolId} to favorites`)
+        }
       }
+    } catch (error) {
+      console.error('Error syncing favorite to Supabase:', error)
+      // Revert local change on error
+      setFavorites(prev =>
+        prev.includes(toolId) ? prev.filter(id => id !== toolId) : [...prev, toolId]
+      )
     }
   }
 
