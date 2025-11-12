@@ -3078,122 +3078,147 @@ select:focus {
   margin: 0.5rem 0;
 }
 
-/* Image Average Color Tool */
-.upload-section {
+/* Upload Dropzone - Shared */
+.upload-dropzone {
+  position: relative;
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  background-color: var(--bg-tertiary);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.upload-dropzone:hover {
+  border-color: var(--color-primary);
+  background-color: rgba(124, 58, 237, 0.03);
+}
+
+.upload-dropzone.drag-active {
+  border-color: var(--color-primary);
+  background-color: rgba(124, 58, 237, 0.1);
+  box-shadow: inset 0 0 0 1px var(--color-primary);
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-label {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 1rem;
-  margin-bottom: 2rem;
+  cursor: pointer;
+  user-select: none;
 }
 
-.upload-section label {
+.upload-icon {
+  font-size: 2.5rem;
+  opacity: 0.8;
+}
+
+.upload-text {
+  text-align: center;
+}
+
+.upload-title {
   font-weight: 600;
   color: var(--text-primary);
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
 }
 
-.file-input-wrapper {
-  position: relative;
-  display: block;
-}
-
-.file-input-label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  background-color: var(--bg-tertiary);
-  border: 2px dashed var(--border-color);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.upload-hint {
   color: var(--text-secondary);
-  font-weight: 500;
+  font-size: 0.9rem;
 }
 
-.file-input-label:hover {
-  border-color: var(--color-primary);
-  background-color: rgba(124, 58, 237, 0.05);
-  color: var(--color-primary);
-}
-
-.clear-btn {
-  padding: 0.75rem 1.5rem;
-  background-color: var(--bg-tertiary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
+.clear-image-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
+  font-size: 0.85rem;
   transition: all 0.2s ease;
-  font-size: 1rem;
 }
 
-.clear-btn:hover {
-  background-color: rgba(239, 68, 68, 0.1);
+.clear-image-btn:hover {
+  background-color: rgba(239, 68, 68, 0.2);
   border-color: #ef4444;
-  color: #ef4444;
 }
 
-.image-preview-section {
+/* Image Average Color Tool */
+.color-analyzer-container {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 2rem;
   margin-bottom: 2rem;
 }
 
-.preview-container {
-  width: 100%;
-  max-width: 500px;
-  height: 300px;
+.image-preview-wrapper {
+  position: relative;
   background-color: var(--bg-tertiary);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 12px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
-  overflow: hidden;
+  min-height: 300px;
 }
 
-.image-preview {
+.image-preview-thumbnail {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  padding: 1rem;
 }
 
-.colors-display {
+.color-result-box {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
-.color-visual {
+.color-swatch-display {
   display: flex;
   justify-content: center;
 }
 
 .color-swatch {
-  width: 150px;
-  height: 150px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--border-color);
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
-.colors-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+.color-swatch:hover {
+  transform: scale(1.05);
 }
 
-.color-item {
+.algorithm-selector {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  padding: 1rem;
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
 }
 
-.color-label {
+.algo-label {
   font-weight: 600;
   color: var(--text-primary);
   font-size: 0.9rem;
@@ -3201,18 +3226,117 @@ select:focus {
   letter-spacing: 0.5px;
 }
 
-.color-output {
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 0.75rem;
-  font-family: 'Monaco', 'Menlo', monospace;
-  font-size: 0.9rem;
+.algo-buttons {
+  display: flex;
+  gap: 0.5rem;
 }
 
-.color-output code {
+.algo-btn {
+  flex: 1;
+  padding: 0.75rem;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.algo-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--text-primary);
+}
+
+.algo-btn.active {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.color-values-display {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.color-value-item {
+  padding: 1rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.value-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.value-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.value-content code {
+  font-family: 'Monaco', 'Menlo', monospace;
   color: var(--color-primary);
-  word-break: break-all;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.mini-copy-btn {
+  padding: 0.4rem 0.6rem;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.mini-copy-btn:hover {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.rgb-components {
+  display: flex;
+  gap: 1rem;
+}
+
+.component {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: rgba(124, 58, 237, 0.05);
+  border-radius: 6px;
+}
+
+.comp-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.comp-value {
+  font-family: 'Monaco', 'Menlo', monospace;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
 .error-message {
@@ -3221,6 +3345,7 @@ select:focus {
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 8px;
   color: #ff6666;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {
