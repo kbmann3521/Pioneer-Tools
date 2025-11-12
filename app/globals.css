@@ -3149,10 +3149,15 @@ select:focus {
 
 /* Image Average Color Tool */
 .color-analyzer-container {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 2rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
   margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  align-items: start;
 }
 
 .image-preview-wrapper {
@@ -3164,7 +3169,8 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
+  min-height: 280px;
+  height: 280px;
 }
 
 .image-preview-thumbnail {
@@ -3175,10 +3181,10 @@ select:focus {
 }
 
 .color-result-box {
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 2rem;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -3187,20 +3193,22 @@ select:focus {
 .color-swatch-display {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .color-swatch {
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   border: 2px solid var(--border-color);
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .color-swatch:hover {
-  transform: scale(1.05);
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.25);
 }
 
 .algorithm-selector {
@@ -3248,8 +3256,8 @@ select:focus {
 }
 
 .color-values-display {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
