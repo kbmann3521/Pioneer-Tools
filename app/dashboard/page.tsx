@@ -709,6 +709,8 @@ export default function DashboardPage() {
               </div>
             </div>
 
+            <SaveFeedback message={budgetSaveMessage} position="inline" />
+
             {showBudgetForm && (
               <div className="form-card">
                 <h4>Set Monthly Spending Limit</h4>
