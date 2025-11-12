@@ -909,9 +909,9 @@ export default function DashboardPage() {
                   <code>{createdKey}</code>
                   <button
                     className="btn-secondary"
-                    onClick={(e) => copyKeyToClipboard(createdKey, e)}
+                    onClick={() => copyKeyToClipboard(createdKey, 'created')}
                   >
-                    Copy
+                    {copiedKeyId === 'created' ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
                 <p className="key-warning">⚠️ Save this key somewhere safe. You won't see it again!</p>
