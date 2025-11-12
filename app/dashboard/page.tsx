@@ -1592,6 +1592,8 @@ export default function DashboardPage() {
         .actions-cell {
           display: flex;
           gap: 0.5rem;
+          justify-content: flex-end;
+          align-items: center;
         }
 
         .btn-delete {
