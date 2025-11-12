@@ -370,18 +370,24 @@
 }
 
 /* Light theme overrides */
-[data-theme="light"] .slider::-webkit-slider-thumb,
-[data-theme="light"] .slider::-moz-range-thumb {
-  border-color: rgba(0, 0, 0, 0.2);
+[data-theme="light"] .slider::-webkit-slider-thumb {
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
-[data-theme="light"] .slider::-webkit-slider-thumb:hover,
+[data-theme="light"] .slider::-webkit-slider-thumb:hover {
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .slider::-moz-range-thumb {
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
 [data-theme="light"] .slider::-moz-range-thumb:hover {
-  border-color: rgba(0, 0, 0, 0.4);
+  border-color: rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="light"] .instructionsBox li:before {
-  color: var(--color-primary, #7c3aed);
+  color: var(--color-primary);
 }
 
 @media (max-width: 1024px) {
