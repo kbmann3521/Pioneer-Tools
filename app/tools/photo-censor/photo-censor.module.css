@@ -258,7 +258,6 @@
 .uncensorButton:hover {
   border-color: var(--color-primary, #7c3aed);
   background: var(--color-background, #0a0a0a);
-  box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
 }
 
 .uncensorButton:active {
