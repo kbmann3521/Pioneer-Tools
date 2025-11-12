@@ -5,6 +5,7 @@ import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useAuth } from '@/app/context/AuthContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import styles from './photo-censor.module.css'
 
