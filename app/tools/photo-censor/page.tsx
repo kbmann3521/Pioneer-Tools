@@ -16,12 +16,8 @@ interface CensorBox {
   height: number
 }
 
-interface PhotoCensorPageProps {
-  onParamsChange?: (params: Record<string, any>) => void
-}
-
-export default function PhotoCensorPage(props?: PhotoCensorPageProps): JSX.Element {
-  const onParamsChange = props?.onParamsChange
+export default function PhotoCensorPage(): JSX.Element {
+  const onParamsChange = undefined as unknown as ((params: Record<string, any>) => void) | undefined
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('photo-censor')
   const { session } = useAuth()
