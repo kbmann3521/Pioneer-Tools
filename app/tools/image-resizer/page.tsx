@@ -32,21 +32,63 @@ export default function ImageResizerPage(): JSX.Element {
     })
   }, [width, height, keepAspect, originalDimensions, updateParams])
 
+  const processImageFile = (file: File) => {
+    const reader = new FileReader()
+    reader.onload = event => {
+      const img = new Image()
+      img.onload = () => {
+        setImage(event.target?.result as string)
+        setOriginalDimensions({ width: img.width, height: img.height })
+        setWidth(img.width)
+        setHeight(img.height)
+      }
+      img.src = event.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onload = event => {
-        const img = new Image()
-        img.onload = () => {
-          setImage(event.target?.result as string)
-          setOriginalDimensions({ width: img.width, height: img.height })
-          setWidth(img.width)
-          setHeight(img.height)
-        }
-        img.src = event.target?.result as string
-      }
-      reader.readAsDataURL(file)
+      processImageFile(file)
+    }
+  }
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+
+    const files = e.dataTransfer.files
+    if (files && files.length > 0) {
+      processImageFile(files[0])
+    }
+  }
+
+  const handleClearImage = () => {
+    setImage(null)
+    setOriginalDimensions(null)
+    setWidth(800)
+    setHeight(600)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
     }
   }
 
