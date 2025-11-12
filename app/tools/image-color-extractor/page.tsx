@@ -68,14 +68,19 @@ export default function ImageColorExtractorPage(): JSX.Element {
           extractedColors.sort((a, b) => b.frequency - a.frequency)
 
           const totalFreq = extractedColors.reduce((sum, c) => sum + c.frequency, 0)
-          const formattedColors: ExtractedColor[] = extractedColors.map(c => ({
-            hex: rgbToHex(c.r, c.g, c.b),
-            rgb: `rgb(${c.r}, ${c.g}, ${c.b})`,
-            r: c.r,
-            g: c.g,
-            b: c.b,
-            percentage: Math.round((c.frequency / totalFreq) * 100),
-          }))
+          const formattedColors: ExtractedColor[] = extractedColors.map(c => {
+            const hsl = rgbToHsl(c.r, c.g, c.b)
+            return {
+              hex: rgbToHex(c.r, c.g, c.b),
+              rgb: `rgb(${c.r}, ${c.g}, ${c.b})`,
+              hsl: hsl,
+              hsla: hsl.replace(')', ', 1)'),
+              r: c.r,
+              g: c.g,
+              b: c.b,
+              percentage: Math.round((c.frequency / totalFreq) * 100),
+            }
+          })
 
           setColors(formattedColors)
           setSelectedColorIndex(0)
