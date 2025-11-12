@@ -93,22 +93,60 @@ function extractPixelsFromBase64(base64: string): { r: number; g: number; b: num
 
 /**
  * Fallback: Extract colors from base64 string directly (without canvas)
- * This provides a deterministic color extraction when canvas is unavailable
+ * Uses a sophisticated hash algorithm to generate colors from the image data
  */
 function extractColorsFromBase64String(base64: string): { r: number; g: number; b: number }[] {
   const cleanBase64 = base64.replace(/^data:image\/\w+;base64,/, '')
   const pixels: { r: number; g: number; b: number }[] = []
 
-  // Hash-based color generation from base64 string
-  for (let i = 0; i < Math.min(cleanBase64.length, 1000); i += 3) {
-    const hash = cleanBase64.charCodeAt(i) + cleanBase64.charCodeAt(i + 1) + cleanBase64.charCodeAt(i + 2)
-    const r = (hash * 73) % 256
-    const g = (hash * 127) % 256
-    const b = (hash * 211) % 256
-    
-    // Avoid white and black
-    if ((r + g + b) / 3 > 5 && (r + g + b) / 3 < 250) {
-      pixels.push({ r: Math.round(r), g: Math.round(g), b: Math.round(b) })
+  // Extract bytes from base64 to simulate pixel data
+  try {
+    const binaryString = atob(cleanBase64)
+    const sampleRate = Math.max(1, Math.floor(binaryString.length / 500))
+
+    for (let i = 0; i < binaryString.length; i += sampleRate) {
+      const byte1 = binaryString.charCodeAt(i) || 0
+      const byte2 = binaryString.charCodeAt(i + 1) || 0
+      const byte3 = binaryString.charCodeAt(i + 2) || 0
+      const byte4 = binaryString.charCodeAt(i + 3) || 0
+
+      // Use bytes as RGB values with some transformation for variety
+      let r = byte1 ^ byte4
+      let g = byte2 ^ (binaryString.length % 256)
+      let b = byte3 ^ byte1
+
+      // Apply additional transformation
+      const shift = (i / sampleRate) % 3
+      if (shift === 1) {
+        [r, g] = [g, r]
+      } else if (shift === 2) {
+        [g, b] = [b, g]
+      }
+
+      // Ensure values are in valid range
+      r = Math.max(0, Math.min(255, r))
+      g = Math.max(0, Math.min(255, g))
+      b = Math.max(0, Math.min(255, b))
+
+      // Avoid pure white, pure black, and very desaturated colors
+      const brightness = (r + g + b) / 3
+      const saturation = Math.max(r, g, b) - Math.min(r, g, b)
+
+      if (brightness > 30 && brightness < 220 && saturation > 20) {
+        pixels.push({ r, g, b })
+      }
+    }
+  } catch (error) {
+    // If atob fails, use character codes directly
+    for (let i = 0; i < Math.min(cleanBase64.length, 1000); i += 3) {
+      const hash = cleanBase64.charCodeAt(i) + cleanBase64.charCodeAt(i + 1) + cleanBase64.charCodeAt(i + 2)
+      const r = (hash * 73) % 256
+      const g = (hash * 127) % 256
+      const b = (hash * 211) % 256
+
+      if ((r + g + b) / 3 > 30 && (r + g + b) / 3 < 220) {
+        pixels.push({ r: Math.round(r), g: Math.round(g), b: Math.round(b) })
+      }
     }
   }
 
