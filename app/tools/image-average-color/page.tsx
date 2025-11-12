@@ -301,12 +301,10 @@ export default function ImageAverageColorPage(): JSX.Element {
         {image && (
           <div className={styles.container}>
             <div className={styles.photoContainer}>
-              <div className={styles.imagePreviewWrapper}>
-                <img src={image} alt="Uploaded preview" className={styles.imagePreviewThumbnail} />
-                <button className="clear-image-btn" onClick={handleClearImage}>
-                  ✕ Change Image
-                </button>
-              </div>
+              <img src={image} alt="Uploaded preview" className={styles.imagePreviewThumbnail} />
+              <button className="clear-image-btn" onClick={handleClearImage}>
+                ✕ Change Image
+              </button>
             </div>
 
             <div className={styles.colorBlockContainer}>
