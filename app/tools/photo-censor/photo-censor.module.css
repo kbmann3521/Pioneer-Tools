@@ -206,6 +206,7 @@
 
 .slider::-moz-range-track {
   background: var(--color-border, #3a3a3a);
+  height: 6px;
   border: none;
   border-radius: 3px;
 }
