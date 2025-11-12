@@ -119,7 +119,10 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (profileError || !profile) {
-      return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500 })
+      return NextResponse.json(
+        { error: 'User profile not found. Please log out and log back in.' },
+        { status: 400 }
+      )
     }
 
     // Check if user has payment method on file
