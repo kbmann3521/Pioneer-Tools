@@ -443,7 +443,7 @@ export default function ImageColorExtractorPage(): JSX.Element {
                               onClick={() => copyColor(selectedColor.hsl, selectedColorIndex, 'hsl')}
                               title="Copy HSL"
                             >
-                              {copiedKey === `color-${selectedColorIndex}-hsl` ? '✓' : '📋'}
+                              {copiedKey === `color-${selectedColorIndex}-hsl` ? 'Copied!' : 'Copy'}
                             </button>
                           </div>
                         </div>
