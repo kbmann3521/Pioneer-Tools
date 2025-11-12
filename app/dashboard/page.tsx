@@ -367,9 +367,22 @@ export default function DashboardPage() {
         .eq('id', user?.id)
 
       if (updateError) throw updateError
-      setSuccess('Auto-recharge settings updated!')
+
+      // Update local state instead of reloading
+      if (profile) {
+        setProfile({
+          ...profile,
+          auto_recharge_enabled: autoRechargeEnabled,
+          auto_recharge_threshold: autoRechargeEnabled ? thresholdCents : null,
+          auto_recharge_amount: autoRechargeEnabled ? rechargeAmountCents : null,
+        })
+      }
+
+      setAutoRechargeSaveMessage('Auto-recharge settings updated!')
       setShowAutoRechargeForm(false)
-      loadData()
+
+      // Auto-clear message after 3 seconds
+      setTimeout(() => setAutoRechargeSaveMessage(null), 3000)
     } catch (err: any) {
       setError(err.message)
     }
