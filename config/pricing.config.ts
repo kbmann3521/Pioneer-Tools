@@ -35,6 +35,7 @@ export const PRICING = {
     'url-encoder': 0.1, // $0.001
     'slug-generator': 0.1, // $0.001
     'password-generator': 0.1, // $0.001
+    'image-average-color': 0.3, // $0.003 - image processing
   } as Record<string, number>,
 }
 
