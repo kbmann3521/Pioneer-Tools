@@ -487,4 +487,51 @@ export const toolDescriptions: Record<string, string> = {
       <li><strong>Content Recommendation:</strong> Recommend content with matching color schemes</li>
     </ul>
   `,
+
+  'photo-censor': `
+    <h3>What is a Photo Censor?</h3>
+    <p>A Photo Censor is a privacy protection tool that allows you to hide sensitive information in images by applying effects like pixelation, blurring, or black bars to specific regions. Perfect for protecting faces, license plates, passwords, or any other sensitive content before sharing images online.</p>
+
+    <h3>Why Use Photo Censor?</h3>
+    <p>Protecting privacy is essential before sharing photos online. Whether you need to hide personal information, protect identities, or comply with privacy regulations, a photo censor provides quick, effective redaction. Apply multiple effects to different regions of the same image for comprehensive privacy protection.</p>
+
+    <h3>How to Use</h3>
+    <p>Upload your image, select a censor type (pixelate, blur, or black bar), adjust the intensity, and drag to select the regions you want to hide. Add as many regions as needed using different effects for each area. Download your censored image when satisfied with the result.</p>
+
+    <h3>Censoring Effects</h3>
+    <ul>
+      <li><strong>Pixelate:</strong> Replace region with large blocks, making content unrecognizable while preserving outline</li>
+      <li><strong>Blur:</strong> Apply a soft blur effect to obscure details while maintaining some visibility</li>
+      <li><strong>Black Bar:</strong> Cover the region with a solid black overlay for complete concealment</li>
+    </ul>
+
+    <h3>Key Features</h3>
+    <ul>
+      <li><strong>Multiple Effects:</strong> Use different censor types in the same image</li>
+      <li><strong>Adjustable Intensity:</strong> Control the strength of pixelation and blur (1-10 scale)</li>
+      <li><strong>Unlimited Regions:</strong> Add as many censor regions as needed</li>
+      <li><strong>Easy Editing:</strong> Remove or adjust regions before downloading</li>
+      <li><strong>Instant Preview:</strong> See exactly how your image will look censored</li>
+    </ul>
+
+    <h3>Common Use Cases</h3>
+    <ul>
+      <li><strong>Privacy Protection:</strong> Hide faces and personal information before sharing on social media</li>
+      <li><strong>Document Redaction:</strong> Protect sensitive text in photos of documents</li>
+      <li><strong>License Plate Hiding:</strong> Conceal vehicle information in street photos</li>
+      <li><strong>Password Protection:</strong> Hide passwords and sensitive data in screenshots</li>
+      <li><strong>Legal Compliance:</strong> Comply with privacy regulations before publishing images</li>
+      <li><strong>Media Preparation:</strong> Prepare images for news articles and publications</li>
+    </ul>
+
+    <h3>API Endpoint Use Cases</h3>
+    <ul>
+      <li><strong>Automated Privacy:</strong> Apply automatic censoring to user-uploaded images before public display</li>
+      <li><strong>Batch Processing:</strong> Censor multiple images with predefined regions for content moderation</li>
+      <li><strong>Legal Document Processing:</strong> Redact sensitive information from scanned documents automatically</li>
+      <li><strong>User Privacy:</strong> Protect personally identifiable information in user-submitted content</li>
+      <li><strong>Media Workflows:</strong> Integrate censoring into image processing pipelines for content management</li>
+      <li><strong>Smart Redaction:</strong> Combine with face detection to automatically censor detected faces</li>
+    </ul>
+  `,
 }
