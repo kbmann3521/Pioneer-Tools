@@ -561,10 +561,12 @@ export default function DashboardPage() {
     }
   }
 
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const { isCopied, copyToClipboard } = useClipboard()
 
-  const copyKeyToClipboard = (key: string, event: React.MouseEvent) => {
-    copyToClipboard(key, event)
+  const copyKeyToClipboard = async (key: string, keyId: string) => {
+    await copyToClipboard(key)
+    setCopiedKeyId(keyId)
+    setTimeout(() => setCopiedKeyId(null), 3000)
   }
 
   const handleSignOut = async () => {
