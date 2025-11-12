@@ -5,6 +5,8 @@
 export interface ExtractedColor {
   hex: string
   rgb: string
+  hsl: string
+  hsla: string
   r: number
   g: number
   b: number
