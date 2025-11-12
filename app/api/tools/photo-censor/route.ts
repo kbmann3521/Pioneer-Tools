@@ -7,10 +7,9 @@ import { checkBalance, checkMonthlyLimit, deductCredits } from '@/lib/server/bil
 import { handleAutoRecharge } from '@/lib/server/autoRecharge'
 import { getToolCost } from '@/config/pricing.config'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
+import { STORAGE_BUCKET, SIGNED_URL_EXPIRY_SECONDS } from '@/lib/server/storageManager'
 
 const TOOL_ID = 'photo-censor'
-const STORAGE_BUCKET = 'censored-images'
-const SIGNED_URL_EXPIRY_SECONDS = 86400 // 1 day
 
 /**
  * Apply censoring effects to image using Sharp
