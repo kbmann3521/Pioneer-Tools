@@ -300,14 +300,16 @@ export default function ImageAverageColorPage(): JSX.Element {
 
         {image && (
           <div className={styles.container}>
-            <div className={styles.imagePreviewWrapper}>
-              <img src={image} alt="Uploaded preview" className={styles.imagePreviewThumbnail} />
-              <button className="clear-image-btn" onClick={handleClearImage}>
-                ✕ Change Image
-              </button>
+            <div className={styles.photoContainer}>
+              <div className={styles.imagePreviewWrapper}>
+                <img src={image} alt="Uploaded preview" className={styles.imagePreviewThumbnail} />
+                <button className="clear-image-btn" onClick={handleClearImage}>
+                  ✕ Change Image
+                </button>
+              </div>
             </div>
 
-            <div className="color-result-box">
+            <div className={styles.colorBlockContainer}>
               <div className={styles.colorSwatchDisplay}>
                 <div
                   className={styles.colorSwatch}
@@ -315,7 +317,9 @@ export default function ImageAverageColorPage(): JSX.Element {
                   title={colors?.rgb}
                 />
               </div>
+            </div>
 
+            <div className={styles.everythingElseContainer}>
               <div className={styles.algorithmSelector}>
                 <label className={styles.algoLabel}>Algorithm:</label>
                 <div className={styles.algoButtons}>
