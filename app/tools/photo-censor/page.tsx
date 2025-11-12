@@ -173,10 +173,16 @@ export default function PhotoCensorPage(): JSX.Element {
   }
 
   const getCanvasCoordinates = (clientX: number, clientY: number) => {
-    if (!canvasRef.current) return { x: 0, y: 0 }
-    const rect = canvasRef.current.getBoundingClientRect()
-    const scaleX = canvasRef.current.width / rect.width
-    const scaleY = canvasRef.current.height / rect.height
+    if (!imgRef.current || !canvasRef.current) return { x: 0, y: 0 }
+
+    const rect = imgRef.current.getBoundingClientRect()
+    const imgWidth = rect.width
+    const imgHeight = rect.height
+
+    // Calculate scale factors from displayed size to actual image dimensions
+    const scaleX = imageDimensions.width / imgWidth
+    const scaleY = imageDimensions.height / imgHeight
+
     return {
       x: Math.round((clientX - rect.left) * scaleX),
       y: Math.round((clientY - rect.top) * scaleY),
