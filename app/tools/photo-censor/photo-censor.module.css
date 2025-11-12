@@ -262,20 +262,20 @@
 }
 
 .censorButton {
-  padding: 10px 12px;
-  border: 1px solid var(--color-border, #3a3a3a);
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: var(--color-background-secondary, #1a1a1a);
-  color: var(--color-text, #ffffff);
-  font-size: 13px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .censorButton:hover {
-  border-color: var(--color-primary, #7c3aed);
-  background: var(--color-background, #0a0a0a);
+  border-color: var(--color-primary);
+  background: var(--bg-tertiary);
 }
 
 .censorButton:active {
@@ -283,20 +283,20 @@
 }
 
 .uncensorButton {
-  padding: 10px 12px;
-  border: 1px solid var(--color-border, #3a3a3a);
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: var(--color-background-secondary, #1a1a1a);
-  color: var(--color-text, #ffffff);
-  font-size: 13px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .uncensorButton:hover {
-  border-color: var(--color-primary, #7c3aed);
-  background: var(--color-background, #0a0a0a);
+  border-color: var(--color-primary);
+  background: var(--bg-tertiary);
 }
 
 .uncensorButton:active {
@@ -304,37 +304,37 @@
 }
 
 .downloadButton {
-  padding: 10px 12px;
-  border: 1px solid var(--color-border, #3a3a3a);
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: var(--color-background-secondary, #1a1a1a);
-  color: var(--color-text, #ffffff);
-  font-size: 13px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .downloadButton:hover {
-  border-color: var(--color-primary, #7c3aed);
-  background: var(--color-background, #0a0a0a);
+  border-color: var(--color-primary);
+  background: var(--bg-tertiary);
 }
 
 .changeButton {
-  padding: 10px 12px;
-  border: 1px solid var(--color-border, #3a3a3a);
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: var(--color-background-secondary, #1a1a1a);
-  color: var(--color-text, #ffffff);
-  font-size: 13px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .changeButton:hover {
-  border-color: var(--color-primary, #7c3aed);
-  background: var(--color-background, #0a0a0a);
+  border-color: var(--color-primary);
+  background: var(--bg-tertiary);
 }
 
 .instructionsBox {
