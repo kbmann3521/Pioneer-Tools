@@ -30,6 +30,7 @@ const toolsByCategory = {
   'Image Tools': [
     { id: 'image-resizer', name: 'Image Resizer', icon: '🖼️', category: 'Image Tools' },
     { id: 'image-average-color', name: 'Average Color Finder', icon: '🎨', category: 'Image Tools' },
+    { id: 'image-color-extractor', name: 'Color Extractor', icon: '🌈', category: 'Image Tools' },
   ],
   'Color Tools': [
     { id: 'hex-rgba-converter', name: 'HEX ↔ RGBA', icon: '🎨', category: 'Color Tools' },
