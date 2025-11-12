@@ -191,6 +191,34 @@ export default function ImageAverageColorPage(): JSX.Element {
                   </div>
 
                   <div className="color-value-item">
+                    <div className="value-label">HSL</div>
+                    <div className="value-content">
+                      <code>{colors.hsl}</code>
+                      <button
+                        className="mini-copy-btn"
+                        onClick={() => copyColor(colors.hsl, 'hsl')}
+                        title="Copy HSL"
+                      >
+                        {copiedKey === 'hsl' ? '✓' : '📋'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="color-value-item">
+                    <div className="value-label">HSLA</div>
+                    <div className="value-content">
+                      <code>{colors.hsla}</code>
+                      <button
+                        className="mini-copy-btn"
+                        onClick={() => copyColor(colors.hsla, 'hsla')}
+                        title="Copy HSLA"
+                      >
+                        {copiedKey === 'hsla' ? '✓' : '📋'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="color-value-item">
                     <div className="value-label">Components</div>
                     <div className="rgb-components">
                       <div className="component">
