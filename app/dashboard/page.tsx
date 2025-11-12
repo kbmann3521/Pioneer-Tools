@@ -311,6 +311,36 @@ export default function DashboardPage() {
     }
   }
 
+  const toggleAutoRecharge = async (enabled: boolean) => {
+    try {
+      setError(null)
+      setAutoRechargeEnabled(enabled)
+
+      if (!enabled) {
+        // When unchecking, immediately save the disabled state
+        const { error: updateError } = await supabase
+          .from('users_profile')
+          .update({
+            auto_recharge_enabled: false,
+            auto_recharge_threshold: null,
+            auto_recharge_amount: null,
+          })
+          .eq('id', user?.id)
+
+        if (updateError) throw updateError
+        setSuccess('Auto-recharge disabled')
+        setShowAutoRechargeForm(false)
+        loadData()
+      } else {
+        // When checking, just show the form to configure
+        setShowAutoRechargeForm(true)
+      }
+    } catch (err: any) {
+      setError(err.message)
+      setAutoRechargeEnabled(!enabled) // Revert on error
+    }
+  }
+
   const updateAutoRecharge = async () => {
     try {
       setError(null)
