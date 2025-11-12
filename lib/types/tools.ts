@@ -173,6 +173,22 @@ export interface BlogGeneratorResult {
   }>
 }
 
+export interface ImageAverageColorParams {
+  imageData: string
+  algorithm?: 'average' | 'dominant'
+}
+
+export interface ImageAverageColorResult {
+  hex: string
+  rgb: string
+  rgba: string
+  hsl: string
+  r: number
+  g: number
+  b: number
+  error?: string
+}
+
 /* ============================================
    GENERIC TOOL TYPES
    ============================================ */
