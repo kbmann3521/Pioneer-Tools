@@ -8,6 +8,7 @@ import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
+import styles from './image-color-extractor.module.css'
 
 export default function ImageColorExtractorPage(): JSX.Element {
   const { updateParams } = useApiParams()
