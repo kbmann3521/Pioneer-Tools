@@ -48,9 +48,12 @@ export function RootProvider({ children }: ProvidersProps) {
     const loadFavorites = async () => {
       if (!user || !session) {
         // Clear favorites if user logs out
+        console.log('No user or session - clearing favorites')
         setFavorites([])
         return
       }
+
+      console.log('Loading favorites for user:', user.id)
 
       try {
         // GET favorites from Supabase
@@ -62,12 +65,14 @@ export function RootProvider({ children }: ProvidersProps) {
         })
 
         if (!response.ok) {
-          console.error('Failed to fetch favorites from Supabase')
+          const errorText = await response.text()
+          console.error('Failed to fetch favorites from Supabase:', response.status, errorText)
           return
         }
 
         const data = await response.json()
-        const supabaseFavorites = data.favorites || []
+        const supabaseFavorites = data.data?.favorites || data.favorites || []
+        console.log('Loaded favorites from Supabase:', supabaseFavorites)
         setFavorites(supabaseFavorites)
       } catch (error) {
         console.error('Error loading favorites from Supabase:', error)
