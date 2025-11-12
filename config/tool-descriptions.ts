@@ -447,4 +447,42 @@ export const toolDescriptions: Record<string, string> = {
       <li><strong>Content Recommendation:</strong> Use extracted colors to recommend similar images or products with matching color palettes</li>
     </ul>
   `,
+
+  'image-color-extractor': `
+    <h3>What is an Image Color Extractor?</h3>
+    <p>An Image Color Extractor pulls out multiple dominant colors from any image, letting you build complete color palettes. Choose how many colors you want to extract (1-10) and get all color values in HEX, RGB, RGBA, HSL, HSLA formats plus individual RGB components.</p>
+
+    <h3>Why Extract Color Palettes?</h3>
+    <p>Building color palettes from real images is essential for design consistency. Extract colors from product photos, artwork, or brand imagery to create harmonious color schemes. Perfect for designers creating color systems, developers building theme engines, and marketers matching brand imagery to color schemes.</p>
+
+    <h3>How to Use</h3>
+    <p>Upload an image, select how many colors you want (1-10), and click on any swatch to see detailed values. All colors update in real-time when you adjust the count or switch algorithms. Copy any color format instantly to use in your designs.</p>
+
+    <h3>Key Features</h3>
+    <ul>
+      <li><strong>Flexible Color Count:</strong> Extract 1 to 10 colors from any image</li>
+      <li><strong>Multiple Algorithms:</strong> Choose Simple, Square Root, or Dominant extraction methods</li>
+      <li><strong>Real-time Updates:</strong> Colors update instantly when you change settings</li>
+      <li><strong>Interactive Swatches:</strong> Click any color to see detailed values</li>
+      <li><strong>Full Format Support:</strong> Get HEX, RGB, RGBA, HSL, HSLA, and component values</li>
+    </ul>
+
+    <h3>Common Use Cases</h3>
+    <ul>
+      <li><strong>Color Palette Generation:</strong> Extract complete color palettes from product images or artwork</li>
+      <li><strong>Brand Color Systems:</strong> Build design systems with colors extracted from brand imagery</li>
+      <li><strong>Theme Development:</strong> Create multiple theme variations based on image colors</li>
+      <li><strong>UI Design:</strong> Match app interfaces to image content with extracted color swatches</li>
+      <li><strong>Color Harmony:</strong> Understand which colors work together based on real images</li>
+    </ul>
+
+    <h3>API Endpoint Use Cases</h3>
+    <ul>
+      <li><strong>Automated Color Palettes:</strong> Generate multi-color palettes from product images on e-commerce sites</li>
+      <li><strong>Dynamic Theme Generation:</strong> Build multiple theme variations based on different color counts and algorithms</li>
+      <li><strong>Image-Based Design Systems:</strong> Create design system color tokens from uploaded brand imagery</li>
+      <li><strong>Content-Driven Styling:</strong> Update app colors dynamically based on featured image content</li>
+      <li><strong>Color Space Analysis:</strong> Extract color data for machine learning and image analysis workflows</li>
+    </ul>
+  `,
 }
