@@ -709,7 +709,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <SaveFeedback message={budgetSaveMessage} position="inline" />
+            <SaveFeedback message={budgetSaveMessage} />
 
             {showBudgetForm && (
               <div className="form-card">
