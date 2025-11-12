@@ -84,7 +84,10 @@ export async function POST(request: NextRequest) {
 
     // Step 5: Trigger auto-recharge if needed
     if (context!.isPaid && balanceAfterDeduction < 50) {
-      await handleAutoRecharge(context!.userProfile!)
+      const autoRechargeResult = await handleAutoRecharge(context!.userProfile!, balanceAfterDeduction)
+      if (autoRechargeResult.triggered && autoRechargeResult.newBalance !== undefined) {
+        balanceAfterDeduction = autoRechargeResult.newBalance
+      }
     }
 
     // Return success response
