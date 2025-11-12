@@ -385,8 +385,13 @@ export default function PhotoCensorPage({ onParamsChange }: PhotoCensorPageProps
   const downloadCensoredImage = async () => {
     if (!image || !isCensored) return
 
+    if (!session?.access_token) {
+      alert('Please log in to download censored images')
+      return
+    }
+
     try {
-      // Convert canvas to blob and then to base64 for API
+      // Get the censored image canvas and convert to base64
       const canvas = document.createElement('canvas')
       const img = new Image()
 
@@ -396,10 +401,7 @@ export default function PhotoCensorPage({ onParamsChange }: PhotoCensorPageProps
         const ctx = canvas.getContext('2d')
         if (!ctx) return
 
-        // Draw original image
         ctx.drawImage(img, 0, 0)
-
-        // Get the base64 of the censored image
         const base64 = canvas.toDataURL('image/png')
 
         // Send to API to process and get signed URL
@@ -407,7 +409,7 @@ export default function PhotoCensorPage({ onParamsChange }: PhotoCensorPageProps
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access_token') || ''}`,
+            'Authorization': `Bearer ${session.access_token}`,
           },
           body: JSON.stringify({
             imageData: base64,
