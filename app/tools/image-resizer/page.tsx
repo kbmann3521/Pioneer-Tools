@@ -17,6 +17,8 @@ export default function ImageResizerPage(): JSX.Element {
   const [height, setHeight] = useState(600)
   const [keepAspect, setKeepAspect] = useState(true)
   const [originalDimensions, setOriginalDimensions] = useState<{ width: number; height: number } | null>(null)
+  const [dragActive, setDragActive] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   // Update API params whenever dimensions change
