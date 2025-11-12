@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import CopyFeedback from '@/app/components/CopyFeedback'
 import { convertColor } from '@/lib/tools/hex-rgba-converter'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
@@ -18,7 +17,8 @@ export default function HexRgbaConverterPage(): JSX.Element {
   const [rgb, setRgb] = useState<{ r: number; g: number; b: number }>({ r: 255, g: 107, b: 107 })
   const [alpha, setAlpha] = useState<number>(1)
   const [result, setResult] = useState<HexRgbaConverterResult | null>(null)
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const { isCopied, copyToClipboard } = useClipboard()
 
   // Update API params whenever color changes
   useEffect(() => {
@@ -153,8 +153,12 @@ export default function HexRgbaConverterPage(): JSX.Element {
               <div className="output-item">
                 <div className="output-label">HEX</div>
                 <code>{result.hex}</code>
-                <button className="copy-btn" onClick={(e) => copyToClipboard(result.hex!, e)}>
-                  Copy
+                <button className="copy-btn" onClick={async () => {
+                  await copyToClipboard(result.hex!)
+                  setCopiedKey('hex')
+                  setTimeout(() => setCopiedKey(null), 3000)
+                }}>
+                  {copiedKey === 'hex' ? 'Copied!' : 'Copy'}
                 </button>
               </div>
             )}
@@ -162,8 +166,12 @@ export default function HexRgbaConverterPage(): JSX.Element {
               <div className="output-item">
                 <div className="output-label">RGB</div>
                 <code>{result.rgb}</code>
-                <button className="copy-btn" onClick={(e) => copyToClipboard(result.rgb!, e)}>
-                  Copy
+                <button className="copy-btn" onClick={async () => {
+                  await copyToClipboard(result.rgb!)
+                  setCopiedKey('rgb')
+                  setTimeout(() => setCopiedKey(null), 3000)
+                }}>
+                  {copiedKey === 'rgb' ? 'Copied!' : 'Copy'}
                 </button>
               </div>
             )}
@@ -171,15 +179,18 @@ export default function HexRgbaConverterPage(): JSX.Element {
               <div className="output-item">
                 <div className="output-label">RGBA</div>
                 <code>{result.rgba}</code>
-                <button className="copy-btn" onClick={(e) => copyToClipboard(result.rgba!, e)}>
-                  Copy
+                <button className="copy-btn" onClick={async () => {
+                  await copyToClipboard(result.rgba!)
+                  setCopiedKey('rgba')
+                  setTimeout(() => setCopiedKey(null), 3000)
+                }}>
+                  {copiedKey === 'rgba' ? 'Copied!' : 'Copy'}
                 </button>
               </div>
             )}
           </div>
         )}
       </div>
-      <CopyFeedback message={copyMessage} position={copyPosition} />
 
       <AboutToolAccordion
         toolId="hex-rgba-converter"
