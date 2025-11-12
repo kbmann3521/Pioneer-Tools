@@ -18,17 +18,17 @@ export default function CaseConverterPage(): JSX.Element {
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
   const { isCopied, copyToClipboard } = useClipboard()
 
-  // Update API params whenever text changes
+  // Update API params and convert cases in real-time whenever text changes
   useEffect(() => {
     updateParams({ text: text || 'hello world' })
-  }, [text, updateParams])
 
-  const handleConvert = () => {
     if (text.trim()) {
       const result = convertCase({ text })
       setResults(result)
+    } else {
+      setResults(null)
     }
-  }
+  }, [text, updateParams])
 
 
   return (
