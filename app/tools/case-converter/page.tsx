@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import CopyFeedback from '@/app/components/CopyFeedback'
 import { convertCase } from '@/lib/tools/case-converter'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
@@ -16,7 +15,8 @@ export default function CaseConverterPage(): JSX.Element {
   const { isSaved, toggleSave } = useFavorites('case-converter')
   const [text, setText] = useState<string>('')
   const [results, setResults] = useState<CaseConverterResult | null>(null)
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const { isCopied, copyToClipboard } = useClipboard()
 
   // Update API params whenever text changes
   useEffect(() => {
