@@ -126,9 +126,17 @@ export default function PhotoCensorPage(): JSX.Element {
   }
 
   const redrawOverlay = () => {
-    if (!canvasRef.current || imageDimensions.width === 0) return
+    if (!canvasRef.current || !imgRef.current || imageDimensions.width === 0) return
 
     const canvas = canvasRef.current
+    const img = imgRef.current
+
+    // Get displayed dimensions of the image
+    const displayRect = img.getBoundingClientRect()
+    const containerRect = canvas.parentElement?.getBoundingClientRect()
+    if (!containerRect) return
+
+    // Set canvas to actual pixel dimensions for high quality rendering
     canvas.width = imageDimensions.width
     canvas.height = imageDimensions.height
 
