@@ -440,17 +440,19 @@ export default function PhotoCensorPage(): JSX.Element {
                     alt="Image to censor"
                     className={styles.image}
                   />
-                  <canvas
-                    ref={canvasRef}
-                    className={styles.overlay}
-                    onMouseDown={handleCanvasMouseDown}
-                    onMouseMove={(e) => {
-                      handleCanvasMouseMove(e)
-                      updateCursor(e)
-                    }}
-                    onMouseUp={handleCanvasMouseUp}
-                    onMouseLeave={handleCanvasMouseUp}
-                  />
+                  {!isCensored && (
+                    <canvas
+                      ref={canvasRef}
+                      className={styles.overlay}
+                      onMouseDown={handleCanvasMouseDown}
+                      onMouseMove={(e) => {
+                        handleCanvasMouseMove(e)
+                        updateCursor(e)
+                      }}
+                      onMouseUp={handleCanvasMouseUp}
+                      onMouseLeave={handleCanvasMouseUp}
+                    />
+                  )}
                 </div>
                 <div className={styles.boxInfo}>
                   {isCensored ? (
