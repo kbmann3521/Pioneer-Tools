@@ -190,6 +190,31 @@ export interface ImageAverageColorResult {
   error?: string
 }
 
+export interface ColorInfo {
+  hex: string
+  rgb: string
+  rgba: string
+  hsl: string
+  hsla: string
+  r: number
+  g: number
+  b: number
+  index: number
+}
+
+export interface ImageColorExtractorParams {
+  imageData: string
+  colorCount?: number
+  algorithm?: 'simple' | 'square-root' | 'dominant'
+}
+
+export interface ImageColorExtractorResult {
+  colors: ColorInfo[]
+  selectedColorIndex: number
+  algorithm: 'simple' | 'square-root' | 'dominant'
+  error?: string
+}
+
 /* ============================================
    GENERIC TOOL TYPES
    ============================================ */
