@@ -87,10 +87,10 @@ export async function POST(request: NextRequest) {
 
     // Return success response
     return successResponse(result, {
-      toolId: TOOL_ID,
-      costInCents: toolCost,
-      newBalance: balanceAfterDeduction,
-      isPaid: context!.isPaid,
+      remaining: balanceAfterDeduction,
+      balance: balanceAfterDeduction,
+      costThisCall: toolCost,
+      requestsPerSecond: context!.isPaid ? 10 : 1,
     })
   } catch (error) {
     console.error(`[${TOOL_ID}] Error:`, error)
