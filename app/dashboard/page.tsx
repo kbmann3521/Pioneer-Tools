@@ -764,7 +764,7 @@ export default function DashboardPage() {
               </div>
             )}
 
-            <SaveFeedback message={autoRechargeSaveMessage} position="inline" />
+            <SaveFeedback message={autoRechargeSaveMessage} />
 
             {showAutoRechargeForm && (
               <div className="form-card">
