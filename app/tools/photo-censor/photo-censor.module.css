@@ -101,11 +101,29 @@
 }
 
 .fileInputLabel {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: rgba(124, 58, 237, 0.05);
+  border: 2px dashed var(--color-primary);
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
-  color: var(--color-primary, #7c3aed);
+  transition: all 0.2s ease;
+  color: var(--color-primary);
   font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.fileInputLabel:hover {
+  background-color: rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.15);
+}
+
+.dragActive .fileInputLabel {
+  border-color: var(--color-primary);
+  background-color: rgba(124, 58, 237, 0.1);
+  color: var(--color-primary);
 }
 
 .section {
