@@ -167,14 +167,8 @@ export default function OGGeneratorPage(): JSX.Element {
           </>
         )}
       </div>
-      {copyMessage && copyPosition && (
-        <div
-          className="copy-feedback-toast"
-          style={{ left: `${copyPosition.x}px`, top: `${copyPosition.y}px` }}
-        >
-          {copyMessage}
-        </div>
-      )}
+
+      <CopyFeedback message={copyMessage} position={copyPosition} />
 
       <AboutToolAccordion
         toolId="og-generator"
