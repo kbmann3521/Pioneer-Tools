@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import CopyFeedback from '@/app/components/CopyFeedback'
 import { convertBase64 } from '@/lib/tools/base64-converter'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
@@ -14,7 +13,7 @@ import type { ToolPageProps, Base64ConverterResult } from '@/lib/types/tools'
 export default function Base64ConverterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('base64-converter')
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const { isCopied, copyToClipboard } = useClipboard()
   const [text, setText] = useState<string>('')
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
   const [result, setResult] = useState<Base64ConverterResult | null>(null)
@@ -80,11 +79,11 @@ export default function Base64ConverterPage(): JSX.Element {
                     <h3>{mode === 'encode' ? 'Base64 Encoded' : 'Decoded Text'}</h3>
                     <button
                       className="copy-btn"
-                      onClick={(e) => copyToClipboard(result.result, e)}
+                      onClick={() => copyToClipboard(result.result)}
                       title="Copy result"
                       type="button"
                     >
-                      Copy
+                      {isCopied ? 'Copied!' : 'Copy'}
                     </button>
                   </div>
                   <pre className="code-output">{result.result}</pre>
@@ -109,8 +108,6 @@ export default function Base64ConverterPage(): JSX.Element {
             )}
           </div>
         )}
-
-        <CopyFeedback message={copyMessage} position={copyPosition} />
       </div>
 
       <AboutToolAccordion
