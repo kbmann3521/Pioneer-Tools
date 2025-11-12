@@ -183,6 +183,7 @@ export interface ImageAverageColorResult {
   rgb: string
   rgba: string
   hsl: string
+  hsla: string
   r: number
   g: number
   b: number
