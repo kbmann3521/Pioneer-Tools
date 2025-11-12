@@ -393,9 +393,20 @@ export default function DashboardPage() {
         .eq('id', user?.id)
 
       if (updateError) throw updateError
-      setSuccess('Monthly budget updated!')
+
+      // Update local state instead of reloading
+      if (profile) {
+        setProfile({
+          ...profile,
+          monthly_spending_limit: budgetCents || null,
+        })
+      }
+
+      setBudgetSaveMessage('Monthly budget updated!')
       setShowBudgetForm(false)
-      loadData()
+
+      // Auto-clear message after 3 seconds
+      setTimeout(() => setBudgetSaveMessage(null), 3000)
     } catch (err: any) {
       setError(err.message)
     }
