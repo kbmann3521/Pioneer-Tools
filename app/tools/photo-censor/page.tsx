@@ -39,20 +39,26 @@ export default function PhotoCensorPage(): JSX.Element {
 
   // Update API params
   useEffect(() => {
-    // Sample 1x1 pixel PNG in base64 for API preview (only for demo/testing)
-    const sampleImageBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+    // Sample 100x100 PNG in base64 for API preview (only for demo/testing)
+    const sampleImageBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw1pVzAAAA0klEQVR4nO3QMQEAAADCoPVPbQhfoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4NsKZAe0K0VE1AAAAAElFTkSuQmCC'
 
     const params = {
       imageData: image || sampleImageBase64, // Use actual image if uploaded, otherwise sample
       censorType,
       intensity,
-      boxWidth: censorBox.width,
-      boxHeight: censorBox.height,
-      isCensored,
-      regions: image ? [censorBox] : [], // Only include regions if image is uploaded
+      regions: [
+        {
+          x: censorBox.x,
+          y: censorBox.y,
+          width: censorBox.width,
+          height: censorBox.height,
+          type: censorType,
+          intensity,
+        },
+      ],
     }
     updateParams(params)
-  }, [censorType, intensity, censorBox, isCensored, image, updateParams])
+  }, [censorType, intensity, censorBox, image, updateParams])
 
   // Redraw overlay canvas when censor box changes
   useEffect(() => {
