@@ -3221,6 +3221,8 @@ select:focus {
   background-color: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
+  grid-column: 1 / 3;
+  grid-row: 2;
 }
 
 .algo-label {
