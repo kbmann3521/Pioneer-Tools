@@ -3349,33 +3349,57 @@ select:focus {
 }
 
 @media (max-width: 768px) {
-  .colors-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .preview-container {
-    max-width: 100%;
-    height: 250px;
-  }
-
-  .color-swatch {
-    width: 120px;
-    height: 120px;
-  }
-}
-
-@media (max-width: 480px) {
-  .colors-grid {
+  .color-analyzer-container {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
-  .preview-container {
-    height: 200px;
+  .algo-buttons {
+    flex-direction: column;
+  }
+
+  .algo-btn {
+    padding: 1rem;
   }
 
   .color-swatch {
     width: 100px;
     height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-dropzone {
+    padding: 1.5rem;
+  }
+
+  .upload-icon {
+    font-size: 2rem;
+  }
+
+  .upload-title {
+    font-size: 1rem;
+  }
+
+  .upload-hint {
+    font-size: 0.85rem;
+  }
+
+  .color-result-box {
+    padding: 1.5rem;
+  }
+
+  .color-swatch {
+    width: 80px;
+    height: 80px;
+  }
+
+  .rgb-components {
+    gap: 0.5rem;
+  }
+
+  .component {
+    padding: 0.5rem;
   }
 }
 
