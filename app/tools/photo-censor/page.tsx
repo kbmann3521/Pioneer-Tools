@@ -37,13 +37,16 @@ export default function PhotoCensorPage(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
 
-  // Update API params
+  // Update API params - only when image is loaded
   useEffect(() => {
-    // Sample 100x100 PNG in base64 for API preview (only for demo/testing)
-    const sampleImageBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw1pVzAAAA0klEQVR4nO3QMQEAAADCoPVPbQhfoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4NsKZAe0K0VE1AAAAAElFTkSuQmCC'
+    // Only update params if an image is loaded
+    if (!image) {
+      updateParams({})
+      return
+    }
 
     const params = {
-      imageData: image || sampleImageBase64, // Use actual image if uploaded, otherwise sample
+      imageData: image,
       censorType,
       intensity,
       regions: [
