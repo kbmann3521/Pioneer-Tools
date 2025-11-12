@@ -36,7 +36,6 @@ export default function PhotoCensorPage(): JSX.Element {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
-  const canvasContainerRef = useRef<HTMLDivElement>(null)
 
   // Update API params
   useEffect(() => {
