@@ -3171,6 +3171,8 @@ select:focus {
   justify-content: center;
   min-height: 280px;
   height: 280px;
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .image-preview-thumbnail {
