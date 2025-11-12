@@ -104,28 +104,27 @@ export default function ImageAverageColorPage(): JSX.Element {
       />
 
       <div className="tool-content">
-        <div
-          className={`upload-dropzone ${dragActive ? 'drag-active' : ''}`}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            id="image-upload"
-            accept="image/*"
-            onChange={handleFileInputChange}
-            className="file-input"
-          />
-          <label htmlFor="image-upload" className="upload-label">
-            <div className="upload-icon">📁</div>
-            <div className="upload-text">
-              <div className="upload-title">Upload Image or Drag & Drop</div>
-              <div className="upload-hint">PNG, JPG, GIF up to 5MB</div>
-            </div>
-          </label>
+        <div className="upload-section">
+          <label htmlFor="image-upload">Upload an image:</label>
+          <div
+            className={`file-input-wrapper ${dragActive ? 'drag-active' : ''}`}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              id="image-upload"
+              accept="image/*"
+              onChange={handleFileInputChange}
+              className="file-input"
+            />
+            <label htmlFor="image-upload" className="file-input-label">
+              Choose Image or Drag & Drop
+            </label>
+          </div>
         </div>
 
         {image && (
