@@ -175,8 +175,8 @@
 }
 
 .intensityLabel {
-  font-size: 13px;
-  color: var(--color-text, #ffffff);
+  font-size: 0.8125rem;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
