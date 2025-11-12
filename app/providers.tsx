@@ -197,6 +197,7 @@ export function RootProvider({ children }: ProvidersProps) {
       'hex-rgba-converter': '/api/tools/hex-rgba-converter',
       'image-resizer': '/api/tools/image-resizer',
       'image-average-color': '/api/tools/image-average-color',
+      'image-color-extractor': '/api/tools/image-color-extractor',
       'og-generator': '/api/tools/og-generator',
       'blog-generator': '/api/tools/blog-generator',
       'json-formatter': '/api/tools/json-formatter',
