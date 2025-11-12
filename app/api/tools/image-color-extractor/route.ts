@@ -80,9 +80,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 4: Update API key last used timestamp
-    if (context!.apiKey?.id) {
-      await updateApiKeyLastUsed(context!.apiKey.id)
-    }
+    await updateApiKeyLastUsed(context!.keyId, context!.isPublicDemo)
 
     // Step 5: Trigger auto-recharge if needed
     if (context!.isPaid && balanceAfterDeduction < 50) {
