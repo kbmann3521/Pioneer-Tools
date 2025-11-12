@@ -7,7 +7,7 @@
 .editorWrapper {
   display: flex;
   gap: 24px;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .canvasContainer {
@@ -27,7 +27,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: 600px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  min-height: 400px;
 }
 
 .canvas {
@@ -37,6 +39,7 @@
   width: auto;
   height: auto;
   cursor: crosshair;
+  object-fit: contain;
 }
 
 .boxInfo {
@@ -47,6 +50,7 @@
   border: 1px solid var(--color-border, #3a3a3a);
   border-radius: 4px;
   font-family: monospace;
+  text-align: center;
 }
 
 .controlPanel {
@@ -133,7 +137,7 @@
   transition: all 0.2s ease;
 }
 
-.typeButton:hover {
+.typeButton:hover:not(:disabled) {
   border-color: var(--color-primary, #4a9eff);
   background: var(--color-background, #0a0a0a);
 }
@@ -142,6 +146,11 @@
   border-color: var(--color-primary, #4a9eff);
   background: var(--color-primary, #4a9eff);
   color: white;
+}
+
+.typeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .intensityLabel {
@@ -158,6 +167,11 @@
   outline: none;
   -webkit-appearance: none;
   appearance: none;
+}
+
+.slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .slider::-webkit-slider-thumb {
@@ -181,7 +195,15 @@
   box-shadow: 0 0 8px rgba(74, 158, 255, 0.5);
 }
 
-.downloadButton {
+.slider:disabled::-webkit-slider-thumb {
+  opacity: 0.5;
+}
+
+.slider:disabled::-moz-range-thumb {
+  opacity: 0.5;
+}
+
+.censorButton {
   padding: 12px;
   border: none;
   border-radius: 6px;
@@ -193,13 +215,52 @@
   transition: all 0.2s ease;
 }
 
-.downloadButton:hover {
+.censorButton:hover {
   background: #3a8ee0;
   box-shadow: 0 0 12px rgba(74, 158, 255, 0.3);
 }
 
-.downloadButton:active {
+.censorButton:active {
   transform: scale(0.98);
+}
+
+.uncensorButton {
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: #7c3aff;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.uncensorButton:hover {
+  background: #6b2ee0;
+  box-shadow: 0 0 12px rgba(124, 58, 255, 0.3);
+}
+
+.uncensorButton:active {
+  transform: scale(0.98);
+}
+
+.downloadButton {
+  padding: 10px 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-background-secondary, #1a1a1a);
+  color: var(--color-text, #ffffff);
+  border: 1px solid var(--color-border, #3a3a3a);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.downloadButton:hover {
+  border-color: var(--color-primary, #4a9eff);
+  background: var(--color-background, #0a0a0a);
 }
 
 .changeButton {
@@ -258,5 +319,9 @@
 
   .controlPanel {
     flex: 1;
+  }
+
+  .canvasWrapper {
+    min-height: 300px;
   }
 }

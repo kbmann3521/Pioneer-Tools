@@ -27,10 +27,10 @@ export default function PhotoCensorPage(): JSX.Element {
   const [censorBox, setCensorBox] = useState<CensorBox>({ x: 50, y: 50, width: 100, height: 100 })
   const [isDragging, setIsDragging] = useState<string | null>(null)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+  const [isCensored, setIsCensored] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
 
   // Update API params
   useEffect(() => {
@@ -39,14 +39,15 @@ export default function PhotoCensorPage(): JSX.Element {
       intensity,
       boxWidth: censorBox.width,
       boxHeight: censorBox.height,
+      isCensored,
     })
-  }, [censorType, intensity, censorBox, updateParams])
+  }, [censorType, intensity, censorBox, isCensored, updateParams])
 
   // Redraw canvas when censor box changes
   useEffect(() => {
     if (!canvasRef.current || !originalImage) return
     redrawCanvas()
-  }, [censorBox, originalImage])
+  }, [censorBox, originalImage, isCensored])
 
   const handleImageUpload = (file: File | null) => {
     if (!file) return
@@ -63,12 +64,19 @@ export default function PhotoCensorPage(): JSX.Element {
       img.onload = () => {
         setOriginalImage(img)
         setImage(dataUrl)
+        setIsCensored(false)
+        
         if (canvasRef.current) {
           canvasRef.current.width = img.width
           canvasRef.current.height = img.height
-          redrawCanvas()
         }
-        setCensorBox({ x: 50, y: 50, width: 100, height: 100 })
+        
+        setCensorBox({
+          x: Math.floor(img.width * 0.2),
+          y: Math.floor(img.height * 0.2),
+          width: Math.floor(img.width * 0.4),
+          height: Math.floor(img.height * 0.4),
+        })
       }
       img.src = dataUrl
     }
@@ -109,6 +117,7 @@ export default function PhotoCensorPage(): JSX.Element {
   const handleClearImage = () => {
     setImage(null)
     setOriginalImage(null)
+    setIsCensored(false)
     setCensorBox({ x: 50, y: 50, width: 100, height: 100 })
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
@@ -121,31 +130,92 @@ export default function PhotoCensorPage(): JSX.Element {
     const ctx = canvasRef.current.getContext('2d')
     if (!ctx) return
 
+    // Draw original image
     ctx.drawImage(originalImage, 0, 0)
 
-    // Draw censor box preview
-    ctx.strokeStyle = 'rgba(74, 158, 255, 0.8)'
-    ctx.lineWidth = 2
-    ctx.strokeRect(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
-    ctx.fillStyle = 'rgba(74, 158, 255, 0.1)'
-    ctx.fillRect(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
+    if (isCensored) {
+      // Apply censoring effect permanently
+      applyCensoringEffect(ctx)
+    } else {
+      // Draw preview of censor box
+      ctx.strokeStyle = 'rgba(74, 158, 255, 0.8)'
+      ctx.lineWidth = 2
+      ctx.strokeRect(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
+      ctx.fillStyle = 'rgba(74, 158, 255, 0.1)'
+      ctx.fillRect(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
 
-    // Draw corner handles
-    const handleSize = 8
-    const corners = [
-      { x: censorBox.x, y: censorBox.y },
-      { x: censorBox.x + censorBox.width, y: censorBox.y },
-      { x: censorBox.x, y: censorBox.y + censorBox.height },
-      { x: censorBox.x + censorBox.width, y: censorBox.y + censorBox.height },
-    ]
+      // Draw corner handles
+      const handleSize = 8
+      const corners = [
+        { x: censorBox.x, y: censorBox.y },
+        { x: censorBox.x + censorBox.width, y: censorBox.y },
+        { x: censorBox.x, y: censorBox.y + censorBox.height },
+        { x: censorBox.x + censorBox.width, y: censorBox.y + censorBox.height },
+      ]
 
-    corners.forEach(corner => {
-      ctx.fillStyle = '#4a9eff'
-      ctx.fillRect(corner.x - handleSize / 2, corner.y - handleSize / 2, handleSize, handleSize)
-      ctx.strokeStyle = 'white'
-      ctx.lineWidth = 1
-      ctx.strokeRect(corner.x - handleSize / 2, corner.y - handleSize / 2, handleSize, handleSize)
-    })
+      corners.forEach(corner => {
+        ctx.fillStyle = '#4a9eff'
+        ctx.fillRect(corner.x - handleSize / 2, corner.y - handleSize / 2, handleSize, handleSize)
+        ctx.strokeStyle = 'white'
+        ctx.lineWidth = 1
+        ctx.strokeRect(corner.x - handleSize / 2, corner.y - handleSize / 2, handleSize, handleSize)
+      })
+    }
+  }
+
+  const applyCensoringEffect = (ctx: CanvasRenderingContext2D) => {
+    if (censorType === 'pixelate') {
+      const pixelSize = Math.max(2, Math.ceil(intensity * 1.5))
+      for (let i = 0; i < censorBox.height; i += pixelSize) {
+        for (let j = 0; j < censorBox.width; j += pixelSize) {
+          const pixelData = ctx.getImageData(
+            censorBox.x + j,
+            censorBox.y + i,
+            Math.min(pixelSize, censorBox.width - j),
+            Math.min(pixelSize, censorBox.height - i),
+          )
+
+          let r = 0,
+            g = 0,
+            b = 0,
+            count = 0
+          for (let k = 0; k < pixelData.data.length; k += 4) {
+            r += pixelData.data[k]
+            g += pixelData.data[k + 1]
+            b += pixelData.data[k + 2]
+            count++
+          }
+
+          r = Math.round(r / count)
+          g = Math.round(g / count)
+          b = Math.round(b / count)
+
+          for (let k = 0; k < pixelData.data.length; k += 4) {
+            pixelData.data[k] = r
+            pixelData.data[k + 1] = g
+            pixelData.data[k + 2] = b
+          }
+
+          ctx.putImageData(pixelData, censorBox.x + j, censorBox.y + i)
+        }
+      }
+    } else if (censorType === 'blur') {
+      const blurAmount = intensity * 2
+      ctx.filter = `blur(${blurAmount}px)`
+      ctx.drawImage(canvasRef.current!, censorBox.x, censorBox.y, censorBox.width, censorBox.height, censorBox.x, censorBox.y, censorBox.width, censorBox.height)
+      ctx.filter = 'none'
+    } else if (censorType === 'blackbar') {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.95)'
+      ctx.fillRect(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
+    }
+  }
+
+  const handleCensorClick = () => {
+    setIsCensored(true)
+  }
+
+  const handleUncensorClick = () => {
+    setIsCensored(false)
   }
 
   const getCanvasCoordinates = (clientX: number, clientY: number) => {
@@ -160,6 +230,8 @@ export default function PhotoCensorPage(): JSX.Element {
   }
 
   const getHandleAtPoint = (x: number, y: number): string | null => {
+    if (isCensored) return null
+    
     const handleThreshold = 12
     const { x: cx, y: cy, width: w, height: h } = censorBox
 
@@ -173,6 +245,8 @@ export default function PhotoCensorPage(): JSX.Element {
   }
 
   const handleCanvasMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (isCensored) return
+
     const coords = getCanvasCoordinates(e.clientX, e.clientY)
     const handle = getHandleAtPoint(coords.x, coords.y)
 
@@ -236,10 +310,13 @@ export default function PhotoCensorPage(): JSX.Element {
   }
 
   const updateCursor = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (isCensored || !canvasRef.current) {
+      canvasRef.current!.style.cursor = 'default'
+      return
+    }
+
     const coords = getCanvasCoordinates(e.clientX, e.clientY)
     const handle = getHandleAtPoint(coords.x, coords.y)
-
-    if (!canvasRef.current) return
 
     const cursorMap: Record<string, string> = {
       tl: 'nwse-resize',
@@ -253,76 +330,9 @@ export default function PhotoCensorPage(): JSX.Element {
   }
 
   const downloadCensoredImage = async () => {
-    if (!originalImage) return
+    if (!canvasRef.current) return
 
-    const canvas = document.createElement('canvas')
-    canvas.width = originalImage.width
-    canvas.height = originalImage.height
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    ctx.drawImage(originalImage, 0, 0)
-
-    // Apply censoring effect
-    const imageData = ctx.getImageData(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
-    const data = imageData.data
-
-    if (censorType === 'pixelate') {
-      const pixelSize = Math.ceil(intensity * 1.5)
-      for (let i = 0; i < censorBox.height; i += pixelSize) {
-        for (let j = 0; j < censorBox.width; j += pixelSize) {
-          const pixelData = ctx.getImageData(
-            censorBox.x + j,
-            censorBox.y + i,
-            Math.min(pixelSize, censorBox.width - j),
-            Math.min(pixelSize, censorBox.height - i),
-          )
-
-          let r = 0,
-            g = 0,
-            b = 0,
-            count = 0
-          for (let k = 0; k < pixelData.data.length; k += 4) {
-            r += pixelData.data[k]
-            g += pixelData.data[k + 1]
-            b += pixelData.data[k + 2]
-            count++
-          }
-
-          r = Math.round(r / count)
-          g = Math.round(g / count)
-          b = Math.round(b / count)
-
-          for (let k = 0; k < pixelData.data.length; k += 4) {
-            pixelData.data[k] = r
-            pixelData.data[k + 1] = g
-            pixelData.data[k + 2] = b
-          }
-
-          ctx.putImageData(pixelData, censorBox.x + j, censorBox.y + i)
-        }
-      }
-    } else if (censorType === 'blur') {
-      const blurRadius = intensity
-      for (let i = 0; i < blurRadius; i++) {
-        const tempCanvas = document.createElement('canvas')
-        tempCanvas.width = canvas.width
-        tempCanvas.height = canvas.height
-        const tempCtx = tempCanvas.getContext('2d')
-        if (!tempCtx) return
-
-        tempCtx.drawImage(canvas, 0, 0)
-        ctx.filter = `blur(${blurRadius}px)`
-        ctx.drawImage(tempCanvas, 0, 0)
-      }
-      ctx.filter = 'none'
-    } else if (censorType === 'blackbar') {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.95)'
-      ctx.fillRect(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
-    }
-
-    // Download
-    canvas.toBlob(blob => {
+    canvasRef.current.toBlob(blob => {
       if (!blob) return
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -374,7 +384,7 @@ export default function PhotoCensorPage(): JSX.Element {
         ) : (
           <div className={styles.container}>
             <div className={styles.editorWrapper}>
-              <div className={styles.canvasContainer} ref={containerRef}>
+              <div className={styles.canvasContainer}>
                 <div className={styles.canvasWrapper}>
                   <canvas
                     ref={canvasRef}
@@ -389,7 +399,11 @@ export default function PhotoCensorPage(): JSX.Element {
                   />
                 </div>
                 <div className={styles.boxInfo}>
-                  Position: ({censorBox.x}, {censorBox.y}) | Size: {censorBox.width} × {censorBox.height}
+                  {isCensored ? (
+                    <span>Image censored ✓</span>
+                  ) : (
+                    <span>Position: ({censorBox.x}, {censorBox.y}) | Size: {censorBox.width} × {censorBox.height}</span>
+                  )}
                 </div>
               </div>
 
@@ -402,6 +416,7 @@ export default function PhotoCensorPage(): JSX.Element {
                         key={type}
                         className={`${styles.typeButton} ${censorType === type ? styles.active : ''}`}
                         onClick={() => setCensorType(type)}
+                        disabled={isCensored}
                       >
                         {type.charAt(0).toUpperCase() + type.slice(1)}
                       </button>
@@ -420,15 +435,31 @@ export default function PhotoCensorPage(): JSX.Element {
                     value={intensity}
                     onChange={e => setIntensity(Number(e.target.value))}
                     className={styles.slider}
+                    disabled={isCensored}
                   />
                 </div>
 
                 <div className={styles.section}>
+                  {!isCensored ? (
+                    <button
+                      className={styles.censorButton}
+                      onClick={handleCensorClick}
+                    >
+                      Apply Censor
+                    </button>
+                  ) : (
+                    <button
+                      className={styles.uncensorButton}
+                      onClick={handleUncensorClick}
+                    >
+                      Edit Selection
+                    </button>
+                  )}
                   <button
                     className={styles.downloadButton}
                     onClick={downloadCensoredImage}
                   >
-                    Download Censored Image
+                    Download Image
                   </button>
                   <button
                     className={styles.changeButton}
@@ -441,11 +472,12 @@ export default function PhotoCensorPage(): JSX.Element {
                 <div className={styles.instructionsBox}>
                   <strong>How to use:</strong>
                   <ul>
-                    <li>Select censor type above</li>
-                    <li>Drag the box to move it</li>
+                    <li>Select censor type</li>
+                    <li>Drag box to move</li>
                     <li>Drag corners to resize</li>
-                    <li>Adjust intensity slider</li>
-                    <li>Download to apply effect</li>
+                    <li>Adjust intensity</li>
+                    <li>Click "Apply Censor"</li>
+                    <li>Download image</li>
                   </ul>
                 </div>
               </div>
