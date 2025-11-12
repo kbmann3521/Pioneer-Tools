@@ -385,6 +385,14 @@ export default function PhotoCensorPage(): JSX.Element {
               onDragLeave={handleDragLeave}
               onDragOver={handleDragOver}
               onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  fileInputRef.current?.click()
+                }
+              }}
             >
               <input
                 ref={fileInputRef}
@@ -474,21 +482,26 @@ export default function PhotoCensorPage(): JSX.Element {
                   ) : (
                     <button
                       className={styles.uncensorButton}
-                      onClick={() => {
-                        setIsCensored(false)
-                        handleClearImage()
-                      }}
+                      onClick={() => setIsCensored(false)}
                     >
                       Start Over
                     </button>
                   )}
                   {isCensored && (
-                    <button
-                      className={styles.downloadButton}
-                      onClick={downloadCensoredImage}
-                    >
-                      Download Image
-                    </button>
+                    <>
+                      <button
+                        className={styles.downloadButton}
+                        onClick={downloadCensoredImage}
+                      >
+                        Download Image
+                      </button>
+                      <button
+                        className={styles.changeButton}
+                        onClick={handleClearImage}
+                      >
+                        Change Image
+                      </button>
+                    </>
                   )}
                   {!isCensored && (
                     <button
