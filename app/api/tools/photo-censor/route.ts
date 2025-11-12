@@ -1,51 +1,130 @@
 import { NextRequest } from 'next/server'
+import sharp from 'sharp'
 import { validateToolRequest, validateToolRequestBody, updateApiKeyLastUsed } from '@/lib/server/toolMiddleware'
 import { validationErrorResponse, insufficientBalanceResponse, internalErrorResponse, successResponse } from '@/lib/server/apiResponse'
-import { applyCensoring, type PhotoCensorInput } from '@/lib/tools/photo-censor'
+import { type PhotoCensorInput } from '@/lib/tools/photo-censor'
+import { checkBalance, checkMonthlyLimit, deductCredits } from '@/lib/server/billing'
+import { handleAutoRecharge } from '@/lib/server/autoRecharge'
+import { getToolCost } from '@/config/pricing.config'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
+
+const TOOL_ID = 'photo-censor'
+const STORAGE_BUCKET = 'censored-images'
+const SIGNED_URL_EXPIRY_SECONDS = 86400 // 1 day
 
 /**
- * Censor entire image based on intensity using pixelation
- * Since Canvas API isn't available in Node.js, we return metadata
- * The client-side tool page handles actual image censoring
+ * Apply censoring effects to image using Sharp
  */
-function applyCensoringFullImage(input: PhotoCensorInput) {
+async function applyCensoringWithSharp(input: PhotoCensorInput): Promise<{
+  processedImageBuffer: Buffer
+  imageWidth: number
+  imageHeight: number
+  error?: string
+}> {
   try {
     const { imageData, regions } = input
 
     if (!imageData) {
       return {
-        censoredImageData: '',
-        regionsApplied: 0,
+        processedImageBuffer: Buffer.alloc(0),
         imageWidth: 0,
         imageHeight: 0,
         error: 'No image data provided',
       }
     }
 
-    // For API usage, we apply censoring to the entire image
-    // The intensity determines the pixelation/blur strength
+    // Convert base64 to buffer
+    const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '')
+    const imageBuffer = Buffer.from(base64Data, 'base64')
+
+    // Get image metadata
+    const metadata = await sharp(imageBuffer).metadata()
+    if (!metadata.width || !metadata.height) {
+      return {
+        processedImageBuffer: Buffer.alloc(0),
+        imageWidth: 0,
+        imageHeight: 0,
+        error: 'Unable to read image dimensions',
+      }
+    }
+
+    let processedImage = sharp(imageBuffer)
+
+    // Apply censoring to each region
+    for (const region of regions) {
+      const { x, y, width, height, type, intensity = 5 } = region
+
+      // Extract the region to censor
+      const regionBuffer = await sharp(imageBuffer)
+        .extract({
+          left: Math.max(0, x),
+          top: Math.max(0, y),
+          width: Math.min(width, metadata.width - x),
+          height: Math.min(height, metadata.height - y),
+        })
+        .toBuffer()
+
+      let censoredRegion: Buffer
+
+      if (type === 'pixelate') {
+        // Pixelate by reducing quality and scaling back up
+        const pixelSize = Math.max(2, Math.ceil(intensity * 1.5))
+        censoredRegion = await sharp(regionBuffer)
+          .resize(Math.ceil(width / pixelSize), Math.ceil(height / pixelSize), {
+            fit: 'fill',
+            kernel: 'nearest',
+          })
+          .resize(width, height, {
+            fit: 'fill',
+            kernel: 'nearest',
+          })
+          .toBuffer()
+      } else if (type === 'blur') {
+        // Apply blur filter
+        const blurAmount = Math.ceil(intensity * 2)
+        censoredRegion = await sharp(regionBuffer)
+          .blur(blurAmount)
+          .toBuffer()
+      } else if (type === 'blackbar') {
+        // Create solid black image
+        censoredRegion = await sharp({
+          create: {
+            width,
+            height,
+            channels: 3,
+            background: { r: 0, g: 0, b: 0 },
+          },
+        }).toBuffer()
+      } else {
+        continue
+      }
+
+      // Composite the censored region back onto the main image
+      processedImage = processedImage.composite([
+        {
+          input: censoredRegion,
+          left: Math.max(0, x),
+          top: Math.max(0, y),
+        },
+      ])
+    }
+
+    const processedImageBuffer = await processedImage.png().toBuffer()
+
     return {
-      censoredImageData: imageData,
-      regionsApplied: 1,
-      imageWidth: 0,
-      imageHeight: 0,
-      note: 'In a production environment, server-side image processing libraries (e.g., Sharp, Pillow) would apply the censoring effect. For client-side preview, use the tool UI directly.',
+      processedImageBuffer,
+      imageWidth: metadata.width,
+      imageHeight: metadata.height,
     }
   } catch (error) {
     return {
-      censoredImageData: '',
-      regionsApplied: 0,
+      processedImageBuffer: Buffer.alloc(0),
       imageWidth: 0,
       imageHeight: 0,
-      error: error instanceof Error ? error.message : 'Failed to apply censoring',
+      error: error instanceof Error ? error.message : 'Failed to process image',
     }
   }
 }
-import { checkBalance, checkMonthlyLimit, deductCredits } from '@/lib/server/billing'
-import { handleAutoRecharge } from '@/lib/server/autoRecharge'
-import { getToolCost } from '@/config/pricing.config'
-
-const TOOL_ID = 'photo-censor'
 
 export async function POST(request: NextRequest) {
   try {
@@ -115,17 +194,41 @@ export async function POST(request: NextRequest) {
       balanceAfterDeduction = deductResult.newBalance
     }
 
-    // Step 3: Process the request - censor entire image based on intensity
-    const result = applyCensoringFullImage(input)
+    // Step 3: Process the image with Sharp
+    const processingResult = await applyCensoringWithSharp(input)
 
-    if (result.error) {
-      return validationErrorResponse(result.error)
+    if (processingResult.error) {
+      return validationErrorResponse(processingResult.error)
     }
 
-    // Step 4: Update API key last used timestamp
+    // Step 4: Upload processed image to Supabase Storage
+    const fileName = `${context!.userId}-${Date.now()}.png`
+    const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
+      .from(STORAGE_BUCKET)
+      .upload(fileName, processingResult.processedImageBuffer, {
+        contentType: 'image/png',
+        upsert: false,
+      })
+
+    if (uploadError) {
+      console.error('[photo-censor] Upload error:', uploadError)
+      return internalErrorResponse('Failed to upload processed image')
+    }
+
+    // Step 5: Generate signed URL (expires in 1 day)
+    const { data: signedUrlData, error: signedUrlError } = await supabaseAdmin.storage
+      .from(STORAGE_BUCKET)
+      .createSignedUrl(fileName, SIGNED_URL_EXPIRY_SECONDS)
+
+    if (signedUrlError || !signedUrlData?.signedUrl) {
+      console.error('[photo-censor] Signed URL error:', signedUrlError)
+      return internalErrorResponse('Failed to generate download URL')
+    }
+
+    // Step 6: Update API key last used timestamp
     await updateApiKeyLastUsed(context!.keyId, context!.isPublicDemo)
 
-    // Step 5: Trigger auto-recharge if needed
+    // Step 7: Trigger auto-recharge if needed
     if (context!.isPaid && balanceAfterDeduction < 50) {
       const autoRechargeResult = await handleAutoRecharge(context!.userProfile!, balanceAfterDeduction)
       if (autoRechargeResult.triggered && autoRechargeResult.newBalance !== undefined) {
@@ -133,13 +236,22 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Return success response
-    return successResponse(result, {
-      remaining: balanceAfterDeduction,
-      balance: balanceAfterDeduction,
-      costThisCall: toolCost,
-      requestsPerSecond: context!.isPaid ? 10 : 1,
-    })
+    // Return success response with signed URL
+    return successResponse(
+      {
+        censoredImageUrl: signedUrlData.signedUrl,
+        regionsApplied: input.regions.length,
+        imageWidth: processingResult.imageWidth,
+        imageHeight: processingResult.imageHeight,
+        expiresIn: SIGNED_URL_EXPIRY_SECONDS,
+      },
+      {
+        remaining: balanceAfterDeduction,
+        balance: balanceAfterDeduction,
+        costThisCall: toolCost,
+        requestsPerSecond: context!.isPaid ? 10 : 1,
+      },
+    )
   } catch (error) {
     console.error(`[${TOOL_ID}] Error:`, error)
     return internalErrorResponse(error instanceof Error ? error.message : 'Failed to apply censoring effects')
