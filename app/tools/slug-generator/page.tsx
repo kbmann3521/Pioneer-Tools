@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import CopyFeedback from '@/app/components/CopyFeedback'
 import { createSlug, generateSlug } from '@/lib/tools/slug-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
@@ -17,7 +16,7 @@ export default function SlugGeneratorPage(): JSX.Element {
   const [text, setText] = useState<string>('')
   const [separator, setSeparator] = useState<string>('-')
   const [result, setResult] = useState<SlugGeneratorResult | null>(null)
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const { isCopied, copyToClipboard } = useClipboard()
 
   // Update API params and generate slug
   useEffect(() => {
@@ -78,11 +77,11 @@ export default function SlugGeneratorPage(): JSX.Element {
                 <h3>Generated Slug</h3>
                 <button
                   className="copy-btn"
-                  onClick={(e) => copyToClipboard(result.slug, e)}
+                  onClick={() => copyToClipboard(result.slug)}
                   title="Copy slug"
                   type="button"
                 >
-                  Copy
+                  {isCopied ? 'Copied!' : 'Copy'}
                 </button>
               </div>
               <div className="slug-output">
@@ -102,8 +101,6 @@ export default function SlugGeneratorPage(): JSX.Element {
             </div>
           </div>
         )}
-
-        <CopyFeedback message={copyMessage} position={copyPosition} />
       </div>
 
       <AboutToolAccordion
