@@ -367,6 +367,21 @@
   margin-right: 6px;
 }
 
+/* Light theme overrides */
+[data-theme="light"] .slider::-webkit-slider-thumb,
+[data-theme="light"] .slider::-moz-range-thumb {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .slider::-webkit-slider-thumb:hover,
+[data-theme="light"] .slider::-moz-range-thumb:hover {
+  border-color: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] .instructionsBox li:before {
+  color: var(--color-primary, #7c3aed);
+}
+
 @media (max-width: 1024px) {
   .editorWrapper {
     flex-direction: column;
