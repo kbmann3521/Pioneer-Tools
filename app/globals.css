@@ -3155,9 +3155,9 @@ select:focus {
   padding: 2rem;
   margin-bottom: 2rem;
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
   gap: 2rem;
-  align-items: start;
 }
 
 .image-preview-wrapper {
