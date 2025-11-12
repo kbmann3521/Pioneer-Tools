@@ -133,9 +133,9 @@
 }
 
 .sectionLabel {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--color-text, #ffffff);
+  color: var(--text-primary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
