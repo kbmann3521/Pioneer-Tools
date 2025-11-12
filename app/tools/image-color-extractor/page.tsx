@@ -310,17 +310,19 @@ export default function ImageColorExtractorPage(): JSX.Element {
         </div>
 
         {image && (
-          <div className="color-analyzer-container">
-            <div className="image-preview-wrapper">
-              <img src={image} alt="Uploaded preview" className="image-preview-thumbnail" />
-              <button className="clear-image-btn" onClick={handleClearImage}>
-                ✕ Change Image
-              </button>
+          <div className={styles.container}>
+            <div className={styles.photoContainer}>
+              <div className={styles.imagePreviewWrapper}>
+                <img src={image} alt="Uploaded preview" className={styles.imagePreviewThumbnail} />
+                <button className={styles.clearImageBtn} onClick={handleClearImage}>
+                  ✕ Change Image
+                </button>
+              </div>
             </div>
 
-            <div className="color-result-box">
+            <div className={styles.colorBlockContainer}>
               <div className={styles.colorCountSelector}>
-                <label htmlFor="color-count">Number of colors:</label>
+                <label htmlFor="color-count" className={styles.colorCountSelectorLabel}>Number of colors:</label>
                 <select
                   id="color-count"
                   value={colorCount}
@@ -334,7 +336,9 @@ export default function ImageColorExtractorPage(): JSX.Element {
                   ))}
                 </select>
               </div>
+            </div>
 
+            <div className={styles.everythingElseContainer}>
               {colors && colors.length > 0 ? (
                 <div className={styles.colorsDisplaySection}>
                   <div className={styles.colorsGrid}>
@@ -363,13 +367,13 @@ export default function ImageColorExtractorPage(): JSX.Element {
                         />
                       </div>
 
-                      <div className="color-values-display">
-                        <div className="color-value-item">
-                          <div className="value-label">HEX</div>
-                          <div className="value-content">
+                      <div className={styles.colorValuesDisplay}>
+                        <div className={styles.colorValueItem}>
+                          <div className={styles.valueLabel}>HEX</div>
+                          <div className={styles.valueContent}>
                             <code>{selectedColor.hex}</code>
                             <button
-                              className="mini-copy-btn"
+                              className={styles.miniCopyBtn}
                               onClick={() => copyColor(selectedColor.hex, selectedColorIndex, 'hex')}
                               title="Copy HEX"
                             >
@@ -378,12 +382,12 @@ export default function ImageColorExtractorPage(): JSX.Element {
                           </div>
                         </div>
 
-                        <div className="color-value-item">
-                          <div className="value-label">RGB</div>
-                          <div className="value-content">
+                        <div className={styles.colorValueItem}>
+                          <div className={styles.valueLabel}>RGB</div>
+                          <div className={styles.valueContent}>
                             <code>{selectedColor.rgb}</code>
                             <button
-                              className="mini-copy-btn"
+                              className={styles.miniCopyBtn}
                               onClick={() => copyColor(selectedColor.rgb, selectedColorIndex, 'rgb')}
                               title="Copy RGB"
                             >
@@ -392,27 +396,27 @@ export default function ImageColorExtractorPage(): JSX.Element {
                           </div>
                         </div>
 
-                        <div className="color-value-item">
-                          <div className="value-label">Components</div>
-                          <div className="rgb-components">
-                            <div className="component">
-                              <span className="comp-label">R:</span>
-                              <span className="comp-value">{selectedColor.r}</span>
+                        <div className={styles.colorValueItem}>
+                          <div className={styles.valueLabel}>Components</div>
+                          <div className={styles.rgbComponents}>
+                            <div className={styles.component}>
+                              <span className={styles.compLabel}>R:</span>
+                              <span className={styles.compValue}>{selectedColor.r}</span>
                             </div>
-                            <div className="component">
-                              <span className="comp-label">G:</span>
-                              <span className="comp-value">{selectedColor.g}</span>
+                            <div className={styles.component}>
+                              <span className={styles.compLabel}>G:</span>
+                              <span className={styles.compValue}>{selectedColor.g}</span>
                             </div>
-                            <div className="component">
-                              <span className="comp-label">B:</span>
-                              <span className="comp-value">{selectedColor.b}</span>
+                            <div className={styles.component}>
+                              <span className={styles.compLabel}>B:</span>
+                              <span className={styles.compValue}>{selectedColor.b}</span>
                             </div>
                           </div>
                         </div>
 
-                        <div className="color-value-item">
-                          <div className="value-label">Prominence</div>
-                          <div className="value-content">
+                        <div className={styles.colorValueItem}>
+                          <div className={styles.valueLabel}>Prominence</div>
+                          <div className={styles.valueContent}>
                             <code>{selectedColor.percentage}%</code>
                           </div>
                         </div>
@@ -421,7 +425,7 @@ export default function ImageColorExtractorPage(): JSX.Element {
                   )}
                 </div>
               ) : (
-                <div className="error-message">No colors could be extracted from the image</div>
+                <div className={styles.errorMessage}>No colors could be extracted from the image</div>
               )}
             </div>
           </div>
