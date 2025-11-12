@@ -193,7 +193,7 @@ export interface ImageAverageColorResult {
    GENERIC TOOL TYPES
    ============================================ */
 
-export type ToolParams = 
+export type ToolParams =
   | CaseConverterParams
   | Base64ConverterParams
   | JsonFormatterParams
@@ -205,6 +205,7 @@ export type ToolParams =
   | ImageResizerParams
   | WordCounterParams
   | BlogGeneratorParams
+  | ImageAverageColorParams
 
 export type ToolResult =
   | CaseConverterResult
@@ -218,6 +219,7 @@ export type ToolResult =
   | ImageResizerResult
   | WordCounterResult
   | BlogGeneratorResult
+  | ImageAverageColorResult
 
 /* ============================================
    API RESPONSE TYPES
