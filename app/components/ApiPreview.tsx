@@ -460,14 +460,9 @@ echo json_encode($result, JSON_PRETTY_PRINT);
         <div className="api-test-section">
           <button
             onClick={runCode}
-            disabled={isRunning || ['curl', 'java', 'go', 'csharp', 'ruby', 'php'].includes(language)}
+            disabled={isRunning}
             className="run-code-btn"
-            title={
-              language === 'curl' ? 'cURL examples must be run manually in your terminal' :
-              ['java', 'go', 'csharp'].includes(language) ? 'Compiled languages must be run locally with their compiler' :
-              ['ruby', 'php'].includes(language) ? 'Network-based languages must be run locally with their runtime' :
-              'Execute this code in a sandboxed environment'
-            }
+            title="Test the API endpoint"
           >
             {isRunning ? 'Running...' : 'Run Test'}
           </button>
