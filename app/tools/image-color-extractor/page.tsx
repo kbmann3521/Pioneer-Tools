@@ -319,13 +319,13 @@ export default function ImageColorExtractorPage(): JSX.Element {
             </div>
 
             <div className="color-result-box">
-              <div className="color-count-selector">
+              <div className={styles.colorCountSelector}>
                 <label htmlFor="color-count">Number of colors:</label>
                 <select
                   id="color-count"
                   value={colorCount}
                   onChange={handleColorCountChange}
-                  className="color-count-dropdown"
+                  className={styles.colorCountDropdown}
                 >
                   {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
                     <option key={num} value={num}>
@@ -336,29 +336,29 @@ export default function ImageColorExtractorPage(): JSX.Element {
               </div>
 
               {colors && colors.length > 0 ? (
-                <div className="colors-display-section">
-                  <div className="colors-grid">
+                <div className={styles.colorsDisplaySection}>
+                  <div className={styles.colorsGrid}>
                     {colors.map((color, index) => (
                       <button
                         key={index}
-                        className={`color-swatch-button ${selectedColorIndex === index ? 'selected' : ''}`}
+                        className={`${styles.colorSwatchButton} ${selectedColorIndex === index ? styles.selected : ''}`}
                         onClick={() => setSelectedColorIndex(index)}
                         title={`${color.hex} (${color.percentage}%)`}
                       >
                         <div
-                          className="color-swatch-display"
+                          className={styles.colorSwatchDisplay}
                           style={{ backgroundColor: color.hex }}
                         />
-                        <div className="color-percentage">{color.percentage}%</div>
+                        <div className={styles.colorPercentage}>{color.percentage}%</div>
                       </button>
                     ))}
                   </div>
 
                   {selectedColor && (
-                    <div className="selected-color-details">
-                      <div className="selected-color-preview">
+                    <div className={styles.selectedColorDetails}>
+                      <div className={styles.selectedColorPreview}>
                         <div
-                          className="selected-swatch"
+                          className={styles.selectedSwatch}
                           style={{ backgroundColor: selectedColor.hex }}
                         />
                       </div>
