@@ -131,14 +131,20 @@ export default function PhotoCensorPage(): JSX.Element {
     const canvas = canvasRef.current
     const img = imgRef.current
 
-    // Get displayed dimensions of the image
-    const displayRect = img.getBoundingClientRect()
-    const containerRect = canvas.parentElement?.getBoundingClientRect()
-    if (!containerRect) return
-
-    // Set canvas to actual pixel dimensions for high quality rendering
+    // Set canvas pixel dimensions to actual image dimensions
     canvas.width = imageDimensions.width
     canvas.height = imageDimensions.height
+
+    // Set canvas display size to match the img element's displayed size
+    const imgRect = img.getBoundingClientRect()
+    const parentRect = canvas.parentElement?.getBoundingClientRect()
+    if (!parentRect) return
+
+    const displayWidth = img.offsetWidth || imgRect.width
+    const displayHeight = img.offsetHeight || imgRect.height
+
+    canvas.style.width = displayWidth + 'px'
+    canvas.style.height = displayHeight + 'px'
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
@@ -448,7 +454,7 @@ export default function PhotoCensorPage(): JSX.Element {
                 </div>
                 <div className={styles.boxInfo}>
                   {isCensored ? (
-                    <span>✓ Image censored</span>
+                    <span>��� Image censored</span>
                   ) : (
                     <span>Position: ({censorBox.x}, {censorBox.y}) | Size: {censorBox.width} × {censorBox.height}</span>
                   )}
