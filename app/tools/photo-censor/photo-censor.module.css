@@ -246,10 +246,10 @@
 
 .uncensorButton {
   padding: 12px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 6px;
-  background: #7c3aff;
-  color: white;
+  background: var(--color-background, #0a0a0a);
+  color: var(--color-text, #ffffff);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -257,8 +257,9 @@
 }
 
 .uncensorButton:hover {
-  background: #6b2ee0;
-  box-shadow: 0 0 12px rgba(124, 58, 255, 0.3);
+  border-color: var(--color-primary, #7c3aed);
+  background: var(--color-background, #0a0a0a);
+  box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
 }
 
 .uncensorButton:active {
