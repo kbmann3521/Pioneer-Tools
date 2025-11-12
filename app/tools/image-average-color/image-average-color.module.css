@@ -102,6 +102,7 @@
   background-color: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
+  width: 100%;
 }
 
 .algoLabel {
