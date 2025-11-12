@@ -367,10 +367,10 @@ export const toolDescriptions: Record<string, string> = {
   'password-generator': `
     <h3>What is a Password Generator?</h3>
     <p>A password generator creates strong, random passwords tailored to your security requirements. Customize length (4-128 characters), character types (uppercase, lowercase, numbers, symbols), and generate instantly with strength indicators.</p>
-    
+
     <h3>Why Use Password Generator?</h3>
     <p>Strong, unique passwords are essential for account security. A password generator eliminates weak, predictable passwords and ensures you create different passwords for each account. Protecting your accounts with strong passwords prevents unauthorized access and data breaches.</p>
-    
+
     <h3>How to Use</h3>
     <p>Set your password requirements (length and character types), click Generate, and see a strong password instantly. The strength indicator shows your password security level. Copy to clipboard and use immediately or generate again for a different password.</p>
 
@@ -381,7 +381,7 @@ export const toolDescriptions: Record<string, string> = {
       <li><strong>Good:</strong> Long passwords with uppercase, lowercase, and numbers</li>
       <li><strong>Strong:</strong> Very long passwords with all character types including symbols</li>
     </ul>
-    
+
     <h3>Customization Options</h3>
     <ul>
       <li><strong>Length:</strong> Set password length from 4 to 128 characters</li>
@@ -390,7 +390,7 @@ export const toolDescriptions: Record<string, string> = {
       <li><strong>Numbers:</strong> Include 0-9 digits</li>
       <li><strong>Symbols:</strong> Include special characters for maximum security</li>
     </ul>
-    
+
     <h3>Common Use Cases</h3>
     <ul>
       <li><strong>Account Creation:</strong> Generate passwords for new accounts</li>
@@ -407,6 +407,44 @@ export const toolDescriptions: Record<string, string> = {
       <li><strong>API Key Generation:</strong> Create secure API keys and tokens for third-party integrations</li>
       <li><strong>Database Backup Scripts:</strong> Generate strong passwords for database backup tool configurations</li>
       <li><strong>Automated Security:</strong> Generate default credentials for automated deployments and testing environments</li>
+    </ul>
+  `,
+
+  'image-average-color': `
+    <h3>What is an Image Average Color Finder?</h3>
+    <p>An Image Average Color Finder extracts the dominant or average color from any image and provides it in multiple formats. Get color values in HEX, RGB, RGBA, HSL, and individual RGB component values instantly from any image you upload.</p>
+
+    <h3>Why Extract Average Colors?</h3>
+    <p>Extracting average colors from images is useful for design, branding, and image analysis. Get the primary color from photos for color palette generation, theme matching, or design inspiration. Perfect for designers, developers, and content creators who need to work with image colors programmatically.</p>
+
+    <h3>How to Use</h3>
+    <p>Upload an image file and instantly see the average color displayed with all format conversions. Copy any format (HEX, RGB, RGBA, HSL) with one click to use in your design tools, CSS, or applications.</p>
+
+    <h3>Color Formats Provided</h3>
+    <ul>
+      <li><strong>HEX:</strong> Hexadecimal color code (e.g., #FF5733) - perfect for CSS and design tools</li>
+      <li><strong>RGB:</strong> Red, Green, Blue values (e.g., rgb(255, 87, 51)) - standard for digital displays</li>
+      <li><strong>RGBA:</strong> RGB with alpha transparency (e.g., rgba(255, 87, 51, 1)) - for CSS with transparency</li>
+      <li><strong>HSL:</strong> Hue, Saturation, Lightness (e.g., hsl(15, 100%, 60%)) - intuitive for designers</li>
+      <li><strong>RGB Components:</strong> Individual R, G, B values for programmatic use</li>
+    </ul>
+
+    <h3>Common Use Cases</h3>
+    <ul>
+      <li><strong>Design Systems:</strong> Extract brand colors from images for design system palettes</li>
+      <li><strong>Theme Generation:</strong> Automatically generate color themes matching uploaded images</li>
+      <li><strong>Color Palettes:</strong> Create color palettes from product photos or artwork</li>
+      <li><strong>Image Analysis:</strong> Analyze dominant colors for image categorization and tagging</li>
+      <li><strong>Web Design:</strong> Match website colors to brand images or product photos</li>
+    </ul>
+
+    <h3>API Endpoint Use Cases</h3>
+    <ul>
+      <li><strong>Automated Theme Generation:</strong> Extract dominant colors from product images to auto-generate category page themes</li>
+      <li><strong>Brand Color Analysis:</strong> Analyze uploaded brand logos to extract primary colors for style guides</li>
+      <li><strong>Image Metadata:</strong> Add color metadata to images for search, filtering, and organization</li>
+      <li><strong>Dynamic UI Theming:</strong> Generate dynamic color schemes based on user-uploaded images</li>
+      <li><strong>Content Recommendation:</strong> Use extracted colors to recommend similar images or products with matching color palettes</li>
     </ul>
   `,
 }
