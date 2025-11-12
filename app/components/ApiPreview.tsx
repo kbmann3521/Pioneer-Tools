@@ -379,9 +379,17 @@ echo json_encode($result, JSON_PRETTY_PRINT);
           executionTime: 0,
         })
       } else {
+        let errorMessage = `Server error (${response.status}): ${response.statusText}`
+        if (result.error) {
+          if (typeof result.error === 'object' && result.error.message) {
+            errorMessage = result.error.message
+          } else if (typeof result.error === 'string') {
+            errorMessage = result.error
+          }
+        }
         setExecutionResult({
           success: false,
-          error: result.error || `Server error (${response.status}): ${response.statusText}`,
+          error: errorMessage,
           executionTime: 0,
         })
       }
