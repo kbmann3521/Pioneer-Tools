@@ -210,12 +210,18 @@ export interface ImageColorExtractorResult {
   error?: string
 }
 
-export interface PhotoCensorParams {
-  censorType: 'pixelate' | 'blur' | 'blackbar'
+export interface CensorRegion {
+  x: number
+  y: number
+  width: number
+  height: number
+  type: 'pixelate' | 'blur' | 'blackbar'
   intensity: number
-  boxWidth: number
-  boxHeight: number
-  isCensored: boolean
+}
+
+export interface PhotoCensorParams {
+  imageData: string
+  regions: CensorRegion[]
 }
 
 export interface PhotoCensorResult {
