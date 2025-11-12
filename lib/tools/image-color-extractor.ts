@@ -43,9 +43,9 @@ export function extractColorFromImage(input: ImageColorExtractorInput): ImageCol
       }
     }
 
-    // Extract colors from the image
-    const allPixels = extractPixelsFromBase64(imageData)
-    
+    // Extract pixel data from the image
+    let allPixels = extractPixelsFromCanvasBase64(imageData)
+
     if (allPixels.length === 0) {
       return {
         colors: [],
@@ -53,19 +53,16 @@ export function extractColorFromImage(input: ImageColorExtractorInput): ImageCol
       }
     }
 
-    // Quantize colors to reduce palette
-    const quantizedColors = quantizeColors(allPixels, Math.min(colorCount, 256))
+    // Quantize colors to reduce palette and find dominant colors
+    const quantizedColors = quantizeColorsWithKMeans(allPixels, colorCount)
 
     // Sort by frequency (descending)
     quantizedColors.sort((a, b) => b.frequency - a.frequency)
 
-    // Take top N colors
-    const topColors = quantizedColors.slice(0, colorCount)
-
     // Calculate percentages
-    const totalFrequency = topColors.reduce((sum, c) => sum + c.frequency, 0)
+    const totalFrequency = quantizedColors.reduce((sum, c) => sum + c.frequency, 0)
 
-    const colors: ExtractedColor[] = topColors.map(color => ({
+    const colors: ExtractedColor[] = quantizedColors.map(color => ({
       hex: rgbToHex(color.r, color.g, color.b),
       rgb: `rgb(${color.r}, ${color.g}, ${color.b})`,
       r: color.r,
