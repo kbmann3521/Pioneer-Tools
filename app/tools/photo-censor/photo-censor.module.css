@@ -120,7 +120,8 @@
   display: block;
   cursor: pointer;
   font-size: 13px;
-  color: var(--color-text-secondary, #a0a0a0);
+  color: var(--color-primary, #7c3aed);
+  font-weight: 500;
 }
 
 .section {
