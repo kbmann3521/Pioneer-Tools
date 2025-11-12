@@ -20,7 +20,8 @@ interface PhotoCensorPageProps {
   onParamsChange?: (params: Record<string, any>) => void
 }
 
-export default function PhotoCensorPage({ onParamsChange }: PhotoCensorPageProps = {}): JSX.Element {
+export default function PhotoCensorPage(props?: PhotoCensorPageProps): JSX.Element {
+  const onParamsChange = props?.onParamsChange
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('photo-censor')
   const { session } = useAuth()
