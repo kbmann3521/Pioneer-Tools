@@ -212,13 +212,18 @@
 }
 
 .slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: var(--color-primary, #4a9eff);
+  background: var(--color-primary, #7c3aed);
   cursor: pointer;
-  border: none;
-  box-shadow: 0 0 8px rgba(74, 158, 255, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
 }
 
 .slider:disabled::-webkit-slider-thumb {
