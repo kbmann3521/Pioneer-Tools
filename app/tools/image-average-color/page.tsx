@@ -8,6 +8,7 @@ import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
+import styles from './image-average-color.module.css'
 
 export default function ImageAverageColorPage(): JSX.Element {
   const { updateParams } = useApiParams()
