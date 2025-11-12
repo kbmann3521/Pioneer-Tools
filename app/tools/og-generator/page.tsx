@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import CopyFeedback from '@/app/components/CopyFeedback'
 import { generateOGTags, type OGGeneratorOutput } from '@/lib/tools/og-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
@@ -24,7 +23,7 @@ export default function OGGeneratorPage(): JSX.Element {
   })
 
   const [result, setResult] = useState<OGGeneratorOutput | null>(null)
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const { isCopied, copyToClipboard } = useClipboard()
 
   // Update API params whenever form data changes
   useEffect(() => {
@@ -160,15 +159,13 @@ export default function OGGeneratorPage(): JSX.Element {
               <pre className="code-block">
                 <code>{metaTags}</code>
               </pre>
-              <button className="copy-btn" onClick={(e) => copyToClipboard(metaTags, e)}>
-                Copy All Tags
+              <button className="copy-btn" onClick={() => copyToClipboard(metaTags)}>
+                {isCopied ? 'Copied!' : 'Copy All Tags'}
               </button>
             </div>
           </>
         )}
       </div>
-
-      <CopyFeedback message={copyMessage} position={copyPosition} />
 
       <AboutToolAccordion
         toolId="og-generator"
