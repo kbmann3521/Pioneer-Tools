@@ -23,7 +23,8 @@ export interface ImageColorExtractorOutput {
 
 /**
  * Extract dominant colors from image data
- * Uses a simplified k-means-like algorithm to find the most prominent colors
+ * Note: Client-side tool page uses Canvas API for pixel extraction
+ * This function is used by the API endpoint for server-side processing
  */
 export function extractColorFromImage(input: ImageColorExtractorInput): ImageColorExtractorOutput {
   try {
@@ -44,7 +45,7 @@ export function extractColorFromImage(input: ImageColorExtractorInput): ImageCol
     }
 
     // Extract pixel data from the image
-    let allPixels = extractPixelsFromCanvasBase64(imageData)
+    const allPixels = decodeBase64ImagePixels(imageData)
 
     if (allPixels.length === 0) {
       return {
