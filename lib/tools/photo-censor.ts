@@ -17,11 +17,13 @@ export interface PhotoCensorInput {
 }
 
 export interface PhotoCensorOutput {
-  censoredImageData: string // base64 encoded censored image
+  censoredImageUrl?: string // signed URL to download censored image
+  censoredImageData?: string // base64 encoded censored image (fallback for client-side)
   regionsApplied: number
   imageWidth: number
   imageHeight: number
   error?: string
+  expiresIn?: number // seconds until URL expires
 }
 
 /**
