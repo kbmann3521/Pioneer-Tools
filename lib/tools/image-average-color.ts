@@ -2,9 +2,11 @@
  * Image Average Color Finder - Extract dominant/average color from images
  */
 
+export type ColorAlgorithm = 'simple' | 'square-root' | 'dominant'
+
 export interface ImageAverageColorInput {
   imageData: string // base64 encoded image
-  algorithm?: 'average' | 'dominant'
+  algorithm?: ColorAlgorithm
 }
 
 export interface ImageAverageColorOutput {
@@ -15,17 +17,18 @@ export interface ImageAverageColorOutput {
   r: number
   g: number
   b: number
+  algorithm: ColorAlgorithm
   error?: string
 }
 
 /**
- * Extract average color from image data
+ * Extract average color from image data using specified algorithm
  * @param input - Image data and algorithm preference
  * @returns Object with color in multiple formats
  */
 export function getImageAverageColor(input: ImageAverageColorInput): ImageAverageColorOutput {
   try {
-    const { imageData, algorithm = 'average' } = input
+    const { imageData, algorithm = 'simple' } = input
 
     if (!imageData) {
       return {
@@ -36,13 +39,12 @@ export function getImageAverageColor(input: ImageAverageColorInput): ImageAverag
         r: 0,
         g: 0,
         b: 0,
+        algorithm,
         error: 'No image data provided',
       }
     }
 
-    // For server-side, we'll calculate based on a simple algorithm
-    // In a real implementation, you'd use a canvas or image processing library
-    const colors = extractColorsFromBase64(imageData)
+    const colors = extractColorsFromBase64(imageData, algorithm)
     const { r, g, b } = colors
 
     return {
@@ -53,6 +55,7 @@ export function getImageAverageColor(input: ImageAverageColorInput): ImageAverag
       r,
       g,
       b,
+      algorithm,
     }
   } catch (error) {
     return {
@@ -63,6 +66,7 @@ export function getImageAverageColor(input: ImageAverageColorInput): ImageAverag
       r: 0,
       g: 0,
       b: 0,
+      algorithm,
       error: error instanceof Error ? error.message : 'Failed to process image',
     }
   }
