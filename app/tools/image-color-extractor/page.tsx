@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import { extractColorFromImage, type ExtractedColor } from '@/lib/tools/image-color-extractor'
+import { type ExtractedColor } from '@/lib/tools/image-color-extractor'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
@@ -21,14 +21,73 @@ export default function ImageColorExtractorPage(): JSX.Element {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { copyToClipboard } = useClipboard()
 
-  // Update colors when image or colorCount changes
+  // Extract colors from canvas when image or colorCount changes
   useEffect(() => {
-    if (image) {
-      const result = extractColorFromImage({ imageData: image, colorCount })
-      setColors(result.colors)
-      setSelectedColorIndex(0)
-      updateParams({ imageData: image.substring(0, 100) + '...', colorCount })
+    if (!image) return
+
+    const extractColorsFromCanvas = async () => {
+      try {
+        const imgElement = new Image()
+        imgElement.crossOrigin = 'anonymous'
+
+        imgElement.onload = () => {
+          const canvas = document.createElement('canvas')
+          canvas.width = imgElement.width
+          canvas.height = imgElement.height
+
+          const ctx = canvas.getContext('2d')
+          if (!ctx) return
+
+          ctx.drawImage(imgElement, 0, 0)
+
+          // Get image data
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+          const data = imageData.data
+
+          // Extract pixel data with sampling
+          const pixels: { r: number; g: number; b: number }[] = []
+          const sampleRate = Math.max(1, Math.floor(Math.sqrt((data.length / 4) / 500)))
+
+          for (let i = 0; i < data.length; i += sampleRate * 4) {
+            const r = data[i]
+            const g = data[i + 1]
+            const b = data[i + 2]
+
+            // Filter: avoid pure white, pure black, and low contrast
+            const brightness = (r + g + b) / 3
+            const contrast = Math.max(r, g, b) - Math.min(r, g, b)
+
+            if (brightness > 20 && brightness < 235 && contrast > 10) {
+              pixels.push({ r, g, b })
+            }
+          }
+
+          // Perform k-means clustering
+          const extractedColors = performKMeans(pixels, colorCount)
+          extractedColors.sort((a, b) => b.frequency - a.frequency)
+
+          const totalFreq = extractedColors.reduce((sum, c) => sum + c.frequency, 0)
+          const formattedColors: ExtractedColor[] = extractedColors.map(c => ({
+            hex: rgbToHex(c.r, c.g, c.b),
+            rgb: `rgb(${c.r}, ${c.g}, ${c.b})`,
+            r: c.r,
+            g: c.g,
+            b: c.b,
+            percentage: Math.round((c.frequency / totalFreq) * 100),
+          }))
+
+          setColors(formattedColors)
+          setSelectedColorIndex(0)
+          updateParams({ imageData: image.substring(0, 100) + '...', colorCount })
+        }
+
+        imgElement.src = image
+      } catch (error) {
+        console.error('Color extraction error:', error)
+      }
     }
+
+    extractColorsFromCanvas()
   }, [image, colorCount, updateParams])
 
   const handleImageUpload = (file: File | null) => {
