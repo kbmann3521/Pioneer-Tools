@@ -299,30 +299,30 @@ export default function ImageAverageColorPage(): JSX.Element {
         </div>
 
         {image && (
-          <div className="color-analyzer-container">
-            <div className="image-preview-wrapper">
-              <img src={image} alt="Uploaded preview" className="image-preview-thumbnail" />
+          <div className={styles.container}>
+            <div className={styles.imagePreviewWrapper}>
+              <img src={image} alt="Uploaded preview" className={styles.imagePreviewThumbnail} />
               <button className="clear-image-btn" onClick={handleClearImage}>
                 ✕ Change Image
               </button>
             </div>
 
             <div className="color-result-box">
-              <div className="color-swatch-display">
+              <div className={styles.colorSwatchDisplay}>
                 <div
-                  className="color-swatch"
+                  className={styles.colorSwatch}
                   style={{ backgroundColor: colors?.hex || '#000000' }}
                   title={colors?.rgb}
                 />
               </div>
 
-              <div className="algorithm-selector">
-                <label className="algo-label">Algorithm:</label>
-                <div className="algo-buttons">
+              <div className={styles.algorithmSelector}>
+                <label className={styles.algoLabel}>Algorithm:</label>
+                <div className={styles.algoButtons}>
                   {(['simple', 'square-root', 'dominant'] as ColorAlgorithm[]).map(algo => (
                     <button
                       key={algo}
-                      className={`algo-btn ${algorithm === algo ? 'active' : ''}`}
+                      className={`${styles.algoBtn} ${algorithm === algo ? styles.active : ''}`}
                       onClick={() => setAlgorithm(algo)}
                     >
                       {algo === 'simple' ? 'Simple' : algo === 'square-root' ? 'Square Root' : 'Dominant'}
@@ -332,13 +332,13 @@ export default function ImageAverageColorPage(): JSX.Element {
               </div>
 
               {colors && !colors.error && (
-                <div className="color-values-display">
-                  <div className="color-value-item">
-                    <div className="value-label">HEX</div>
-                    <div className="value-content">
+                <div className={styles.colorValuesDisplay}>
+                  <div className={styles.colorValueItem}>
+                    <div className={styles.valueLabel}>HEX</div>
+                    <div className={styles.valueContent}>
                       <code>{colors.hex}</code>
                       <button
-                        className="mini-copy-btn"
+                        className={styles.miniCopyBtn}
                         onClick={() => copyColor(colors.hex, 'hex')}
                         title="Copy HEX"
                       >
@@ -347,12 +347,12 @@ export default function ImageAverageColorPage(): JSX.Element {
                     </div>
                   </div>
 
-                  <div className="color-value-item">
-                    <div className="value-label">RGB</div>
-                    <div className="value-content">
+                  <div className={styles.colorValueItem}>
+                    <div className={styles.valueLabel}>RGB</div>
+                    <div className={styles.valueContent}>
                       <code>{colors.rgb}</code>
                       <button
-                        className="mini-copy-btn"
+                        className={styles.miniCopyBtn}
                         onClick={() => copyColor(colors.rgb, 'rgb')}
                         title="Copy RGB"
                       >
@@ -361,12 +361,12 @@ export default function ImageAverageColorPage(): JSX.Element {
                     </div>
                   </div>
 
-                  <div className="color-value-item">
-                    <div className="value-label">HSL</div>
-                    <div className="value-content">
+                  <div className={styles.colorValueItem}>
+                    <div className={styles.valueLabel}>HSL</div>
+                    <div className={styles.valueContent}>
                       <code>{colors.hsl}</code>
                       <button
-                        className="mini-copy-btn"
+                        className={styles.miniCopyBtn}
                         onClick={() => copyColor(colors.hsl, 'hsl')}
                         title="Copy HSL"
                       >
@@ -375,12 +375,12 @@ export default function ImageAverageColorPage(): JSX.Element {
                     </div>
                   </div>
 
-                  <div className="color-value-item">
-                    <div className="value-label">HSLA</div>
-                    <div className="value-content">
+                  <div className={styles.colorValueItem}>
+                    <div className={styles.valueLabel}>HSLA</div>
+                    <div className={styles.valueContent}>
                       <code>{colors.hsla}</code>
                       <button
-                        className="mini-copy-btn"
+                        className={styles.miniCopyBtn}
                         onClick={() => copyColor(colors.hsla, 'hsla')}
                         title="Copy HSLA"
                       >
@@ -389,27 +389,27 @@ export default function ImageAverageColorPage(): JSX.Element {
                     </div>
                   </div>
 
-                  <div className="color-value-item">
-                    <div className="value-label">Components</div>
-                    <div className="rgb-components">
-                      <div className="component">
-                        <span className="comp-label">R:</span>
-                        <span className="comp-value">{colors.r}</span>
+                  <div className={styles.colorValueItem}>
+                    <div className={styles.valueLabel}>Components</div>
+                    <div className={styles.rgbComponents}>
+                      <div className={styles.component}>
+                        <span className={styles.compLabel}>R:</span>
+                        <span className={styles.compValue}>{colors.r}</span>
                       </div>
-                      <div className="component">
-                        <span className="comp-label">G:</span>
-                        <span className="comp-value">{colors.g}</span>
+                      <div className={styles.component}>
+                        <span className={styles.compLabel}>G:</span>
+                        <span className={styles.compValue}>{colors.g}</span>
                       </div>
-                      <div className="component">
-                        <span className="comp-label">B:</span>
-                        <span className="comp-value">{colors.b}</span>
+                      <div className={styles.component}>
+                        <span className={styles.compLabel}>B:</span>
+                        <span className={styles.compValue}>{colors.b}</span>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {colors?.error && <div className="error-message">{colors.error}</div>}
+              {colors?.error && <div className={styles.errorMessage}>{colors.error}</div>}
             </div>
           </div>
         )}
