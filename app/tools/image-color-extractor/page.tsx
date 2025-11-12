@@ -320,7 +320,7 @@ export default function ImageColorExtractorPage(): JSX.Element {
               </div>
             </div>
 
-            <div className={styles.colorBlockContainer}>
+            <div className={styles.colorsContainer}>
               <div className={styles.colorCountSelector}>
                 <label htmlFor="color-count" className={styles.colorCountSelectorLabel}>Number of colors:</label>
                 <select
@@ -336,28 +336,30 @@ export default function ImageColorExtractorPage(): JSX.Element {
                   ))}
                 </select>
               </div>
+
+              {colors && colors.length > 0 && (
+                <div className={styles.colorsGrid}>
+                  {colors.map((color, index) => (
+                    <button
+                      key={index}
+                      className={`${styles.colorSwatchButton} ${selectedColorIndex === index ? styles.selected : ''}`}
+                      onClick={() => setSelectedColorIndex(index)}
+                      title={`${color.hex} (${color.percentage}%)`}
+                    >
+                      <div
+                        className={styles.colorSwatchDisplay}
+                        style={{ backgroundColor: color.hex }}
+                      />
+                      <div className={styles.colorPercentage}>{color.percentage}%</div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className={styles.everythingElseContainer}>
               {colors && colors.length > 0 ? (
-                <div className={styles.colorsDisplaySection}>
-                  <div className={styles.colorsGrid}>
-                    {colors.map((color, index) => (
-                      <button
-                        key={index}
-                        className={`${styles.colorSwatchButton} ${selectedColorIndex === index ? styles.selected : ''}`}
-                        onClick={() => setSelectedColorIndex(index)}
-                        title={`${color.hex} (${color.percentage}%)`}
-                      >
-                        <div
-                          className={styles.colorSwatchDisplay}
-                          style={{ backgroundColor: color.hex }}
-                        />
-                        <div className={styles.colorPercentage}>{color.percentage}%</div>
-                      </button>
-                    ))}
-                  </div>
-
+                <>
                   {selectedColor && (
                     <div className={styles.selectedColorDetails}>
                       <div className={styles.selectedColorPreview}>
@@ -423,7 +425,7 @@ export default function ImageColorExtractorPage(): JSX.Element {
                       </div>
                     </div>
                   )}
-                </div>
+                </>
               ) : (
                 <div className={styles.errorMessage}>No colors could be extracted from the image</div>
               )}
