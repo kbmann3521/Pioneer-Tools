@@ -308,13 +308,11 @@ export default function ImageAverageColorPage(): JSX.Element {
             </div>
 
             <div className={styles.colorBlockContainer}>
-              <div className={styles.colorSwatchDisplay}>
-                <div
-                  className={styles.colorSwatch}
-                  style={{ backgroundColor: colors?.hex || '#000000' }}
-                  title={colors?.rgb}
-                />
-              </div>
+              <div
+                className={styles.colorSwatch}
+                style={{ backgroundColor: colors?.hex || '#000000' }}
+                title={colors?.rgb}
+              />
             </div>
 
             <div className={styles.everythingElseContainer}>
