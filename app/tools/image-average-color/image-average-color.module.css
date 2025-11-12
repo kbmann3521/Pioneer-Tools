@@ -283,12 +283,25 @@
 @media (max-width: 480px) {
   .container {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
     gap: 1.5rem;
   }
 
-  .photoContainer,
-  .colorBlockContainer,
+  .photoContainer {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 1.5rem;
+  }
+
+  .colorBlockContainer {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 1.5rem;
+  }
+
   .everythingElseContainer {
+    grid-column: 1;
+    grid-row: 3;
     padding: 1.5rem;
   }
 
