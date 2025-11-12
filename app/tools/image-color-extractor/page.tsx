@@ -429,7 +429,7 @@ export default function ImageColorExtractorPage(): JSX.Element {
                               onClick={() => copyColor(selectedColor.rgb, selectedColorIndex, 'rgb')}
                               title="Copy RGB"
                             >
-                              {copiedKey === `color-${selectedColorIndex}-rgb` ? '✓' : '📋'}
+                              {copiedKey === `color-${selectedColorIndex}-rgb` ? 'Copied!' : 'Copy'}
                             </button>
                           </div>
                         </div>
