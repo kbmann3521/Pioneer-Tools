@@ -175,7 +175,7 @@ export interface BlogGeneratorResult {
 
 export interface ImageAverageColorParams {
   imageData: string
-  algorithm?: 'average' | 'dominant'
+  algorithm?: 'simple' | 'square-root' | 'dominant'
 }
 
 export interface ImageAverageColorResult {
