@@ -48,11 +48,15 @@ export function getImageAverageColor(input: ImageAverageColorInput): ImageAverag
     const colors = extractColorsFromBase64(imageData, algorithm)
     const { r, g, b } = colors
 
+    const hsl = rgbToHsl(r, g, b)
+    const hsla = hsl.replace(')', ', 1)')
+
     return {
       hex: rgbToHex(r, g, b),
       rgb: `rgb(${r}, ${g}, ${b})`,
       rgba: `rgba(${r}, ${g}, ${b}, 1)`,
-      hsl: rgbToHsl(r, g, b),
+      hsl,
+      hsla,
       r,
       g,
       b,
