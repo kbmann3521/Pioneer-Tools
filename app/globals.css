@@ -3183,13 +3183,7 @@ select:focus {
 }
 
 .color-result-box {
-  background-color: transparent;
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  display: contents;
 }
 
 .color-swatch-display {
