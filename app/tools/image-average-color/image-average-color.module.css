@@ -190,21 +190,23 @@
 }
 
 .miniCopyBtn {
-  padding: 0.4rem 0.6rem;
-  background-color: transparent;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
+  padding: 0.5rem 0.75rem;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
+  font-size: 0.85rem;
   font-weight: 600;
+  transition: all 0.2s ease;
 }
 
 .miniCopyBtn:hover {
-  background-color: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
+  background-color: var(--color-primary-dark);
+}
+
+.miniCopyBtn:active {
+  transform: scale(0.98);
 }
 
 .rgbComponents {
