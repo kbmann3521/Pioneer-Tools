@@ -37,6 +37,7 @@ export const PRICING = {
     'password-generator': 0.1, // $0.001
     'image-average-color': 0.3, // $0.003 - image processing
     'image-color-extractor': 0.5, // $0.005 - multiple colors extraction
+    'photo-censor': 0.5, // $0.005 - image manipulation with multiple regions
   } as Record<string, number>,
 }
 
