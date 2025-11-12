@@ -37,6 +37,7 @@ export function getImageAverageColor(input: ImageAverageColorInput): ImageAverag
         rgb: 'rgb(0, 0, 0)',
         rgba: 'rgba(0, 0, 0, 1)',
         hsl: 'hsl(0, 0%, 0%)',
+        hsla: 'hsla(0, 0%, 0%, 1)',
         r: 0,
         g: 0,
         b: 0,
