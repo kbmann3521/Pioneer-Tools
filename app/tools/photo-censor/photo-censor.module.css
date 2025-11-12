@@ -147,25 +147,25 @@
 }
 
 .typeButton {
-  padding: 10px 12px;
-  border: 1px solid var(--color-border, #3a3a3a);
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: var(--color-background-secondary, #1a1a1a);
-  color: var(--color-text, #ffffff);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   cursor: pointer;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   transition: all 0.2s ease;
 }
 
 .typeButton:hover:not(:disabled) {
-  border-color: var(--color-primary, #7c3aed);
-  background: var(--color-background, #0a0a0a);
+  border-color: var(--color-primary);
+  background: var(--bg-tertiary);
 }
 
 .typeButton.active {
-  border-color: var(--color-primary, #7c3aed);
-  background: var(--color-primary, #7c3aed);
+  border-color: var(--color-primary);
+  background: var(--color-primary);
   color: white;
 }
 
