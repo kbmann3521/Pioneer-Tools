@@ -380,15 +380,59 @@ export default function PhotoCensorPage({ onParamsChange }: PhotoCensorPageProps
     setIsCensored(true)
   }
 
-  const downloadCensoredImage = () => {
-    if (!image) return
+  const downloadCensoredImage = async () => {
+    if (!image || !isCensored) return
 
-    const a = document.createElement('a')
-    a.href = image
-    a.download = `censored-image-${Date.now()}.png`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
+    try {
+      // Convert canvas to blob and then to base64 for API
+      const canvas = document.createElement('canvas')
+      const img = new Image()
+
+      img.onload = async () => {
+        canvas.width = img.width
+        canvas.height = img.height
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return
+
+        // Draw original image
+        ctx.drawImage(img, 0, 0)
+
+        // Get the base64 of the censored image
+        const base64 = canvas.toDataURL('image/png')
+
+        // Send to API to process and get signed URL
+        const response = await fetch('/api/tools/photo-censor', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('access_token') || ''}`,
+          },
+          body: JSON.stringify({
+            imageData: base64,
+            regions: [censorBox],
+          }),
+        })
+
+        const data = await response.json()
+
+        if (response.ok && data.data?.censoredImageUrl) {
+          // Download from signed URL
+          const a = document.createElement('a')
+          a.href = data.data.censoredImageUrl
+          a.download = `censored-image-${Date.now()}.png`
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        } else {
+          alert('Failed to download censored image: ' + (data.error?.message || 'Unknown error'))
+        }
+      }
+
+      img.src = image
+    } catch (error) {
+      console.error('Download error:', error)
+      alert('Error downloading image')
+    }
   }
 
   return (
