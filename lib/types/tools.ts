@@ -187,6 +187,7 @@ export interface ImageAverageColorResult {
   r: number
   g: number
   b: number
+  algorithm: 'simple' | 'square-root' | 'dominant'
   error?: string
 }
 
