@@ -82,36 +82,8 @@ export function extractColorFromImage(input: ImageColorExtractorInput): ImageCol
 }
 
 /**
- * Extract pixel data from base64 image using Canvas API
- * Returns actual pixel data from the image
- */
-function extractPixelsFromCanvasBase64(base64: string): { r: number; g: number; b: number }[] {
-  try {
-    if (typeof document === 'undefined' || typeof Image === 'undefined') {
-      return []
-    }
-
-    // Create canvas and context
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return []
-
-    // Create image element
-    const img = new Image()
-    img.crossOrigin = 'anonymous'
-
-    // We need to handle the async nature synchronously
-    // This is a limitation - we'll return empty and rely on the component's useEffect
-    // However, for server-side or sync execution, we provide a fallback
-    return decodeBase64ImagePixels(base64)
-  } catch (error) {
-    return decodeBase64ImagePixels(base64)
-  }
-}
-
-/**
- * Decode base64 image and extract actual pixel data
- * Handles various image formats (PNG, JPEG, etc.)
+ * Decode base64 image and extract pixel data
+ * Extracts bytes from the base64 image data for analysis
  */
 function decodeBase64ImagePixels(base64: string): { r: number; g: number; b: number }[] {
   try {
@@ -119,19 +91,13 @@ function decodeBase64ImagePixels(base64: string): { r: number; g: number; b: num
     const binaryString = atob(cleanBase64)
     const pixels: { r: number; g: number; b: number }[] = []
 
-    // For PNG/JPEG data, we need to find the actual pixel data
-    // PNG has a specific structure, but we can extract colors by analyzing the bytes
-
     const bytes = new Uint8Array(binaryString.length)
     for (let i = 0; i < binaryString.length; i++) {
       bytes[i] = binaryString.charCodeAt(i)
     }
 
-    // Look for IHDR chunk (PNG) which tells us image dimensions
-    // For JPEG, we extract from image data directly
-
-    // Sample every Nth byte as potential color values
-    // Skip PNG header and metadata
+    // Sample byte sequences as potential color values
+    // Skip header bytes and sample throughout the data
     const startOffset = Math.max(100, Math.floor(binaryString.length * 0.05))
     const sampleSize = Math.max(3, Math.floor((binaryString.length - startOffset) / 1000))
 
@@ -140,11 +106,9 @@ function decodeBase64ImagePixels(base64: string): { r: number; g: number; b: num
       const g = bytes[i + 1] || 0
       const b = bytes[i + 2] || 0
 
-      // Filter out pure white, pure black, and very low contrast pixels
+      // Filter to reasonable colors
       const brightness = (r + g + b) / 3
-      const maxChannel = Math.max(r, g, b)
-      const minChannel = Math.min(r, g, b)
-      const contrast = maxChannel - minChannel
+      const contrast = Math.max(r, g, b) - Math.min(r, g, b)
 
       if (brightness > 20 && brightness < 235 && contrast > 10) {
         pixels.push({ r, g, b })
