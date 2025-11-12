@@ -85,58 +85,10 @@ export function extractColorFromImage(input: ImageColorExtractorInput): ImageCol
 
 /**
  * Extract pixel data from base64 image
- * Uses canvas API for real pixel extraction (falls back to hash-based if canvas unavailable)
+ * Uses a deterministic algorithm to extract colors from base64 data
  */
 function extractPixelsFromBase64(base64: string): { r: number; g: number; b: number }[] {
-  try {
-    // Try canvas-based extraction if possible
-    if (typeof document !== 'undefined' && document.createElement) {
-      return extractPixelsFromCanvasSync(base64)
-    }
-  } catch (error) {
-    // Fall through to hash-based extraction
-  }
-
-  // Fallback: extract colors from base64 string directly
   return extractColorsFromBase64String(base64)
-}
-
-/**
- * Synchronous canvas-based pixel extraction
- * Works with data URLs that don't require CORS
- */
-function extractPixelsFromCanvasSync(base64: string): { r: number; g: number; b: number }[] {
-  try {
-    // Remove data URI prefix if present
-    const cleanBase64 = base64.includes('data:') ? base64 : `data:image/png;base64,${base64}`
-
-    // Create canvas and image
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-
-    if (!ctx) {
-      return extractColorsFromBase64String(base64)
-    }
-
-    // Create a temporary image element
-    const img = new window.Image()
-
-    // Use a synchronous approach by drawing to canvas with the data URL
-    // This may not work in all cases, so we catch and fall back
-    try {
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"><image href="${cleanBase64}" width="1" height="1"/></svg>`
-      const blob = new Blob([svg], { type: 'image/svg+xml' })
-      const url = URL.createObjectURL(blob)
-
-      // This approach is too complex for sync, so use the simpler fallback
-      URL.revokeObjectURL(url)
-      return extractColorsFromBase64String(base64)
-    } catch (e) {
-      return extractColorsFromBase64String(base64)
-    }
-  } catch (error) {
-    return extractColorsFromBase64String(base64)
-  }
 }
 
 /**
