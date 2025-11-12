@@ -198,6 +198,7 @@ export function RootProvider({ children }: ProvidersProps) {
       'image-resizer': '/api/tools/image-resizer',
       'image-average-color': '/api/tools/image-average-color',
       'image-color-extractor': '/api/tools/image-color-extractor',
+      'photo-censor': '/api/tools/photo-censor',
       'og-generator': '/api/tools/og-generator',
       'blog-generator': '/api/tools/blog-generator',
       'json-formatter': '/api/tools/json-formatter',
