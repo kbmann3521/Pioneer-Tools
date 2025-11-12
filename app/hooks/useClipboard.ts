@@ -2,30 +2,21 @@
 
 import { useState } from 'react'
 
-interface CopyPosition {
-  x: number
-  y: number
-}
-
 interface UseClipboardReturn {
-  copyMessage: string | null
-  copyPosition: CopyPosition | null
-  copyToClipboard: (text: string, event: React.MouseEvent) => Promise<void>
+  isCopied: boolean
+  copyToClipboard: (text: string) => Promise<void>
 }
 
-export function useClipboard(duration: number = 1200): UseClipboardReturn {
-  const [copyMessage, setCopyMessage] = useState<string | null>(null)
-  const [copyPosition, setCopyPosition] = useState<CopyPosition | null>(null)
+export function useClipboard(duration: number = 3000): UseClipboardReturn {
+  const [isCopied, setIsCopied] = useState(false)
 
-  const copyToClipboard = async (text: string, event: React.MouseEvent) => {
-    setCopyPosition({ x: event.clientX, y: event.clientY })
-
+  const copyToClipboard = async (text: string) => {
     // Try modern Clipboard API first
     if (navigator.clipboard && navigator.clipboard.writeText) {
       try {
         await navigator.clipboard.writeText(text)
-        setCopyMessage('Copied!')
-        setTimeout(() => setCopyMessage(null), duration)
+        setIsCopied(true)
+        setTimeout(() => setIsCopied(false), duration)
         return
       } catch (err) {
         // Clipboard API failed, try fallback
@@ -46,23 +37,18 @@ export function useClipboard(duration: number = 1200): UseClipboardReturn {
       const successful = document.execCommand('copy')
 
       if (successful) {
-        setCopyMessage('Copied!')
-        setTimeout(() => setCopyMessage(null), duration)
-      } else {
-        setCopyMessage('Failed to copy')
-        setTimeout(() => setCopyMessage(null), duration)
+        setIsCopied(true)
+        setTimeout(() => setIsCopied(false), duration)
       }
     } catch (err) {
-      setCopyMessage('Failed to copy')
-      setTimeout(() => setCopyMessage(null), duration)
+      // Silent failure
     } finally {
       document.body.removeChild(textArea)
     }
   }
 
   return {
-    copyMessage,
-    copyPosition,
+    isCopied,
     copyToClipboard,
   }
 }
