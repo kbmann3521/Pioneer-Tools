@@ -370,7 +370,7 @@ export default function ImageAverageColorPage(): JSX.Element {
                         onClick={() => copyColor(colors.hsl, 'hsl')}
                         title="Copy HSL"
                       >
-                        {copiedKey === 'hsl' ? '✓' : '📋'}
+                        {copiedKey === 'hsl' ? 'Copied!' : 'Copy'}
                       </button>
                     </div>
                   </div>
