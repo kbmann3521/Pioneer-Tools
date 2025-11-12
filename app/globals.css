@@ -3194,6 +3194,10 @@ select:focus {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 1.5rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
 }
 
 .color-swatch {
@@ -3208,21 +3212,26 @@ select:focus {
 
 .color-swatch:hover {
   transform: scale(1.08);
-  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.25);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
 }
 
 .algorithm-selector {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  padding: 1rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
 }
 
 .algo-label {
   font-weight: 600;
   color: var(--text-primary);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
 }
 
 .algo-buttons {
@@ -3232,20 +3241,21 @@ select:focus {
 
 .algo-btn {
   flex: 1;
-  padding: 0.75rem;
-  background-color: var(--bg-tertiary);
+  padding: 0.75rem 0.5rem;
+  background-color: var(--bg-secondary);
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   transition: all 0.2s ease;
 }
 
 .algo-btn:hover {
   border-color: var(--color-primary);
   color: var(--text-primary);
+  background-color: var(--bg-tertiary);
 }
 
 .algo-btn.active {
