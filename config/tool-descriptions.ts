@@ -447,4 +447,44 @@ export const toolDescriptions: Record<string, string> = {
       <li><strong>Content Recommendation:</strong> Use extracted colors to recommend similar images or products with matching color palettes</li>
     </ul>
   `,
+
+  'image-color-extractor': `
+    <h3>What is an Image Color Extractor?</h3>
+    <p>An Image Color Extractor analyzes any image and extracts the top dominant colors in order of prominence. Select how many colors you want (1-10) and see them displayed with their percentage of the image, all in HEX and RGB formats. Perfect for creating color palettes from your images.</p>
+
+    <h3>Why Extract Multiple Colors?</h3>
+    <p>Extract a complete color palette from an image to understand its color composition. Identify dominant colors for design inspiration, brand color development, or image analysis. Multiple colors give you a more complete picture of the image's color scheme than a single average color.</p>
+
+    <h3>How to Use</h3>
+    <p>Upload an image, select how many colors you want to extract (1-10 colors), and see them displayed in order of prominence. The higher the percentage, the more prevalent that color is in the image. Click on any color to see its detailed values in HEX, RGB, and components. Colors update in real-time as you change the color count.</p>
+
+    <h3>Key Features</h3>
+    <ul>
+      <li><strong>Color Count:</strong> Choose 1-10 colors to extract from your image</li>
+      <li><strong>Prominence Order:</strong> Colors displayed from most to least prevalent</li>
+      <li><strong>Percentage Display:</strong> See what percentage of the image each color represents</li>
+      <li><strong>Real-time Updates:</strong> Colors refresh instantly when you change the color count</li>
+      <li><strong>Multiple Formats:</strong> Get colors in HEX and RGB formats with individual component values</li>
+    </ul>
+
+    <h3>Common Use Cases</h3>
+    <ul>
+      <li><strong>Color Palette Creation:</strong> Extract complete color palettes from inspiration images</li>
+      <li><strong>Design Systems:</strong> Build comprehensive color systems from existing images</li>
+      <li><strong>Brand Development:</strong> Extract color schemes from competitor or inspiration images</li>
+      <li><strong>Photo Analysis:</strong> Understand the dominant colors in your photos</li>
+      <li><strong>Web Design:</strong> Create color harmonies for websites based on uploaded imagery</li>
+      <li><strong>Product Photography:</strong> Extract colors from product images for catalog design</li>
+    </ul>
+
+    <h3>API Endpoint Use Cases</h3>
+    <ul>
+      <li><strong>Dynamic Palette Generation:</strong> Automatically extract color palettes from user-uploaded images for design tools</li>
+      <li><strong>Color Harmony Systems:</strong> Build intelligent color matching based on extracted image colors</li>
+      <li><strong>Image Tagging:</strong> Tag images by color composition for search and filtering</li>
+      <li><strong>Design Inspiration:</strong> Create design brief palettes from reference images</li>
+      <li><strong>E-Commerce Filtering:</strong> Filter products by color based on image analysis</li>
+      <li><strong>Content Recommendation:</strong> Recommend content with matching color schemes</li>
+    </ul>
+  `,
 }
