@@ -165,10 +165,10 @@
   display: grid;
   grid-template-columns: 150px 1fr;
   gap: 2rem;
-  padding: 2rem;
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
 }
 
 .selectedColorPreview {
