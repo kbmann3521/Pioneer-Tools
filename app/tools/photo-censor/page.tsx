@@ -20,6 +20,7 @@ export default function PhotoCensorPage(): JSX.Element {
   const { isSaved, toggleSave } = useFavorites('photo-censor')
 
   const [image, setImage] = useState<string | null>(null)
+  const [originalImageData, setOriginalImageData] = useState<string | null>(null)
   const [originalImage, setOriginalImage] = useState<HTMLImageElement | null>(null)
   const [censorType, setCensorType] = useState<'pixelate' | 'blur' | 'blackbar'>('pixelate')
   const [intensity, setIntensity] = useState(5)
@@ -65,6 +66,7 @@ export default function PhotoCensorPage(): JSX.Element {
       const img = new Image()
       img.onload = () => {
         setOriginalImage(img)
+        setOriginalImageData(dataUrl)
         setImage(dataUrl)
         setIsCensored(false)
         setImageDimensions({ width: img.width, height: img.height })
@@ -482,7 +484,12 @@ export default function PhotoCensorPage(): JSX.Element {
                   ) : (
                     <button
                       className={styles.uncensorButton}
-                      onClick={() => setIsCensored(false)}
+                      onClick={() => {
+                        setIsCensored(false)
+                        if (originalImageData) {
+                          setImage(originalImageData)
+                        }
+                      }}
                     >
                       Start Over
                     </button>
