@@ -53,6 +53,10 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
+  // Save feedback messages for each section
+  const [budgetSaveMessage, setBudgetSaveMessage] = useState<string | null>(null)
+  const [autoRechargeSaveMessage, setAutoRechargeSaveMessage] = useState<string | null>(null)
+
   // Auto-recharge form state
   const [showAutoRechargeForm, setShowAutoRechargeForm] = useState(false)
   const [autoRechargeEnabled, setAutoRechargeEnabled] = useState(false)
