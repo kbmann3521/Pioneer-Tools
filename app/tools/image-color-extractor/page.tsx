@@ -160,6 +160,120 @@ export default function ImageColorExtractorPage(): JSX.Element {
 
   const selectedColor = colors?.[selectedColorIndex]
 
+  // Helper function: Convert RGB to HEX
+  const rgbToHex = (r: number, g: number, b: number): string => {
+    const toHex = (n: number) => {
+      const hex = n.toString(16)
+      return hex.length === 1 ? '0' + hex : hex
+    }
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase()
+  }
+
+  // Helper function: Perform k-means clustering to find dominant colors
+  const performKMeans = (
+    pixels: { r: number; g: number; b: number }[],
+    k: number,
+  ): Array<{ r: number; g: number; b: number; frequency: number }> => {
+    if (pixels.length === 0) return []
+
+    const targetK = Math.min(k, Math.min(pixels.length, 256))
+    const clusters: Array<{
+      r: number
+      g: number
+      b: number
+      pixels: { r: number; g: number; b: number }[]
+    }> = []
+
+    // Initialize with random pixels
+    const firstIdx = Math.floor(Math.random() * pixels.length)
+    clusters.push({
+      r: pixels[firstIdx].r,
+      g: pixels[firstIdx].g,
+      b: pixels[firstIdx].b,
+      pixels: [],
+    })
+
+    // k-means++ initialization
+    for (let i = 1; i < targetK; i++) {
+      let maxDist = 0
+      let farthestIdx = 0
+
+      for (let p = 0; p < pixels.length; p++) {
+        let minDistToCluster = Infinity
+        for (const cluster of clusters) {
+          const dist = Math.sqrt(
+            Math.pow(pixels[p].r - cluster.r, 2) +
+            Math.pow(pixels[p].g - cluster.g, 2) +
+            Math.pow(pixels[p].b - cluster.b, 2),
+          )
+          minDistToCluster = Math.min(minDistToCluster, dist)
+        }
+        if (minDistToCluster > maxDist) {
+          maxDist = minDistToCluster
+          farthestIdx = p
+        }
+      }
+
+      clusters.push({
+        r: pixels[farthestIdx].r,
+        g: pixels[farthestIdx].g,
+        b: pixels[farthestIdx].b,
+        pixels: [],
+      })
+    }
+
+    // K-means iterations
+    for (let iter = 0; iter < 10; iter++) {
+      for (const cluster of clusters) {
+        cluster.pixels = []
+      }
+
+      for (const pixel of pixels) {
+        let nearest = 0
+        let minDist = Infinity
+        for (let i = 0; i < clusters.length; i++) {
+          const dist = Math.sqrt(
+            Math.pow(pixel.r - clusters[i].r, 2) +
+            Math.pow(pixel.g - clusters[i].g, 2) +
+            Math.pow(pixel.b - clusters[i].b, 2),
+          )
+          if (dist < minDist) {
+            minDist = dist
+            nearest = i
+          }
+        }
+        clusters[nearest].pixels.push(pixel)
+      }
+
+      let changed = false
+      for (const cluster of clusters) {
+        if (cluster.pixels.length > 0) {
+          const newR = Math.round(cluster.pixels.reduce((sum, p) => sum + p.r, 0) / cluster.pixels.length)
+          const newG = Math.round(cluster.pixels.reduce((sum, p) => sum + p.g, 0) / cluster.pixels.length)
+          const newB = Math.round(cluster.pixels.reduce((sum, p) => sum + p.b, 0) / cluster.pixels.length)
+
+          if (newR !== cluster.r || newG !== cluster.g || newB !== cluster.b) {
+            changed = true
+          }
+          cluster.r = newR
+          cluster.g = newG
+          cluster.b = newB
+        }
+      }
+
+      if (!changed) break
+    }
+
+    return clusters
+      .filter(c => c.pixels.length > 0)
+      .map(c => ({
+        r: Math.max(0, Math.min(255, c.r)),
+        g: Math.max(0, Math.min(255, c.g)),
+        b: Math.max(0, Math.min(255, c.b)),
+        frequency: c.pixels.length,
+      }))
+  }
+
   return (
     <div className="tool-container">
       <ToolHeader
