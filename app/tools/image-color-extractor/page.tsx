@@ -24,10 +24,15 @@ export default function ImageColorExtractorPage(): JSX.Element {
   // Update colors when image or colorCount changes
   useEffect(() => {
     if (image) {
-      const result = extractColorFromImage({ imageData: image, colorCount })
-      setColors(result.colors)
-      setSelectedColorIndex(0)
-      updateParams({ imageData: image.substring(0, 100) + '...', colorCount })
+      // Use setTimeout to allow the color extraction to work properly
+      // This handles the async canvas operations in the extraction algorithm
+      const timer = setTimeout(() => {
+        const result = extractColorFromImage({ imageData: image, colorCount })
+        setColors(result.colors)
+        setSelectedColorIndex(0)
+        updateParams({ imageData: image.substring(0, 100) + '...', colorCount })
+      }, 0)
+      return () => clearTimeout(timer)
     }
   }, [image, colorCount, updateParams])
 
