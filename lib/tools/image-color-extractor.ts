@@ -129,7 +129,7 @@ function quantizeColorsWithKMeans(
   pixels: { r: number; g: number; b: number }[],
   targetSize: number,
 ): Array<{ r: number; g: number; b: number; frequency: number }> {
-
+  
   if (pixels.length === 0) {
     return []
   }
