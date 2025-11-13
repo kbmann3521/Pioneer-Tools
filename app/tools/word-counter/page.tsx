@@ -82,6 +82,8 @@ export default function WordCounterPage(): JSX.Element {
         )}
       </div>
 
+      <MobileApiToggle />
+
       <AboutToolAccordion
         toolId="word-counter"
         content={toolDescriptions['word-counter']}
