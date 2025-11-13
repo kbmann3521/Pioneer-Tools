@@ -293,7 +293,7 @@ pre code {
 
 @media (max-width: 480px) {
   .header {
-    padding: 0.5rem 1rem;
+    padding: 0.35rem 1rem;
     height: 56px;
     justify-content: center;
   }
