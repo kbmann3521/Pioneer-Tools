@@ -7,12 +7,14 @@ import { convertCase } from '@/lib/tools/case-converter'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, CaseConverterResult } from '@/lib/types/tools'
 
 export default function CaseConverterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('case-converter')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const [text, setText] = useState<string>('')
   const [results, setResults] = useState<CaseConverterResult | null>(null)
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
@@ -39,7 +41,8 @@ export default function CaseConverterPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="case-converter"
-        showApiToggle={true}
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">
