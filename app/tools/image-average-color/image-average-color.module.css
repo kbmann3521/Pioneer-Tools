@@ -101,14 +101,7 @@
 }
 
 .algoLabel {
-  font-weight: 700;
-  color: var(--text-primary);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  margin-bottom: 0;
-  white-space: nowrap;
-  flex-shrink: 0;
+  display: none;
 }
 
 .algoButtons {
