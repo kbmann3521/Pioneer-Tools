@@ -52,6 +52,7 @@
   cursor: crosshair;
   z-index: 2;
   display: block;
+  touch-action: manipulation;
 }
 
 .boxInfo {
