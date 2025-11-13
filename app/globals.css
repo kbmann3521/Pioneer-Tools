@@ -740,9 +740,9 @@ pre code {
 }
 
 .sidebar-auth-btn {
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   border: none;
@@ -794,6 +794,18 @@ pre code {
 
 .tools-btn:hover {
   opacity: 0.85;
+}
+
+.signout-btn {
+  color: var(--text-tertiary);
+  border: 1px solid var(--border-color);
+  background: transparent;
+}
+
+.signout-btn:hover {
+  background: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+  border-color: #ff3b30;
 }
 
 .favorites-section {
