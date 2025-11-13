@@ -92,6 +92,10 @@ export default function DashboardPage() {
     lastAttempt: string | null
   } | null>(null)
   const [recharging, setRecharging] = useState(false)
+  const [rechargeStatus, setRechargeStatus] = useState<{
+    message: string
+    type: 'processing' | 'success' | 'error'
+  } | null>(null)
 
   // Load theme from localStorage on mount
   useEffect(() => {
