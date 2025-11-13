@@ -216,8 +216,6 @@ export default function BlogGeneratorPage(): JSX.Element {
         )}
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="blog-generator"
         content={toolDescriptions['blog-generator']}
