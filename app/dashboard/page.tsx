@@ -8,7 +8,6 @@ import CopyFeedback from '@/app/components/CopyFeedback'
 import SaveFeedback from '@/app/components/SaveFeedback'
 import Header from '@/app/components/Header'
 import Sidebar from '@/app/components/Sidebar'
-import { useFavorites } from '@/app/hooks/useFavorites'
 import { supabase } from '@/lib/supabaseClient'
 import { formatBalance, PRICING, formatCost } from '@/config/pricing.config'
 
@@ -44,7 +43,6 @@ export default function DashboardPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, session, loading: authLoading, signOut } = useAuth()
-  const { favorites, toggleFavorite } = useFavorites()
   const [theme, setTheme] = useState<string>('dark')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [profile, setProfile] = useState<UserProfile | null>(null)
