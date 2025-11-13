@@ -110,7 +110,7 @@
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
   font-size: 0.75rem;
   letter-spacing: 0.3px;
@@ -125,16 +125,12 @@
 .algoBtn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
-  background-color: rgba(124, 58, 237, 0.08);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
 }
 
 .algoBtn.active {
   background-color: var(--color-primary);
   color: white;
   border-color: var(--color-primary);
-  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.4);
 }
 
 .colorValuesDisplay {
