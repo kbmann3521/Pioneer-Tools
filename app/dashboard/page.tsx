@@ -870,13 +870,6 @@ export default function DashboardPage() {
                   </div>
                 )}
 
-                {autoRechargeStatus.hasPaymentMethod && autoRechargeStatus.failedAttempts > 0 && (
-                  <div className="alert alert-error" style={{ marginTop: '1rem' }}>
-                    <p>
-                      <strong>Auto-recharge has failed {autoRechargeStatus.failedAttempts} time(s).</strong> This usually means your payment method is declined. Try adding a different payment method or manually recharging.
-                    </p>
-                  </div>
-                )}
 
                 {autoRechargeStatus.hasPaymentMethod && (
                   <button
