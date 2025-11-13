@@ -252,8 +252,8 @@ pre code {
 
 @media (max-width: 480px) {
   .right-sidebar {
-    max-height: calc(100vh - 48px);
-    top: 48px;
+    max-height: calc(100vh - 44px);
+    top: 44px;
   }
 }
 
