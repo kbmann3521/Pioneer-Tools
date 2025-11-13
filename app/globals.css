@@ -298,6 +298,7 @@ pre code {
     padding: 0.4rem 1rem;
     height: 48px;
     justify-content: center;
+    border-bottom: none;
   }
 }
 
