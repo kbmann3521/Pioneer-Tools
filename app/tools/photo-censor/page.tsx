@@ -3,9 +3,9 @@
 import { useState, useRef, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { useAuth } from '@/app/context/AuthContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import styles from './photo-censor.module.css'
@@ -20,6 +20,7 @@ interface CensorBox {
 export default function PhotoCensorPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('photo-censor')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const { session } = useAuth()
 
   const [image, setImage] = useState<string | null>(null)
@@ -561,6 +562,8 @@ export default function PhotoCensorPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="photo-censor"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">
