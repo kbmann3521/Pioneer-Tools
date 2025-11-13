@@ -82,6 +82,7 @@ function ToolPageContent({
           </div>
         )}
       </div>
+      <FloatingApiButton />
       <Footer />
     </div>
   )
