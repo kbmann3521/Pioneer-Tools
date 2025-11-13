@@ -920,13 +920,13 @@ pre code {
 
 /* Tool Header */
 .tool-header-wrapper {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
   position: relative;
 }
 
 @media (max-width: 640px) {
   .tool-header-wrapper {
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 }
 
