@@ -47,9 +47,15 @@ export default function Header({ theme, setTheme, developerMode = false, setDeve
           <h1 className="header-title">Pioneer Web Tools</h1>
         </Link>
         <HeaderSearch onSelectTool={handleSearchSelect} />
-        <HeaderThemeToggle theme={theme} setTheme={setTheme} />
+        <div className="theme-toggle-mobile">
+          <HeaderThemeToggle theme={theme} setTheme={setTheme} />
+        </div>
       </div>
       <div className="header-right">
+        <div className="theme-toggle-desktop">
+          <HeaderThemeToggle theme={theme} setTheme={setTheme} />
+        </div>
+
         {isToolPage && setDeveloperMode && (
           <HeaderApiToggle
             developerMode={developerMode}
