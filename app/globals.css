@@ -250,7 +250,7 @@ pre code {
   flex-shrink: 0;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .right-sidebar {
     max-height: calc(100vh - 40px);
     top: 40px;
