@@ -1723,11 +1723,17 @@ export default function DashboardPage() {
         .transaction-item {
           display: flex;
           justify-content: space-between;
-          align-items: center;
-          padding: 1rem;
+          align-items: flex-start;
+          padding: 1.25rem;
           background: var(--bg-primary);
-          border-radius: 6px;
+          border-radius: 8px;
           border-left: 4px solid var(--color-primary);
+          gap: 1rem;
+          transition: all 0.2s ease;
+        }
+
+        .transaction-item:hover {
+          background: var(--bg-secondary);
         }
 
         .tx-info p {
@@ -1736,28 +1742,34 @@ export default function DashboardPage() {
         }
 
         .tx-type {
-          font-weight: 600;
+          font-weight: 700;
           color: var(--text-primary);
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
         }
 
         .tx-tool {
-          font-size: 0.85rem;
+          font-size: 0.8rem;
           color: var(--text-secondary);
+          margin-bottom: 0.25rem;
         }
 
         .tx-desc {
           font-size: 0.8rem;
           color: var(--text-tertiary);
+          line-height: 1.4;
         }
 
         .tx-amount {
           text-align: right;
+          flex-shrink: 0;
         }
 
         .tx-amount span {
           display: block;
-          font-weight: 600;
-          font-size: 1.1rem;
+          font-weight: 700;
+          font-size: 1.15rem;
+          margin-bottom: 0.35rem;
         }
 
         .tx-amount .negative {
@@ -1769,7 +1781,7 @@ export default function DashboardPage() {
         }
 
         .tx-date {
-          margin: 0.25rem 0 0 0;
+          margin: 0;
           font-size: 0.8rem;
           color: var(--text-tertiary);
         }
