@@ -877,14 +877,43 @@ export default function DashboardPage() {
 
 
                 {autoRechargeStatus.hasPaymentMethod && (
-                  <button
-                    className="btn-primary"
-                    onClick={triggerManualRecharge}
-                    disabled={recharging}
-                    style={{ marginTop: '1rem', width: '100%' }}
-                  >
-                    {recharging ? 'Processing...' : 'Recharge Now'}
-                  </button>
+                  <>
+                    {rechargeStatus && (
+                      <div
+                        className="alert"
+                        style={{
+                          marginTop: '1rem',
+                          backgroundColor: rechargeStatus.type === 'success'
+                            ? 'rgba(52, 211, 153, 0.1)'
+                            : rechargeStatus.type === 'error'
+                              ? 'rgba(239, 68, 68, 0.1)'
+                              : 'rgba(59, 130, 246, 0.1)',
+                          border: `1px solid ${
+                            rechargeStatus.type === 'success'
+                              ? '#34d399'
+                              : rechargeStatus.type === 'error'
+                                ? '#ef4444'
+                                : '#3b82f6'
+                          }`,
+                          color: rechargeStatus.type === 'success'
+                            ? '#34d399'
+                            : rechargeStatus.type === 'error'
+                              ? '#ef4444'
+                              : '#3b82f6',
+                        }}
+                      >
+                        <p>{rechargeStatus.message}</p>
+                      </div>
+                    )}
+                    <button
+                      className="btn-primary"
+                      onClick={triggerManualRecharge}
+                      disabled={recharging}
+                      style={{ marginTop: '1rem', width: '100%' }}
+                    >
+                      {recharging ? 'Processing...' : 'Recharge Now'}
+                    </button>
+                  </>
                 )}
               </div>
             )}
