@@ -1101,8 +1101,10 @@ pre code {
 @media (max-width: 640px) {
   .suggestion-btn,
   .save-tool-btn {
-    width: 100%;
-    text-align: center;
+    width: auto;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
   }
 }
 
