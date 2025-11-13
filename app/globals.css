@@ -392,7 +392,7 @@ pre code {
   .header-left {
     width: 100%;
     flex: 1;
-    gap: 0;
+    gap: 0.5rem;
     margin: 0;
     padding: 0 0 0 45px;
     height: 40px;
