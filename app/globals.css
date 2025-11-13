@@ -368,6 +368,9 @@ pre code {
   .header-search-container {
     max-width: 100%;
     flex: 1;
+    height: 32px;
+    display: flex;
+    align-items: center;
   }
 }
 
