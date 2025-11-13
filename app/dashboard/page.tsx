@@ -2085,6 +2085,102 @@ export default function DashboardPage() {
           opacity: 0.5;
         }
 
+        .keys-cards {
+          display: none;
+        }
+
+        .keys-table {
+          display: block;
+        }
+
+        .btn-delete-sm {
+          padding: 0.5rem 1rem;
+          font-size: 0.8rem;
+        }
+
+        .btn-copy-sm {
+          padding: 0.5rem 0.75rem;
+          background: var(--color-primary);
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 0.8rem;
+          font-weight: 600;
+          transition: all 0.2s;
+          margin-top: 0.5rem;
+        }
+
+        .btn-copy-sm:hover {
+          background: var(--color-primary-dark);
+        }
+
+        .key-card {
+          background: var(--bg-primary);
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          padding: 1rem;
+          margin-bottom: 1rem;
+        }
+
+        .key-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 1rem;
+          gap: 0.75rem;
+        }
+
+        .key-card-label {
+          margin: 0;
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+
+        .key-card-content {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .key-card-item {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+        }
+
+        .key-card-item label {
+          font-size: 0.75rem;
+          color: var(--text-tertiary);
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .key-card-item code {
+          background: var(--bg-secondary);
+          padding: 0.5rem;
+          border-radius: 4px;
+          font-family: monospace;
+          font-size: 0.85rem;
+          color: var(--text-secondary);
+          word-break: break-all;
+          margin-bottom: 0.25rem;
+        }
+
+        .key-card-item p {
+          margin: 0;
+          font-size: 0.9rem;
+          color: var(--text-secondary);
+        }
+
+        .key-card-dates {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.75rem;
+        }
+
         @media (max-width: 768px) {
           .dashboard-header {
             flex-direction: column;
@@ -2097,10 +2193,12 @@ export default function DashboardPage() {
             gap: 1rem;
           }
 
-          .table-header,
-          .table-row {
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
+          .keys-table {
+            display: none;
+          }
+
+          .keys-cards {
+            display: block;
           }
 
           .transaction-item {
