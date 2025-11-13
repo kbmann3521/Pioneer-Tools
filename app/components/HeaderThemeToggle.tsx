@@ -43,13 +43,6 @@ export default function HeaderThemeToggle({ theme, setTheme }: HeaderThemeToggle
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          margin-left: 0.5rem;
-        }
-
-        @media (max-width: 640px) {
-          .theme-toggle {
-            margin-right: 10px;
-          }
         }
 
         .theme-toggle:hover {
