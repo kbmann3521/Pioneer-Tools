@@ -100,7 +100,12 @@ export default function PhotoCensorPage(): JSX.Element {
   }
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation()
     handleImageUpload(e.target.files?.[0] || null)
+  }
+
+  const handleFileInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    e.stopPropagation()
   }
 
   const handleDragEnter = (e: React.DragEvent) => {
@@ -469,14 +474,6 @@ export default function PhotoCensorPage(): JSX.Element {
               onDragLeave={handleDragLeave}
               onDragOver={handleDragOver}
               onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  fileInputRef.current?.click()
-                }
-              }}
             >
               <input
                 ref={fileInputRef}
@@ -484,6 +481,7 @@ export default function PhotoCensorPage(): JSX.Element {
                 id="image-upload"
                 accept="image/*"
                 onChange={handleFileInputChange}
+                onClick={handleFileInputClick}
                 className={styles.fileInput}
               />
               <label htmlFor="image-upload" className={styles.fileInputLabel}>
