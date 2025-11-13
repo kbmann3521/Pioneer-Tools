@@ -332,6 +332,10 @@ export default function PhotoCensorPage(): JSX.Element {
     setIsDragging(null)
   }
 
+  const handleCanvasTouchEnd = () => {
+    setIsDragging(null)
+  }
+
   const updateCursor = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (isCensored || !canvasRef.current) {
       canvasRef.current!.style.cursor = 'default'
