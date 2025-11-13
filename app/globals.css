@@ -300,6 +300,7 @@ pre code {
     justify-content: flex-start;
     border-bottom: none;
     overflow: hidden;
+    backdrop-filter: none;
   }
 }
 
