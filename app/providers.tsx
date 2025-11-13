@@ -47,12 +47,22 @@ function ToolPageContent({
   favorites,
   toggleFavorite
 }: ToolPageContentProps) {
-  const { isOpen: apiPanelOpen } = useApiPanel()
+  const { isOpen: apiPanelOpen, setOpen: setApiPanelOpen } = useApiPanel()
+
+  const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close API panel when clicking on the backdrop (outside the sidebar)
+    if (apiPanelOpen && e.target === e.currentTarget) {
+      setApiPanelOpen(false)
+      return
+    }
+    // Close sidebar when clicking on the overlay backdrop
+    handleMainContainerClick(e)
+  }
 
   return (
     <div className="app" data-theme={theme}>
       <Header theme={theme} setTheme={setTheme} developerMode={developerMode} setDeveloperMode={setDeveloperMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-      <div className="main-container" data-sidebar-open={sidebarOpen} data-api-panel-open={apiPanelOpen} onClick={handleMainContainerClick}>
+      <div className="main-container" data-sidebar-open={sidebarOpen} data-api-panel-open={apiPanelOpen} onClick={handleContainerClick}>
         <Sidebar
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
