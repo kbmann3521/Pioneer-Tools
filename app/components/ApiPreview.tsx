@@ -427,10 +427,7 @@ echo json_encode($result, JSON_PRETTY_PRINT);
         <p className="api-endpoint">{method} {endpoint}</p>
       </div>
 
-      <div className="language-selector-wrapper">
-        <label htmlFor="language-select" className="language-select-label">
-          <p>Language:</p>
-        </label>
+      <div className="api-language-selector-wrapper">
         <CodeLanguageSelector language={language} onLanguageChange={setLanguage} />
 
         {validationStatus && (
