@@ -388,6 +388,14 @@ pre code {
   flex: 1;
 }
 
+.theme-toggle-mobile {
+  display: none;
+}
+
+.theme-toggle-desktop {
+  display: flex;
+}
+
 @media (max-width: 640px) {
   .header-left {
     width: 100%;
@@ -397,6 +405,16 @@ pre code {
     padding: 0 0 0 45px;
     height: 40px;
     align-items: center;
+  }
+
+  .theme-toggle-mobile {
+    display: flex;
+    margin-left: 0.5rem;
+    margin-right: 10px;
+  }
+
+  .theme-toggle-desktop {
+    display: none;
   }
 }
 
