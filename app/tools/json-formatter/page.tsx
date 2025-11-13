@@ -3,17 +3,18 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { formatJson } from '@/lib/tools/json-formatter'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, JsonFormatterResult } from '@/lib/types/tools'
 
 export default function JsonFormatterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('json-formatter')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const { isCopied, copyToClipboard } = useClipboard()
   const [input, setInput] = useState<string>('')
   const [result, setResult] = useState<JsonFormatterResult | null>(null)
@@ -38,6 +39,8 @@ export default function JsonFormatterPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="json-formatter"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">

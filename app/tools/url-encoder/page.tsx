@@ -3,17 +3,18 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { convertUrl } from '@/lib/tools/url-encoder'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, UrlEncoderResult } from '@/lib/types/tools'
 
 export default function UrlEncoderPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('url-encoder')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const [text, setText] = useState<string>('')
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
   const [result, setResult] = useState<UrlEncoderResult | null>(null)
@@ -40,6 +41,8 @@ export default function UrlEncoderPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="url-encoder"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">
