@@ -35,7 +35,7 @@ export async function callOpenAI(
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
         messages,
         max_tokens: options.maxTokens || 500,
         temperature: options.temperature ?? 0.7,
