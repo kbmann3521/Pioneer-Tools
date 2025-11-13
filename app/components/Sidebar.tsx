@@ -85,12 +85,23 @@ export default function Sidebar({ favorites, onToggleFavorite, onCloseApiPanel }
     </Link>
   )
 
+  const { signOut } = useAuth()
+
   const handleAuthClick = (mode: 'login' | 'signup') => {
     router.push(`/auth?mode=${mode}`)
   }
 
   const handleNavigate = (path: string) => {
     router.push(path)
+  }
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      router.push('/')
+    } catch (error) {
+      console.error('Sign out error:', error)
+    }
   }
 
   return (
@@ -114,6 +125,14 @@ export default function Sidebar({ favorites, onToggleFavorite, onCloseApiPanel }
                 title="Back to tools"
               >
                 🛠️ Tools
+              </button>
+              <button
+                type="button"
+                className="sidebar-auth-btn signout-btn"
+                onClick={handleSignOut}
+                title="Sign out"
+              >
+                Sign Out
               </button>
             </>
           ) : (
