@@ -266,11 +266,18 @@ export function RootProvider({ children }: ProvidersProps) {
   }
 
   // Default: render home page with sidebar and dashboard
+  const handleMainContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close sidebar when clicking on the overlay backdrop
+    if (sidebarOpen && e.target === e.currentTarget) {
+      setSidebarOpen(false)
+    }
+  }
+
   return (
     <FavoritesProvider favorites={favorites} toggleFavorite={toggleFavorite}>
       <div className="app" data-theme={theme}>
         <Header theme={theme} setTheme={setTheme} developerMode={developerMode} setDeveloperMode={setDeveloperMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        <div className="main-container" data-sidebar-open={sidebarOpen}>
+        <div className="main-container" data-sidebar-open={sidebarOpen} onClick={handleMainContainerClick}>
           <Sidebar
             favorites={favorites}
             onToggleFavorite={toggleFavorite}
