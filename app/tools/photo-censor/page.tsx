@@ -174,6 +174,10 @@ export default function PhotoCensorPage(): JSX.Element {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
+    // Detect if mobile device for responsive handle sizing
+    const isMobile = window.innerWidth < 768
+    const handleSize = isMobile ? 20 : 12
+
     if (isCensored) {
       // Draw semi-transparent overlay showing what was censored
       ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
@@ -182,15 +186,14 @@ export default function PhotoCensorPage(): JSX.Element {
       ctx.lineWidth = 2
       ctx.strokeRect(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
     } else {
-      // Draw selection box preview
-      ctx.strokeStyle = 'rgba(74, 158, 255, 0.8)'
+      // Draw selection box preview with increased opacity for better visibility
+      ctx.strokeStyle = 'rgba(74, 158, 255, 0.9)'
       ctx.lineWidth = 2
       ctx.strokeRect(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
-      ctx.fillStyle = 'rgba(74, 158, 255, 0.1)'
+      ctx.fillStyle = 'rgba(74, 158, 255, 0.25)'
       ctx.fillRect(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
 
       // Draw corner handles
-      const handleSize = 8
       const corners = [
         { x: censorBox.x, y: censorBox.y },
         { x: censorBox.x + censorBox.width, y: censorBox.y },
