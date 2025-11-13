@@ -342,10 +342,18 @@ export default function PhotoCensorPage(): JSX.Element {
   }
 
   const handleCanvasMouseUp = () => {
+    if (dragUpdateRef.current) {
+      clearTimeout(dragUpdateRef.current)
+      dragUpdateRef.current = null
+    }
     setIsDragging(null)
   }
 
   const handleCanvasTouchEnd = () => {
+    if (dragUpdateRef.current) {
+      clearTimeout(dragUpdateRef.current)
+      dragUpdateRef.current = null
+    }
     setIsDragging(null)
   }
 
