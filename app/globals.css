@@ -346,7 +346,9 @@ pre code {
     width: 100%;
     flex: 1;
     gap: 0;
-    padding-left: 50px;
+    padding-left: 45px;
+    margin: 0;
+    padding: 0.2rem 0 0.2rem 45px;
   }
 }
 
