@@ -400,11 +400,13 @@ pre code {
   .header-left {
     width: 100%;
     gap: 0.5rem;
-    margin: 0;
+    margin: 0 auto;
     padding: 0 0 0 45px;
     height: 40px;
     align-items: center;
     justify-content: space-between;
+    display: flex;
+    flex-direction: row;
   }
 
   .header-search-container {
