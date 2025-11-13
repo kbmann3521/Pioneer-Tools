@@ -1086,18 +1086,18 @@ pre code {
 
 /* Dashboard */
 .dashboard {
-  padding: 0.25rem 2rem 2rem 2rem;
+  padding: 0 2rem 2rem 2rem;
 }
 
 @media (max-width: 768px) {
   .dashboard {
-    padding: 0.25rem 1.5rem 1.5rem 1.5rem;
+    padding: 0 1.5rem 1.5rem 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .dashboard {
-    padding: 0.25rem 1rem 1rem 1rem;
+    padding: 0 1rem 1rem 1rem;
   }
 }
 
