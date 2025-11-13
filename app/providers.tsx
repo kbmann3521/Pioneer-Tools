@@ -238,29 +238,22 @@ export function RootProvider({ children }: ProvidersProps) {
     return (
       <FavoritesProvider favorites={favorites} toggleFavorite={toggleFavorite}>
         <ApiParamsProvider updateParams={setApiParams}>
-          <div className="app" data-theme={theme}>
-            <Header theme={theme} setTheme={setTheme} developerMode={developerMode} setDeveloperMode={setDeveloperMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-            <div className="main-container" data-sidebar-open={sidebarOpen} onClick={handleMainContainerClick}>
-              <Sidebar
-                favorites={favorites}
-                onToggleFavorite={toggleFavorite}
-              />
-              <main className="content">
-                {children}
-              </main>
-              {endpoints[toolId] && (
-                <div className={`right-sidebar ${!developerMode ? 'collapsed' : ''}`}>
-                  <ApiPreview
-                    endpoint={endpoints[toolId]}
-                    params={apiParams}
-                    toolName={toolId}
-                    enableCodeExecution={true}
-                  />
-                </div>
-              )}
-            </div>
-            <Footer />
-          </div>
+          <ApiPanelProvider>
+            <ToolPageContent
+              theme={theme}
+              setTheme={setTheme}
+              developerMode={developerMode}
+              setDeveloperMode={setDeveloperMode}
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+              handleMainContainerClick={handleMainContainerClick}
+              endpoints={endpoints}
+              toolId={toolId}
+              apiParams={apiParams}
+            >
+              {children}
+            </ToolPageContent>
+          </ApiPanelProvider>
         </ApiParamsProvider>
       </FavoritesProvider>
     )
