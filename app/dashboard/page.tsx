@@ -1846,6 +1846,24 @@ export default function DashboardPage() {
             font-weight: 600;
             border-bottom-width: 3px;
           }
+
+          .call-group-header {
+            padding: 0.9rem;
+            gap: 0.75rem;
+          }
+
+          .call-group-info {
+            gap: 0.5rem;
+          }
+
+          .call-group-details {
+            padding: 0.65rem;
+          }
+
+          .call-detail-item {
+            padding: 0.45rem 0;
+            font-size: 0.88rem;
+          }
         }
 
         @media (max-width: 480px) {
