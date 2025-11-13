@@ -1262,6 +1262,26 @@ export default function DashboardPage() {
           color: var(--text-primary);
         }
 
+        .main-container {
+          display: flex;
+          flex: 1;
+          position: relative;
+        }
+
+        @media (max-width: 768px) {
+          .main-container {
+            position: relative;
+          }
+
+          .main-container[data-sidebar-open="false"] aside.sidebar {
+            display: none;
+          }
+
+          .main-container[data-sidebar-open="true"] {
+            overflow: hidden;
+          }
+        }
+
         .dashboard-container {
           flex: 1;
           background: var(--bg-primary);
