@@ -428,6 +428,9 @@ echo json_encode($result, JSON_PRETTY_PRINT);
       </div>
 
       <div className="language-selector-wrapper">
+        <label htmlFor="language-select" className="language-select-label">
+          <p>Language:</p>
+        </label>
         <CodeLanguageSelector language={language} onLanguageChange={setLanguage} />
 
         {validationStatus && (
