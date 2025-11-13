@@ -543,17 +543,27 @@ echo json_encode($result, JSON_PRETTY_PRINT);
           overflow-y: auto;
         }
 
+        .api-preview-back-btn {
+          display: block;
+          color: var(--color-primary);
+          font-weight: 600;
+          margin-bottom: 1rem;
+          padding: 0.5rem 0;
+          background: none;
+          border: none;
+          cursor: pointer;
+          transition: opacity 0.2s ease;
+        }
+
+        .api-preview-back-btn:hover {
+          opacity: 0.8;
+        }
+
         .api-preview-header {
           display: flex;
           flex-direction: column;
           gap: 0.1rem;
-        }
-
-        .api-preview-header h3 {
-          margin: 0;
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: var(--text-primary);
+          margin-bottom: 1rem;
         }
 
         .api-endpoint {
@@ -562,6 +572,10 @@ echo json_encode($result, JSON_PRETTY_PRINT);
           color: var(--text-secondary);
           font-family: 'Monaco', 'Courier New', monospace;
           font-weight: 600;
+          background-color: var(--bg-primary);
+          border-radius: 4px;
+          padding: 0.5rem 0.75rem;
+          word-break: break-all;
         }
 
         .api-preview-language-selector {
