@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useAuth } from '@/app/context/AuthContext'
@@ -127,6 +126,7 @@ export default function BlogGeneratorPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="blog-generator"
+        showApiToggle={true}
       />
 
       <div className="tool-content blog-content">
@@ -212,8 +212,6 @@ export default function BlogGeneratorPage(): JSX.Element {
           </div>
         )}
       </div>
-
-      <MobileApiToggle />
 
       <AboutToolAccordion
         toolId="blog-generator"
