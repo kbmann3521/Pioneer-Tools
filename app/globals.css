@@ -1287,31 +1287,37 @@ pre code {
 /* Mobile API Toggle Button */
 .mobile-api-toggle {
   display: none;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  margin-bottom: 15px;
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.9rem;
+  padding: 0.4rem 0.6rem;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .mobile-api-toggle:hover {
-  background-color: var(--color-primary-dark);
-  opacity: 0.9;
+  background-color: var(--bg-secondary);
+  border-color: var(--color-primary);
 }
 
 .mobile-api-toggle:active {
-  transform: scale(0.98);
+  transform: scale(0.95);
 }
 
 @media (max-width: 1024px) {
   .mobile-api-toggle {
     display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .mobile-api-toggle {
+    display: none;
   }
 }
 
