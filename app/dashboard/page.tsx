@@ -984,40 +984,76 @@ export default function DashboardPage() {
             {apiKeys.length === 0 ? (
               <p className="empty-state">No API keys yet. Create one to get started.</p>
             ) : (
-              <div className="keys-table">
-                <div className="table-header">
-                  <div>Label</div>
-                  <div>Key</div>
-                  <div>Created</div>
-                  <div>Last Used</div>
-                  <div>Actions</div>
-                </div>
-                {apiKeys.map((key) => (
-                  <div key={key.id} className="table-row">
-                    <div className="label-cell">{key.label}</div>
-                    <div className="key-cell">
-                      <code>{key.key.substring(0, 20)}...</code>
-                    </div>
-                    <div className="date-cell">
-                      {new Date(key.created_at).toLocaleDateString()}
-                    </div>
-                    <div className="date-cell">
-                      {key.last_used ? new Date(key.last_used).toLocaleDateString() : 'Never'}
-                    </div>
-                    <div className="actions-cell">
-                      <button
-                        className="btn-secondary"
-                        onClick={() => copyKeyToClipboard(key.key, key.id)}
-                      >
-                        {copiedKeyId === key.id ? 'Copied!' : 'Copy'}
-                      </button>
-                      <button className="btn-delete" onClick={() => deleteKey(key.id)}>
-                        Delete
-                      </button>
-                    </div>
+              <>
+                <div className="keys-table">
+                  <div className="table-header">
+                    <div>Label</div>
+                    <div>Key</div>
+                    <div>Created</div>
+                    <div>Last Used</div>
+                    <div>Actions</div>
                   </div>
-                ))}
-              </div>
+                  {apiKeys.map((key) => (
+                    <div key={key.id} className="table-row">
+                      <div className="label-cell">{key.label}</div>
+                      <div className="key-cell">
+                        <code>{key.key.substring(0, 20)}...</code>
+                      </div>
+                      <div className="date-cell">
+                        {new Date(key.created_at).toLocaleDateString()}
+                      </div>
+                      <div className="date-cell">
+                        {key.last_used ? new Date(key.last_used).toLocaleDateString() : 'Never'}
+                      </div>
+                      <div className="actions-cell">
+                        <button
+                          className="btn-secondary"
+                          onClick={() => copyKeyToClipboard(key.key, key.id)}
+                        >
+                          {copiedKeyId === key.id ? 'Copied!' : 'Copy'}
+                        </button>
+                        <button className="btn-delete" onClick={() => deleteKey(key.id)}>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="keys-cards">
+                  {apiKeys.map((key) => (
+                    <div key={key.id} className="key-card">
+                      <div className="key-card-header">
+                        <h4 className="key-card-label">{key.label}</h4>
+                        <button className="btn-delete btn-delete-sm" onClick={() => deleteKey(key.id)}>
+                          Delete
+                        </button>
+                      </div>
+                      <div className="key-card-content">
+                        <div className="key-card-item">
+                          <label>Key</label>
+                          <code>{key.key.substring(0, 20)}...</code>
+                          <button
+                            className="btn-copy-sm"
+                            onClick={() => copyKeyToClipboard(key.key, key.id)}
+                          >
+                            {copiedKeyId === key.id ? '✓ Copied!' : 'Copy'}
+                          </button>
+                        </div>
+                        <div className="key-card-dates">
+                          <div className="key-card-item">
+                            <label>Created</label>
+                            <p>{new Date(key.created_at).toLocaleDateString()}</p>
+                          </div>
+                          <div className="key-card-item">
+                            <label>Last Used</label>
+                            <p>{key.last_used ? new Date(key.last_used).toLocaleDateString() : 'Never'}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </section>
 
