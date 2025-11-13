@@ -272,6 +272,10 @@ pre code {
 }
 
 @media (max-width: 1024px) {
+  .main-container[data-api-panel-open="true"] {
+    overflow: hidden;
+  }
+
   .main-container[data-api-panel-open="true"]::after {
     content: '';
     position: fixed;
@@ -299,6 +303,8 @@ pre code {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
     opacity: 0;
     pointer-events: none;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .right-sidebar[data-api-panel-open="true"] {
