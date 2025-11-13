@@ -4,11 +4,11 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '@/app/context/AuthContext'
-import { useApiPanel } from '@/app/context/ApiPanelContext'
 
 interface SidebarProps {
   favorites: string[]
   onToggleFavorite: (toolId: string) => void
+  onCloseApiPanel?: () => void
 }
 
 interface Tool {
@@ -47,11 +47,10 @@ const toolsByCategory = {
 
 type CategoryKey = keyof typeof toolsByCategory
 
-export default function Sidebar({ favorites, onToggleFavorite }: SidebarProps) {
+export default function Sidebar({ favorites, onToggleFavorite, onCloseApiPanel }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const { user } = useAuth()
-  const { setOpen: setApiPanelOpen } = useApiPanel()
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
     'Favorite Tools': false,
     'Text Tools': false,
@@ -79,7 +78,7 @@ export default function Sidebar({ favorites, onToggleFavorite }: SidebarProps) {
       key={tool.id}
       href={`/tools/${tool.id}`}
       className={`tool-item ${currentTool === tool.id ? 'active' : ''}`}
-      onClick={() => setApiPanelOpen(false)}
+      onClick={() => onCloseApiPanel?.()}
     >
       <span className="tool-icon">{tool.icon}</span>
       <span className="tool-name">{tool.name}</span>
