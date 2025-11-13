@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { convertBase64 } from '@/lib/tools/base64-converter'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
@@ -109,6 +110,8 @@ export default function Base64ConverterPage(): JSX.Element {
           </div>
         )}
       </div>
+
+      <MobileApiToggle />
 
       <AboutToolAccordion
         toolId="base64-converter"
