@@ -67,6 +67,7 @@ function ToolPageContent({
         <Sidebar
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
+          onCloseApiPanel={() => setApiPanelOpen(false)}
         />
         <main className="content">
           {children}
