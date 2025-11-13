@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { generateOGTags, type OGGeneratorOutput } from '@/lib/tools/og-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
@@ -166,6 +167,8 @@ export default function OGGeneratorPage(): JSX.Element {
           </>
         )}
       </div>
+
+      <MobileApiToggle />
 
       <AboutToolAccordion
         toolId="og-generator"
