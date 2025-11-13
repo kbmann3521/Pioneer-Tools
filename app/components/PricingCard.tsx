@@ -106,12 +106,44 @@ export default function PricingCard({ toolName }: PricingCardProps) {
 
         @media (max-width: 768px) {
           .pricing-card {
-            grid-template-columns: 1fr;
+            grid-template-columns: auto 1px auto;
+            gap: 0.3rem;
+            padding: 0.4rem;
           }
 
           .pricing-divider {
-            width: 100%;
-            height: 1px;
+            height: 20px;
+            width: 1px;
+          }
+
+          .pricing-item {
+            text-align: center;
+          }
+
+          .pricing-item label {
+            font-size: 0.6rem;
+            margin-bottom: 0.1rem;
+          }
+
+          .pricing-value {
+            font-size: 1.1rem;
+          }
+
+          .rate-limits {
+            gap: 0.1rem;
+          }
+
+          .rate-tier {
+            font-size: 0.7rem;
+          }
+
+          .rate-tier p {
+            margin: 0;
+            font-size: 0.7rem;
+          }
+
+          .rate-tier small {
+            font-size: 0.65rem;
           }
         }
       `}</style>
