@@ -16,6 +16,48 @@ interface ProvidersProps {
   children?: ReactNode
 }
 
+function ToolPageContent({
+  theme,
+  setTheme,
+  developerMode,
+  setDeveloperMode,
+  sidebarOpen,
+  setSidebarOpen,
+  handleMainContainerClick,
+  endpoints,
+  toolId,
+  apiParams,
+  children
+}: any) {
+  const { isOpen: apiPanelOpen } = useApiPanel()
+
+  return (
+    <div className="app" data-theme={theme}>
+      <Header theme={theme} setTheme={setTheme} developerMode={developerMode} setDeveloperMode={setDeveloperMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="main-container" data-sidebar-open={sidebarOpen} onClick={handleMainContainerClick}>
+        <Sidebar
+          favorites={[]}
+          onToggleFavorite={() => {}}
+        />
+        <main className="content">
+          {children}
+        </main>
+        {endpoints[toolId] && (
+          <div className={`right-sidebar ${!developerMode ? 'collapsed' : ''}`} data-api-panel-open={apiPanelOpen}>
+            <ApiPreview
+              endpoint={endpoints[toolId]}
+              params={apiParams}
+              toolName={toolId}
+              enableCodeExecution={true}
+            />
+          </div>
+        )}
+      </div>
+      <Footer />
+    </div>
+  )
+}
+
 export function RootProvider({ children }: ProvidersProps) {
   const pathname = usePathname()
   const { user, session } = useAuth()
