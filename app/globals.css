@@ -296,8 +296,7 @@ pre code {
 @media (max-width: 480px) {
   .header {
     padding: 0.3rem 1rem;
-    height: auto;
-    min-height: 44px;
+    height: 44px;
     justify-content: center;
     border-bottom: none;
     overflow: hidden;
