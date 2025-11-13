@@ -320,7 +320,8 @@ pre code {
   .hamburger-menu {
     display: flex;
     position: absolute;
-    left: 1rem;
+    left: 0.5rem;
+    padding: 0.4rem;
   }
 }
 
