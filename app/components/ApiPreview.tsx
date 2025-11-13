@@ -769,38 +769,11 @@ echo json_encode($result, JSON_PRETTY_PRINT);
           border-top: 1px solid var(--border-color);
         }
 
-        .language-selector-wrapper {
+        .api-language-selector-wrapper {
           display: flex;
           align-items: center;
           gap: 1rem;
           flex-wrap: wrap;
-        }
-
-        .language-select-label {
-          display: block;
-          font-size: 0.9rem;
-          font-weight: 500;
-          line-height: 1.4375;
-          white-space: nowrap;
-        }
-
-        .language-select-label p {
-          margin: 0;
-          font-size: 0.9rem;
-          font-weight: 500;
-        }
-
-        @media (max-width: 640px) {
-          .language-selector-wrapper {
-            justify-content: flex-start;
-            margin-right: auto;
-            flex-direction: row;
-            align-items: center;
-          }
-
-          .language-select-label {
-            margin: auto auto auto 0;
-          }
         }
 
         .validation-status {
