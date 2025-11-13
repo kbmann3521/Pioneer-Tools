@@ -1819,7 +1819,22 @@ export default function DashboardPage() {
           border-bottom-color: var(--color-primary);
         }
 
+        .tab-text-desktop {
+          display: inline;
+        }
+
+        .tab-text-mobile {
+          display: none;
+        }
+
         @media (max-width: 768px) {
+          .tab-text-desktop {
+            display: none;
+          }
+
+          .tab-text-mobile {
+            display: inline;
+          }
           .activity-tabs {
             gap: 0;
             margin-bottom: 1rem;
