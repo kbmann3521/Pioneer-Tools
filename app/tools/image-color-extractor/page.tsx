@@ -502,8 +502,6 @@ export default function ImageColorExtractorPage(): JSX.Element {
         )}
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="image-color-extractor"
         content={toolDescriptions['image-color-extractor']}

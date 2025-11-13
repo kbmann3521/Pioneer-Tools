@@ -196,8 +196,6 @@ export default function HexRgbaConverterPage(): JSX.Element {
         )}
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="hex-rgba-converter"
         content={toolDescriptions['hex-rgba-converter']}

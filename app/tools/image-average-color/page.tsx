@@ -422,8 +422,6 @@ export default function ImageAverageColorPage(): JSX.Element {
         )}
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="image-average-color"
         content={toolDescriptions['image-average-color']}

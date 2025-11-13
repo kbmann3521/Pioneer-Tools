@@ -190,8 +190,6 @@ export default function PasswordGeneratorPage(): JSX.Element {
 
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="password-generator"
         content={toolDescriptions['password-generator']}

@@ -727,8 +727,6 @@ export default function PhotoCensorPage(): JSX.Element {
         )}
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="photo-censor"
         content={toolDescriptions['photo-censor']}

@@ -114,8 +114,6 @@ export default function Base64ConverterPage(): JSX.Element {
         )}
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="base64-converter"
         content={toolDescriptions['base64-converter']}

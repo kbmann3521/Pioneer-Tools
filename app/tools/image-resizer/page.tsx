@@ -251,8 +251,6 @@ export default function ImageResizerPage(): JSX.Element {
         <canvas ref={canvasRef} style={{ display: 'none' }} />
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="image-resizer"
         content={toolDescriptions['image-resizer']}

@@ -123,8 +123,6 @@ export default function JsonFormatterPage(): JSX.Element {
         )}
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="json-formatter"
         content={toolDescriptions['json-formatter']}

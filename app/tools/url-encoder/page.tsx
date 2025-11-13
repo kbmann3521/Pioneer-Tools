@@ -115,8 +115,6 @@ export default function UrlEncoderPage(): JSX.Element {
         )}
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="url-encoder"
         content={toolDescriptions['url-encoder']}

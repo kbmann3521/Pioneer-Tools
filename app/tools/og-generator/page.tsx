@@ -171,8 +171,6 @@ export default function OGGeneratorPage(): JSX.Element {
         )}
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="og-generator"
         content={toolDescriptions['og-generator']}

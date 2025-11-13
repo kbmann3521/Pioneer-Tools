@@ -107,8 +107,6 @@ export default function SlugGeneratorPage(): JSX.Element {
         )}
       </div>
 
-      <MobileApiToggle />
-
       <AboutToolAccordion
         toolId="slug-generator"
         content={toolDescriptions['slug-generator']}
