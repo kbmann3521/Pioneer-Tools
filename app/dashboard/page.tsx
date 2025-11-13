@@ -1280,6 +1280,17 @@ export default function DashboardPage() {
           .main-container[data-sidebar-open="true"] {
             overflow: hidden;
           }
+
+          .main-container[data-sidebar-open="true"]::after {
+            content: '';
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 44;
+          }
         }
 
         .dashboard-container {
