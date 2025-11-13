@@ -85,9 +85,59 @@ export default function Sidebar({ favorites, onToggleFavorite, onCloseApiPanel }
     </Link>
   )
 
+  const handleAuthClick = (mode: 'login' | 'signup') => {
+    router.push(`/auth?mode=${mode}`)
+  }
+
+  const handleNavigate = (path: string) => {
+    router.push(path)
+  }
+
   return (
     <aside className="sidebar">
       <div className="sidebar-content">
+        <div className="sidebar-auth">
+          {user ? (
+            <>
+              <button
+                type="button"
+                className="sidebar-auth-btn dashboard-btn"
+                onClick={() => handleNavigate('/dashboard')}
+                title="View your dashboard"
+              >
+                📊 Dashboard
+              </button>
+              <button
+                type="button"
+                className="sidebar-auth-btn tools-btn"
+                onClick={() => handleNavigate('/')}
+                title="Back to tools"
+              >
+                🛠️ Tools
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="sidebar-auth-btn login-btn"
+                onClick={() => handleAuthClick('login')}
+                title="Log in to your account"
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                className="sidebar-auth-btn signup-btn"
+                onClick={() => handleAuthClick('signup')}
+                title="Create a new account"
+              >
+                Sign Up
+              </button>
+            </>
+          )}
+        </div>
+
         <h2 className="sidebar-title">Tools</h2>
 
         <div className="category-accordion">
