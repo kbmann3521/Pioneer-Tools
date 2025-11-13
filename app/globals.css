@@ -648,6 +648,7 @@ pre code {
 @media (max-width: 480px) {
   .sidebar-content {
     padding: 1rem;
+    margin-top: 0;
   }
 }
 
