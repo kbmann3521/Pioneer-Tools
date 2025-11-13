@@ -218,7 +218,12 @@ export default function ImageAverageColorPage(): JSX.Element {
   }
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation()
     handleImageUpload(e.target.files?.[0] || null)
+  }
+
+  const handleFileInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    e.stopPropagation()
   }
 
   const handleDragEnter = (e: React.DragEvent) => {
@@ -290,6 +295,7 @@ export default function ImageAverageColorPage(): JSX.Element {
               id="image-upload"
               accept="image/*"
               onChange={handleFileInputChange}
+              onClick={handleFileInputClick}
               className="file-input"
             />
             <label htmlFor="image-upload" className="file-input-label">
