@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { createPassword } from '@/lib/tools/password-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
@@ -185,6 +186,8 @@ export default function PasswordGeneratorPage(): JSX.Element {
         )}
 
       </div>
+
+      <MobileApiToggle />
 
       <AboutToolAccordion
         toolId="password-generator"
