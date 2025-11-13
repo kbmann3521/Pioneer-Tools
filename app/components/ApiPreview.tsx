@@ -541,7 +541,7 @@ echo json_encode($result, JSON_PRETTY_PRINT);
         }
 
         .api-preview-back-btn {
-          display: block;
+          display: none;
           color: var(--color-primary);
           font-weight: 600;
           margin-bottom: 1rem;
@@ -554,6 +554,12 @@ echo json_encode($result, JSON_PRETTY_PRINT);
 
         .api-preview-back-btn:hover {
           opacity: 0.8;
+        }
+
+        @media (max-width: 1024px) {
+          .api-preview-back-btn {
+            display: block;
+          }
         }
 
         .api-preview-header {
