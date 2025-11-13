@@ -227,12 +227,19 @@ export function RootProvider({ children }: ProvidersProps) {
       'password-generator': '/api/tools/password-generator',
     }
 
+    const handleMainContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      // Close sidebar when clicking on the overlay backdrop
+      if (sidebarOpen && e.target === e.currentTarget) {
+        setSidebarOpen(false)
+      }
+    }
+
     return (
       <FavoritesProvider favorites={favorites} toggleFavorite={toggleFavorite}>
         <ApiParamsProvider updateParams={setApiParams}>
           <div className="app" data-theme={theme}>
             <Header theme={theme} setTheme={setTheme} developerMode={developerMode} setDeveloperMode={setDeveloperMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-            <div className="main-container" data-sidebar-open={sidebarOpen}>
+            <div className="main-container" data-sidebar-open={sidebarOpen} onClick={handleMainContainerClick}>
               <Sidebar
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
