@@ -1349,38 +1349,6 @@ pre code {
 }
 
 /* Floating API Button */
-.floating-api-btn {
-  display: none;
-  padding: 0.4rem 0.6rem;
-  background-color: var(--bg-tertiary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 40;
-}
-
-.floating-api-btn:hover {
-  background-color: var(--bg-secondary);
-  border-color: var(--color-primary);
-}
-
-.floating-api-btn:active {
-  transform: scale(0.95);
-}
-
-@media (max-width: 1024px) {
-  .floating-api-btn {
-    display: block;
-  }
-}
 
 /* Mobile API Panel Back Button */
 .api-preview-back-btn {
