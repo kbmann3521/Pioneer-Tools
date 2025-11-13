@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { type ExtractedColor } from '@/lib/tools/image-color-extractor'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
@@ -497,6 +498,8 @@ export default function ImageColorExtractorPage(): JSX.Element {
           </div>
         )}
       </div>
+
+      <MobileApiToggle />
 
       <AboutToolAccordion
         toolId="image-color-extractor"
