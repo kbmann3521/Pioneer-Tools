@@ -543,6 +543,10 @@ export default function PhotoCensorPage(): JSX.Element {
                       }}
                       onMouseUp={handleCanvasMouseUp}
                       onMouseLeave={handleCanvasMouseUp}
+                      onTouchStart={handleCanvasTouchStart}
+                      onTouchMove={handleCanvasTouchMove}
+                      onTouchEnd={handleCanvasTouchEnd}
+                      style={{ touchAction: 'none' }}
                     />
                   )}
                 </div>
