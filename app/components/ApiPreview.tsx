@@ -409,15 +409,21 @@ echo json_encode($result, JSON_PRETTY_PRINT);
 
   return (
     <div className="api-preview">
-      <button
+      <div
         className="api-preview-back-btn"
         onClick={() => setOpen(false)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            setOpen(false)
+          }
+        }}
         aria-label="Close API view"
       >
         ← Back to tool
-      </button>
+      </div>
       <div className="api-preview-header">
-        <h3>API Call</h3>
         <p className="api-endpoint">{method} {endpoint}</p>
       </div>
 
