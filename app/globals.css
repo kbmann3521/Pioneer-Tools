@@ -272,6 +272,18 @@ pre code {
 }
 
 @media (max-width: 1024px) {
+  .main-container[data-api-panel-open="true"]::after {
+    content: '';
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 44;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
   .right-sidebar {
     position: fixed;
     right: 0;
@@ -293,17 +305,6 @@ pre code {
     transform: translateX(0);
     opacity: 1;
     pointer-events: auto;
-  }
-
-  .right-sidebar[data-api-panel-open="true"]::before {
-    content: '';
-    position: fixed;
-    top: 70px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: -1;
   }
 }
 
