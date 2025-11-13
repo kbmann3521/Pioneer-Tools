@@ -280,55 +280,62 @@ export default function PhotoCensorPage(): JSX.Element {
   const performDragUpdate = (clientX: number, clientY: number) => {
     if (!isDragging) return
 
-    const coords = getCanvasCoordinates(clientX, clientY)
-    const minSize = 20
+    // Store the latest coordinates
+    pendingCoordRef.current = { clientX, clientY }
 
-    // Throttle state updates to animation frame for smooth performance
-    if (dragUpdateRef.current) {
-      clearTimeout(dragUpdateRef.current)
+    // Schedule an update on the next animation frame if not already scheduled
+    if (!dragUpdateRef.current) {
+      dragUpdateRef.current = requestAnimationFrame(() => {
+        if (!pendingCoordRef.current || !isDragging) {
+          dragUpdateRef.current = null
+          return
+        }
+
+        const { clientX: x, clientY: y } = pendingCoordRef.current
+        const coords = getCanvasCoordinates(x, y)
+        const minSize = 20
+
+        if (isDragging === 'move') {
+          setCensorBox(prev => ({
+            ...prev,
+            x: Math.max(0, Math.min(coords.x - dragOffset.x, imageDimensions.width - prev.width)),
+            y: Math.max(0, Math.min(coords.y - dragOffset.y, imageDimensions.height - prev.height)),
+          }))
+        } else if (isDragging === 'tl') {
+          const newX = Math.max(0, coords.x)
+          const newY = Math.max(0, coords.y)
+          setCensorBox(prev => ({
+            x: newX,
+            y: newY,
+            width: Math.max(minSize, prev.x + prev.width - newX),
+            height: Math.max(minSize, prev.y + prev.height - newY),
+          }))
+        } else if (isDragging === 'tr') {
+          const newY = Math.max(0, coords.y)
+          setCensorBox(prev => ({
+            ...prev,
+            y: newY,
+            width: Math.max(minSize, coords.x - prev.x),
+            height: Math.max(minSize, prev.y + prev.height - newY),
+          }))
+        } else if (isDragging === 'bl') {
+          const newX = Math.max(0, coords.x)
+          setCensorBox(prev => ({
+            x: newX,
+            y: prev.y,
+            width: Math.max(minSize, prev.x + prev.width - newX),
+            height: Math.max(minSize, coords.y - prev.y),
+          }))
+        } else if (isDragging === 'br') {
+          setCensorBox(prev => ({
+            ...prev,
+            width: Math.max(minSize, coords.x - prev.x),
+            height: Math.max(minSize, coords.y - prev.y),
+          }))
+        }
+        dragUpdateRef.current = null
+      })
     }
-
-    dragUpdateRef.current = setTimeout(() => {
-      if (isDragging === 'move') {
-        setCensorBox(prev => ({
-          ...prev,
-          x: Math.max(0, Math.min(coords.x - dragOffset.x, imageDimensions.width - prev.width)),
-          y: Math.max(0, Math.min(coords.y - dragOffset.y, imageDimensions.height - prev.height)),
-        }))
-      } else if (isDragging === 'tl') {
-        const newX = Math.max(0, coords.x)
-        const newY = Math.max(0, coords.y)
-        setCensorBox(prev => ({
-          x: newX,
-          y: newY,
-          width: Math.max(minSize, prev.x + prev.width - newX),
-          height: Math.max(minSize, prev.y + prev.height - newY),
-        }))
-      } else if (isDragging === 'tr') {
-        const newY = Math.max(0, coords.y)
-        setCensorBox(prev => ({
-          ...prev,
-          y: newY,
-          width: Math.max(minSize, coords.x - prev.x),
-          height: Math.max(minSize, prev.y + prev.height - newY),
-        }))
-      } else if (isDragging === 'bl') {
-        const newX = Math.max(0, coords.x)
-        setCensorBox(prev => ({
-          x: newX,
-          y: prev.y,
-          width: Math.max(minSize, prev.x + prev.width - newX),
-          height: Math.max(minSize, coords.y - prev.y),
-        }))
-      } else if (isDragging === 'br') {
-        setCensorBox(prev => ({
-          ...prev,
-          width: Math.max(minSize, coords.x - prev.x),
-          height: Math.max(minSize, coords.y - prev.y),
-        }))
-      }
-      dragUpdateRef.current = null
-    }, 0)
   }
 
   const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
