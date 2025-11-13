@@ -282,44 +282,52 @@ export default function PhotoCensorPage(): JSX.Element {
     const coords = getCanvasCoordinates(clientX, clientY)
     const minSize = 20
 
-    if (isDragging === 'move') {
-      setCensorBox(prev => ({
-        ...prev,
-        x: Math.max(0, Math.min(coords.x - dragOffset.x, imageDimensions.width - prev.width)),
-        y: Math.max(0, Math.min(coords.y - dragOffset.y, imageDimensions.height - prev.height)),
-      }))
-    } else if (isDragging === 'tl') {
-      const newX = Math.max(0, coords.x)
-      const newY = Math.max(0, coords.y)
-      setCensorBox(prev => ({
-        x: newX,
-        y: newY,
-        width: Math.max(minSize, prev.x + prev.width - newX),
-        height: Math.max(minSize, prev.y + prev.height - newY),
-      }))
-    } else if (isDragging === 'tr') {
-      const newY = Math.max(0, coords.y)
-      setCensorBox(prev => ({
-        ...prev,
-        y: newY,
-        width: Math.max(minSize, coords.x - prev.x),
-        height: Math.max(minSize, prev.y + prev.height - newY),
-      }))
-    } else if (isDragging === 'bl') {
-      const newX = Math.max(0, coords.x)
-      setCensorBox(prev => ({
-        x: newX,
-        y: prev.y,
-        width: Math.max(minSize, prev.x + prev.width - newX),
-        height: Math.max(minSize, coords.y - prev.y),
-      }))
-    } else if (isDragging === 'br') {
-      setCensorBox(prev => ({
-        ...prev,
-        width: Math.max(minSize, coords.x - prev.x),
-        height: Math.max(minSize, coords.y - prev.y),
-      }))
+    // Throttle state updates to animation frame for smooth performance
+    if (dragUpdateRef.current) {
+      clearTimeout(dragUpdateRef.current)
     }
+
+    dragUpdateRef.current = setTimeout(() => {
+      if (isDragging === 'move') {
+        setCensorBox(prev => ({
+          ...prev,
+          x: Math.max(0, Math.min(coords.x - dragOffset.x, imageDimensions.width - prev.width)),
+          y: Math.max(0, Math.min(coords.y - dragOffset.y, imageDimensions.height - prev.height)),
+        }))
+      } else if (isDragging === 'tl') {
+        const newX = Math.max(0, coords.x)
+        const newY = Math.max(0, coords.y)
+        setCensorBox(prev => ({
+          x: newX,
+          y: newY,
+          width: Math.max(minSize, prev.x + prev.width - newX),
+          height: Math.max(minSize, prev.y + prev.height - newY),
+        }))
+      } else if (isDragging === 'tr') {
+        const newY = Math.max(0, coords.y)
+        setCensorBox(prev => ({
+          ...prev,
+          y: newY,
+          width: Math.max(minSize, coords.x - prev.x),
+          height: Math.max(minSize, prev.y + prev.height - newY),
+        }))
+      } else if (isDragging === 'bl') {
+        const newX = Math.max(0, coords.x)
+        setCensorBox(prev => ({
+          x: newX,
+          y: prev.y,
+          width: Math.max(minSize, prev.x + prev.width - newX),
+          height: Math.max(minSize, coords.y - prev.y),
+        }))
+      } else if (isDragging === 'br') {
+        setCensorBox(prev => ({
+          ...prev,
+          width: Math.max(minSize, coords.x - prev.x),
+          height: Math.max(minSize, coords.y - prev.y),
+        }))
+      }
+      dragUpdateRef.current = null
+    }, 0)
   }
 
   const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
