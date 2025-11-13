@@ -273,7 +273,37 @@ pre code {
 
 @media (max-width: 1024px) {
   .right-sidebar {
-    display: none;
+    position: fixed;
+    right: 0;
+    top: 70px;
+    height: calc(100vh - 70px);
+    width: 100%;
+    max-width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+    border-bottom: none;
+    z-index: 45;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .right-sidebar[data-api-panel-open="true"] {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .right-sidebar[data-api-panel-open="true"]::before {
+    content: '';
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
   }
 }
 
