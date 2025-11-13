@@ -1067,7 +1067,8 @@ export default function DashboardPage() {
                   className={`tab-btn ${activeActivityTab === 'payments' ? 'active' : ''}`}
                   onClick={() => setActiveActivityTab('payments')}
                 >
-                  Payments & Recharges
+                  <span className="tab-text-desktop">Payments & Recharges</span>
+                  <span className="tab-text-mobile">Payments</span>
                 </button>
                 <button
                   className={`tab-btn ${activeActivityTab === 'calls' ? 'active' : ''}`}
