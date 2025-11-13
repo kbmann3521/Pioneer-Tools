@@ -1315,12 +1315,6 @@ pre code {
   }
 }
 
-@media (max-width: 640px) {
-  .mobile-api-toggle {
-    display: none;
-  }
-}
-
 /* Mobile API Panel Back Button */
 .api-preview-back-btn {
   display: none;
