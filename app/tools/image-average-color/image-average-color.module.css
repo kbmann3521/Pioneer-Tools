@@ -112,17 +112,21 @@
 
 .algoBtn {
   flex: 1;
-  padding: 0.6rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   background-color: var(--bg-secondary);
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 0.8rem;
-  letter-spacing: 0.4px;
+  font-size: 0.75rem;
+  letter-spacing: 0.3px;
   transition: all 0.2s ease;
   text-transform: capitalize;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .algoBtn:hover {
