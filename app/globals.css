@@ -306,6 +306,7 @@ pre code {
     pointer-events: none;
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .right-sidebar[data-api-panel-open="true"] {
