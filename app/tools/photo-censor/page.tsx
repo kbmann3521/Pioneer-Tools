@@ -405,15 +405,25 @@ export default function PhotoCensorPage(): JSX.Element {
         }
       }
     } else if (censorType === 'blur') {
-      const blurAmount = intensity * 2
-      ctx.filter = `blur(${blurAmount}px)`
-      ctx.drawImage(originalImage, 0, 0, originalImage.width, originalImage.height)
-      ctx.filter = 'none'
-      // Redraw the non-censored parts
-      ctx.clearRect(0, 0, censorBox.x, tempCanvas.height)
-      ctx.clearRect(censorBox.x + censorBox.width, 0, tempCanvas.width - (censorBox.x + censorBox.width), tempCanvas.height)
-      ctx.clearRect(censorBox.x, 0, censorBox.width, censorBox.y)
-      ctx.clearRect(censorBox.x, censorBox.y + censorBox.height, censorBox.width, tempCanvas.height - (censorBox.y + censorBox.height))
+      const blurAmount = Math.max(2, intensity)
+      // Create a canvas for the blur region
+      const blurCanvas = document.createElement('canvas')
+      blurCanvas.width = censorBox.width
+      blurCanvas.height = censorBox.height
+      const blurCtx = blurCanvas.getContext('2d')
+      if (blurCtx) {
+        // Extract the region to be blurred
+        blurCtx.drawImage(
+          tempCanvas,
+          censorBox.x, censorBox.y, censorBox.width, censorBox.height,
+          0, 0, censorBox.width, censorBox.height
+        )
+        // Apply blur filter
+        blurCtx.filter = `blur(${blurAmount}px)`
+        blurCtx.drawImage(blurCanvas, 0, 0)
+        // Put the blurred region back
+        ctx.drawImage(blurCanvas, censorBox.x, censorBox.y)
+      }
     } else if (censorType === 'blackbar') {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.95)'
       ctx.fillRect(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
