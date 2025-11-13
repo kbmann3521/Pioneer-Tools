@@ -630,7 +630,7 @@ pre code {
   .main-container[data-sidebar-open="true"]::before {
     content: '';
     position: fixed;
-    top: 40px;
+    top: 39px;
     left: 0;
     right: 0;
     bottom: 0;
