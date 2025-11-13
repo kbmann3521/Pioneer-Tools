@@ -301,6 +301,7 @@ pre code {
     border-bottom: none;
     overflow: hidden;
     backdrop-filter: none;
+    font-size: 0;
   }
 }
 
