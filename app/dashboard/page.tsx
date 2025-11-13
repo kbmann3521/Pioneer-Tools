@@ -1897,8 +1897,6 @@ export default function DashboardPage() {
           }
 
           .call-detail-item {
-            flex-direction: column;
-            align-items: flex-start;
             padding: 0.4rem 0;
             font-size: 0.85rem;
           }
