@@ -622,7 +622,7 @@ pre code {
     height: calc(100vh - 70px);
     width: 280px;
     transform: translateX(-100%);
-    transition: transform 0.4s ease-in-out !important;
+    transition: transform 0.2s ease-in-out !important;
     border-right: none;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
     z-index: 40;
@@ -641,7 +641,7 @@ pre code {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 39;
-    animation: fadeIn 0.4s ease-in-out;
+    animation: fadeIn 0.2s ease-in-out;
   }
 }
 
