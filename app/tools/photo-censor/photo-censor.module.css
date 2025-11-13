@@ -276,7 +276,7 @@
 
 .censorButton:hover {
   border-color: var(--color-primary);
-  background: var(--bg-tertiary);
+  color: var(--color-primary);
 }
 
 .censorButton:active {
