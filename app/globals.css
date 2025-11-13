@@ -109,6 +109,7 @@ input, textarea, select {
   padding: 0.75rem;
   transition: all 0.2s ease;
   font-size: 16px;
+  line-height: 1;
 }
 
 @media (max-width: 480px) {
