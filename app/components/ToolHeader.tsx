@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useAuth } from '@/app/context/AuthContext'
 import SuggestionButton from './SuggestionButton'
 import AuthModal from './AuthModal'
+import MobileApiToggle from './MobileApiToggle'
 
 interface ToolHeaderProps {
   title: string
@@ -11,9 +12,10 @@ interface ToolHeaderProps {
   isSaved: boolean
   onToggleSave: () => void
   toolId: string
+  showApiToggle?: boolean
 }
 
-export default function ToolHeader({ title, description, isSaved, onToggleSave, toolId }: ToolHeaderProps) {
+export default function ToolHeader({ title, description, isSaved, onToggleSave, toolId, showApiToggle = false }: ToolHeaderProps) {
   const { user } = useAuth()
   const [showAuthModal, setShowAuthModal] = useState(false)
 
@@ -34,6 +36,7 @@ export default function ToolHeader({ title, description, isSaved, onToggleSave, 
             <p>{description}</p>
           </div>
           <div className="tool-header-actions">
+            {showApiToggle && <MobileApiToggle />}
             <SuggestionButton toolName={title} toolId={toolId} />
             <button
               className={`save-tool-btn ${isSaved ? 'saved' : ''}`}
