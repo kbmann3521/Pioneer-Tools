@@ -1092,9 +1092,9 @@ pre code {
 
 @media (max-width: 640px) {
   .tool-header-actions {
-    width: 100%;
-    flex-direction: column;
-    gap: 0.5rem;
+    width: auto;
+    flex-direction: row;
+    gap: 0.3rem;
   }
 }
 
