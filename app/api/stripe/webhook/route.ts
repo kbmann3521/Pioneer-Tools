@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
               p_user_id: userId,
               p_type: 'deposit',
               p_amount: amountInCents,
-              p_description: `Deposited funds via Stripe (Session ID: ${session.id})`,
+              p_description: 'Deposited funds via Stripe',
               p_stripe_intent_id: session.payment_intent as string || session.id,
             })
 
