@@ -1086,7 +1086,7 @@ pre code {
 
 /* Dashboard */
 .dashboard {
-  padding: 2rem;
+  padding: 1rem 2rem 2rem 2rem;
 }
 
 @media (max-width: 768px) {
