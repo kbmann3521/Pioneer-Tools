@@ -299,6 +299,7 @@ pre code {
     height: 48px;
     justify-content: center;
     border-bottom: none;
+    overflow: hidden;
   }
 }
 
