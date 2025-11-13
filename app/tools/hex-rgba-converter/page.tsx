@@ -74,6 +74,8 @@ export default function HexRgbaConverterPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="hex-rgba-converter"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">
