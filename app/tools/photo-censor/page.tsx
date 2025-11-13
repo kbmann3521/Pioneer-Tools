@@ -271,10 +271,10 @@ export default function PhotoCensorPage(): JSX.Element {
     }
   }
 
-  const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const performDragUpdate = (clientX: number, clientY: number) => {
     if (!isDragging) return
 
-    const coords = getCanvasCoordinates(e.clientX, e.clientY)
+    const coords = getCanvasCoordinates(clientX, clientY)
     const minSize = 20
 
     if (isDragging === 'move') {
@@ -315,6 +315,17 @@ export default function PhotoCensorPage(): JSX.Element {
         height: Math.max(minSize, coords.y - prev.y),
       }))
     }
+  }
+
+  const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    performDragUpdate(e.clientX, e.clientY)
+  }
+
+  const handleCanvasTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDragging || !e.touches[0]) return
+    const touch = e.touches[0]
+    performDragUpdate(touch.clientX, touch.clientY)
+    e.preventDefault()
   }
 
   const handleCanvasMouseUp = () => {
