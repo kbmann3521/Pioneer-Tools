@@ -606,6 +606,8 @@ pre code {
   top: 70px;
   z-index: 50;
   flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0);
 }
 
 @media (max-width: 768px) {
