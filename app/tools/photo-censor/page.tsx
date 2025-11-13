@@ -231,7 +231,8 @@ export default function PhotoCensorPage(): JSX.Element {
   const getHandleAtPoint = (x: number, y: number): string | null => {
     if (isCensored) return null
 
-    const handleThreshold = 12
+    const isMobile = window.innerWidth < 768
+    const handleThreshold = isMobile ? 15 : 12
     const { x: cx, y: cy, width: w, height: h } = censorBox
 
     if (Math.abs(x - cx) < handleThreshold && Math.abs(y - cy) < handleThreshold) return 'tl'
