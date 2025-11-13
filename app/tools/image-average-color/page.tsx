@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { type ColorAlgorithm } from '@/lib/tools/image-average-color'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
@@ -278,6 +277,7 @@ export default function ImageAverageColorPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="image-average-color"
+        showApiToggle={true}
       />
 
       <div className="tool-content">
@@ -418,8 +418,6 @@ export default function ImageAverageColorPage(): JSX.Element {
           </div>
         )}
       </div>
-
-      <MobileApiToggle />
 
       <AboutToolAccordion
         toolId="image-average-color"

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { convertUrl } from '@/lib/tools/url-encoder'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
@@ -40,6 +39,7 @@ export default function UrlEncoderPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="url-encoder"
+        showApiToggle={true}
       />
 
       <div className="tool-content">
@@ -111,8 +111,6 @@ export default function UrlEncoderPage(): JSX.Element {
           </div>
         )}
       </div>
-
-      <MobileApiToggle />
 
       <AboutToolAccordion
         toolId="url-encoder"
