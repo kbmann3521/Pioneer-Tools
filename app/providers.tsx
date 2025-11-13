@@ -310,6 +310,8 @@ export function RootProvider({ children }: ProvidersProps) {
               endpoints={endpoints}
               toolId={toolId}
               apiParams={apiParams}
+              favorites={favorites}
+              toggleFavorite={toggleFavorite}
             >
               {children}
             </ToolPageContent>
