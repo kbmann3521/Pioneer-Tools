@@ -43,6 +43,7 @@ export default function DashboardPage() {
   const searchParams = useSearchParams()
   const { user, session, loading: authLoading, signOut } = useAuth()
   const [theme, setTheme] = useState<string>('dark')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([])
   const [transactions, setTransactions] = useState<BillingTransaction[]>([])
@@ -641,7 +642,7 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard-wrapper" data-theme={theme}>
-      <Header theme={theme} setTheme={setTheme} onSignOut={handleSignOut} developerMode={false} />
+      <Header theme={theme} setTheme={setTheme} onSignOut={handleSignOut} developerMode={false} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div className="dashboard-container">
       {profile && (
         <div className="dashboard-content">
