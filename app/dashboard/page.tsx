@@ -651,7 +651,7 @@ export default function DashboardPage() {
     <div className="dashboard-wrapper" data-theme={theme}>
       <Header theme={theme} setTheme={setTheme} onSignOut={handleSignOut} developerMode={false} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div className="main-container" data-sidebar-open={sidebarOpen} onClick={handleMainContainerClick}>
-        <Sidebar favorites={favorites} onToggleFavorite={toggleFavorite} />
+        <Sidebar favorites={[]} onToggleFavorite={() => {}} />
         <div className="dashboard-container">
       {profile && (
         <div className="dashboard-content">
