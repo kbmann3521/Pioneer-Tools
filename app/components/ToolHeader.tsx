@@ -13,9 +13,11 @@ interface ToolHeaderProps {
   onToggleSave: () => void
   toolId: string
   showApiToggle?: boolean
+  showViewApiLink?: boolean
+  onViewApi?: () => void
 }
 
-export default function ToolHeader({ title, description, isSaved, onToggleSave, toolId, showApiToggle = false }: ToolHeaderProps) {
+export default function ToolHeader({ title, description, isSaved, onToggleSave, toolId, showApiToggle = false, showViewApiLink = false, onViewApi }: ToolHeaderProps) {
   const { user } = useAuth()
   const [showAuthModal, setShowAuthModal] = useState(false)
 
@@ -34,7 +36,20 @@ export default function ToolHeader({ title, description, isSaved, onToggleSave, 
         <div className="tool-header">
           <div className="tool-header-text">
             <h2>{title}</h2>
-            <p>{description}</p>
+            <p>
+              {description}
+              {showViewApiLink && (
+                <>
+                  {' → '}
+                  <button
+                    onClick={onViewApi}
+                    className="view-api-link"
+                  >
+                    View API
+                  </button>
+                </>
+              )}
+            </p>
           </div>
           <div className="tool-header-actions">
             <SuggestionButton toolName={title} toolId={toolId} />
