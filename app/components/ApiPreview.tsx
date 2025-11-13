@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import CodeLanguageSelector, { type CodeLanguage } from '@/app/components/CodeLanguageSelector'
 import CodePreview from '@/app/components/CodePreview'
 import PricingCard from '@/app/components/PricingCard'
