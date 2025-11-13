@@ -1791,6 +1791,8 @@ export default function DashboardPage() {
           gap: 0.5rem;
           margin-bottom: 1.5rem;
           border-bottom: 1px solid var(--border-color);
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
         }
 
         .tab-btn {
@@ -1803,6 +1805,8 @@ export default function DashboardPage() {
           border-bottom: 3px solid transparent;
           transition: all 0.2s;
           font-size: 0.95rem;
+          white-space: nowrap;
+          flex-shrink: 0;
         }
 
         .tab-btn:hover {
@@ -1812,6 +1816,27 @@ export default function DashboardPage() {
         .tab-btn.active {
           color: var(--color-primary);
           border-bottom-color: var(--color-primary);
+        }
+
+        @media (max-width: 768px) {
+          .activity-tabs {
+            gap: 0;
+            margin-bottom: 1rem;
+          }
+
+          .tab-btn {
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-bottom-width: 3px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .tab-btn {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+          }
         }
 
         .call-group-header {
