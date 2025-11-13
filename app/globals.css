@@ -399,6 +399,7 @@ pre code {
   position: relative;
   flex: 1;
   max-width: 400px;
+  z-index: 101;
 }
 
 @media (max-width: 768px) {
