@@ -36,6 +36,7 @@ export default function PhotoCensorPage(): JSX.Element {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
+  const dragUpdateRef = useRef<NodeJS.Timeout | null>(null)
 
   // Update API params - only when image is loaded
   useEffect(() => {
