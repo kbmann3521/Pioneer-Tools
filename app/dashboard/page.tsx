@@ -1863,8 +1863,10 @@ export default function DashboardPage() {
           cursor: pointer;
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-start;
+          gap: 1rem;
           transition: all 0.2s;
+          margin-bottom: 0.5rem;
         }
 
         .call-group-header:hover {
@@ -1873,9 +1875,10 @@ export default function DashboardPage() {
 
         .call-group-info {
           display: flex;
-          align-items: center;
-          gap: 1rem;
+          align-items: flex-start;
+          gap: 0.75rem;
           flex: 1;
+          min-width: 0;
         }
 
         .group-toggle {
@@ -1883,25 +1886,30 @@ export default function DashboardPage() {
           color: var(--text-tertiary);
           display: inline-block;
           width: 1rem;
+          flex-shrink: 0;
+          margin-top: 0.2rem;
         }
 
         .group-title {
-          font-weight: 600;
+          font-weight: 700;
           color: var(--text-primary);
           margin: 0;
           font-size: 0.95rem;
+          word-break: break-word;
         }
 
         .group-date {
           font-size: 0.8rem;
           color: var(--text-tertiary);
           margin: 0.25rem 0 0 0;
+          word-break: break-word;
         }
 
         .group-stats {
           display: flex;
           gap: 1rem;
           align-items: center;
+          flex-shrink: 0;
         }
 
         .call-count {
@@ -1910,19 +1918,22 @@ export default function DashboardPage() {
           background: var(--bg-secondary);
           padding: 0.25rem 0.75rem;
           border-radius: 4px;
+          white-space: nowrap;
         }
 
         .call-total {
-          font-weight: 600;
+          font-weight: 700;
           color: #ff3b30;
           font-size: 0.95rem;
+          white-space: nowrap;
         }
 
         .call-group-details {
           background: var(--bg-secondary);
           border-radius: 0 0 6px 6px;
-          padding: 1rem;
+          padding: 0.75rem;
           margin-top: -0.5rem;
+          margin-left: 1.75rem;
         }
 
         .call-detail-item {
@@ -1932,6 +1943,7 @@ export default function DashboardPage() {
           padding: 0.5rem 0;
           border-bottom: 1px solid var(--border-color);
           font-size: 0.9rem;
+          gap: 0.5rem;
         }
 
         .call-detail-item:last-child {
