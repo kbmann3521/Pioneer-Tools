@@ -29,7 +29,7 @@ export const PRICING = {
     'hex-rgba-converter': 0.2,
     'image-resizer': 0.5, // $0.005 - more expensive due to processing
     'og-generator': 0.3, // $0.003
-    'blog-generator': 50, // $0.50 - AI powered, more expensive
+    'blog-generator': 50, // $0.05 - AI powered, more expensive
     'json-formatter': 0.1, // $0.001
     'base64-converter': 0.1, // $0.001
     'url-encoder': 0.1, // $0.001
