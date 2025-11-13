@@ -241,7 +241,8 @@ pre code {
   display: flex;
   flex-direction: column;
   background-color: var(--bg-secondary);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-left 0.3s ease, opacity 0.3s ease;
   opacity: 1;
   max-height: calc(100vh - 70px);
@@ -402,6 +403,7 @@ pre code {
   position: relative;
   flex: 1;
   max-width: 400px;
+  z-index: 101;
 }
 
 @media (max-width: 768px) {
@@ -927,13 +929,13 @@ pre code {
 
 /* Tool Header */
 .tool-header-wrapper {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
   position: relative;
 }
 
 @media (max-width: 640px) {
   .tool-header-wrapper {
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 }
 
@@ -1342,6 +1344,40 @@ pre code {
 
 @media (max-width: 1024px) {
   .mobile-api-toggle {
+    display: block;
+  }
+}
+
+/* Floating API Button */
+.floating-api-btn {
+  display: none;
+  padding: 0.4rem 0.6rem;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 40;
+}
+
+.floating-api-btn:hover {
+  background-color: var(--bg-secondary);
+  border-color: var(--color-primary);
+}
+
+.floating-api-btn:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 1024px) {
+  .floating-api-btn {
     display: block;
   }
 }
