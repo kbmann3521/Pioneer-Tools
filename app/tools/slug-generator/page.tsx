@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { createSlug, generateSlug } from '@/lib/tools/slug-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
@@ -102,6 +103,8 @@ export default function SlugGeneratorPage(): JSX.Element {
           </div>
         )}
       </div>
+
+      <MobileApiToggle />
 
       <AboutToolAccordion
         toolId="slug-generator"
