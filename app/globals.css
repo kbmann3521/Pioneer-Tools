@@ -1106,11 +1106,6 @@ pre code {
   }
 }
 
-@media (max-width: 640px) {
-  .tool-header-actions {
-    display: none;
-  }
-}
 
 .suggestion-btn,
 .save-tool-btn {
