@@ -254,6 +254,23 @@ export default function PhotoCensorPage(): JSX.Element {
     }
   }
 
+  const handleCanvasTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (isCensored || !e.touches[0]) return
+
+    const touch = e.touches[0]
+    const coords = getCanvasCoordinates(touch.clientX, touch.clientY)
+    const handle = getHandleAtPoint(coords.x, coords.y)
+
+    if (handle) {
+      setIsDragging(handle)
+      setDragOffset({
+        x: coords.x - censorBox.x,
+        y: coords.y - censorBox.y,
+      })
+      e.preventDefault()
+    }
+  }
+
   const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDragging) return
 
