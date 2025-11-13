@@ -351,7 +351,7 @@ export default function PhotoCensorPage(): JSX.Element {
 
   const handleCanvasMouseUp = () => {
     if (dragUpdateRef.current) {
-      clearTimeout(dragUpdateRef.current)
+      cancelAnimationFrame(dragUpdateRef.current)
       dragUpdateRef.current = null
     }
     setIsDragging(null)
@@ -359,7 +359,7 @@ export default function PhotoCensorPage(): JSX.Element {
 
   const handleCanvasTouchEnd = () => {
     if (dragUpdateRef.current) {
-      clearTimeout(dragUpdateRef.current)
+      cancelAnimationFrame(dragUpdateRef.current)
       dragUpdateRef.current = null
     }
     setIsDragging(null)
