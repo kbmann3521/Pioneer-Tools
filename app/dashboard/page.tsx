@@ -643,10 +643,18 @@ export default function DashboardPage() {
     return <div className="dashboard-loading">Loading...</div>
   }
 
+  const handleMainContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (sidebarOpen && e.target === e.currentTarget) {
+      setSidebarOpen(false)
+    }
+  }
+
   return (
     <div className="dashboard-wrapper" data-theme={theme}>
       <Header theme={theme} setTheme={setTheme} onSignOut={handleSignOut} developerMode={false} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-      <div className="dashboard-container">
+      <div className="main-container" data-sidebar-open={sidebarOpen} onClick={handleMainContainerClick}>
+        <Sidebar favorites={favorites} onToggleFavorite={toggleFavorite} />
+        <div className="dashboard-container">
       {profile && (
         <div className="dashboard-content">
           {/* Alerts */}
@@ -1243,6 +1251,7 @@ export default function DashboardPage() {
           </section>
         </div>
       )}
+      </div>
 
       <style jsx>{`
         .dashboard-wrapper {
