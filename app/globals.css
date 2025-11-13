@@ -447,6 +447,7 @@ pre code {
     display: flex;
     align-items: center;
     font-size: 0.85rem;
+    margin-left: 10px;
   }
 }
 
