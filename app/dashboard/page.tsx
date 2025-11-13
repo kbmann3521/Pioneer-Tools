@@ -1853,6 +1853,54 @@ export default function DashboardPage() {
             padding: 0.5rem 0.75rem;
             font-size: 0.75rem;
           }
+
+          .call-group-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 0.85rem;
+            gap: 0.75rem;
+          }
+
+          .call-group-info {
+            width: 100%;
+            gap: 0.5rem;
+          }
+
+          .group-stats {
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+          }
+
+          .call-group-details {
+            margin-left: 1.5rem;
+            padding: 0.5rem 0.5rem;
+            margin-top: -0.25rem;
+          }
+
+          .call-detail-item {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 0.4rem 0;
+            font-size: 0.85rem;
+          }
+
+          .group-title {
+            font-size: 0.9rem;
+          }
+
+          .group-date {
+            font-size: 0.75rem;
+          }
+
+          .call-count {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+          }
+
+          .call-total {
+            font-size: 0.9rem;
+          }
         }
 
         .call-group-header {
