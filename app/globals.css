@@ -921,6 +921,7 @@ pre code {
 /* Tool Header */
 .tool-header-wrapper {
   margin-bottom: 1.5rem;
+  position: relative;
 }
 
 @media (max-width: 640px) {
@@ -1297,7 +1298,9 @@ pre code {
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
-  flex-shrink: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .mobile-api-toggle:hover {
