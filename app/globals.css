@@ -407,8 +407,15 @@ pre code {
     align-items: center;
   }
 
+  .header-search-container {
+    flex: 1;
+    max-width: none;
+    margin-right: 0;
+  }
+
   .theme-toggle-mobile {
     display: flex;
+    flex-shrink: 0;
     margin-left: 0.5rem;
     margin-right: 10px;
   }
