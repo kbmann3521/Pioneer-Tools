@@ -405,24 +405,55 @@ export default function PhotoCensorPage(): JSX.Element {
         }
       }
     } else if (censorType === 'blur') {
-      const blurAmount = Math.max(2, intensity)
-      // Create a canvas for the blur region
-      const blurCanvas = document.createElement('canvas')
-      blurCanvas.width = censorBox.width
-      blurCanvas.height = censorBox.height
-      const blurCtx = blurCanvas.getContext('2d')
-      if (blurCtx) {
-        // Extract the region to be blurred
-        blurCtx.drawImage(
+      const blurAmount = Math.max(3, Math.ceil(intensity * 2))
+      // Create a separate canvas for the censored region
+      const regionCanvas = document.createElement('canvas')
+      regionCanvas.width = censorBox.width
+      regionCanvas.height = censorBox.height
+      const regionCtx = regionCanvas.getContext('2d')
+      if (regionCtx) {
+        // Copy the region to blur
+        regionCtx.drawImage(
           tempCanvas,
           censorBox.x, censorBox.y, censorBox.width, censorBox.height,
           0, 0, censorBox.width, censorBox.height
         )
-        // Apply blur filter
-        blurCtx.filter = `blur(${blurAmount}px)`
-        blurCtx.drawImage(blurCanvas, 0, 0)
-        // Put the blurred region back
-        ctx.drawImage(blurCanvas, censorBox.x, censorBox.y)
+        // Apply filter - test if supported
+        try {
+          regionCtx.filter = `blur(${blurAmount}px)`
+          regionCtx.drawImage(regionCanvas, 0, 0)
+          regionCtx.filter = 'none'
+        } catch (e) {
+          // Fallback: use pixelate if blur filter not supported (some mobile browsers)
+          const pixelSize = Math.max(2, Math.ceil(intensity * 1.5))
+          for (let i = 0; i < censorBox.height; i += pixelSize) {
+            for (let j = 0; j < censorBox.width; j += pixelSize) {
+              const pixelData = regionCtx.getImageData(
+                j, i,
+                Math.min(pixelSize, censorBox.width - j),
+                Math.min(pixelSize, censorBox.height - i),
+              )
+              let r = 0, g = 0, b = 0, count = 0
+              for (let k = 0; k < pixelData.data.length; k += 4) {
+                r += pixelData.data[k]
+                g += pixelData.data[k + 1]
+                b += pixelData.data[k + 2]
+                count++
+              }
+              r = Math.round(r / count)
+              g = Math.round(g / count)
+              b = Math.round(b / count)
+              for (let k = 0; k < pixelData.data.length; k += 4) {
+                pixelData.data[k] = r
+                pixelData.data[k + 1] = g
+                pixelData.data[k + 2] = b
+              }
+              regionCtx.putImageData(pixelData, j, i)
+            }
+          }
+        }
+        // Draw the processed region back
+        ctx.drawImage(regionCanvas, censorBox.x, censorBox.y)
       }
     } else if (censorType === 'blackbar') {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.95)'
