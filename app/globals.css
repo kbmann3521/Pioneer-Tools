@@ -1085,6 +1085,14 @@ pre code {
 }
 
 /* Dashboard */
+.dashboard-wrapper {
+  padding-top: 0 !important;
+}
+
+.dashboard-container {
+  padding-top: 0 !important;
+}
+
 .dashboard {
   padding: 0 2rem 2rem 2rem;
 }
