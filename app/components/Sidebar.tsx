@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '@/app/context/AuthContext'
@@ -51,6 +51,8 @@ export default function Sidebar({ favorites, onToggleFavorite, onCloseApiPanel }
   const pathname = usePathname()
   const router = useRouter()
   const { user } = useAuth()
+  const isDashboard = pathname?.startsWith('/dashboard')
+  const [lastTool, setLastTool] = useState<string | null>(null)
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
     'Favorite Tools': false,
     'Text Tools': false,
@@ -59,6 +61,11 @@ export default function Sidebar({ favorites, onToggleFavorite, onCloseApiPanel }
     'Social Media Tools': false,
     'Blog Tools': false,
   })
+
+  useEffect(() => {
+    const saved = localStorage.getItem('lastTool')
+    setLastTool(saved)
+  }, [])
 
   const currentTool = pathname?.startsWith('/tools/') ? pathname.replace('/tools/', '') : null
 
@@ -110,22 +117,31 @@ export default function Sidebar({ favorites, onToggleFavorite, onCloseApiPanel }
         <div className="sidebar-auth">
           {user ? (
             <>
-              <button
-                type="button"
-                className="sidebar-auth-btn dashboard-btn"
-                onClick={() => handleNavigate('/dashboard')}
-                title="View your dashboard"
-              >
-                📊 Dashboard
-              </button>
-              <button
-                type="button"
-                className="sidebar-auth-btn tools-btn"
-                onClick={() => handleNavigate('/')}
-                title="Back to tools"
-              >
-                🛠️ Tools
-              </button>
+              {isDashboard ? (
+                <button
+                  type="button"
+                  className="sidebar-auth-btn tools-btn"
+                  onClick={() => {
+                    if (lastTool) {
+                      handleNavigate(`/tools/${lastTool}`)
+                    } else {
+                      handleNavigate('/')
+                    }
+                  }}
+                  title="Back to tools"
+                >
+                  Tools
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="sidebar-auth-btn dashboard-btn"
+                  onClick={() => handleNavigate('/dashboard')}
+                  title="View your dashboard"
+                >
+                  Dashboard
+                </button>
+              )}
               <button
                 type="button"
                 className="sidebar-auth-btn signout-btn"
