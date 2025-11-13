@@ -87,6 +87,8 @@ export default function CaseConverterPage(): JSX.Element {
         )}
       </div>
 
+      <MobileApiToggle />
+
       <AboutToolAccordion
         toolId="case-converter"
         content={toolDescriptions['case-converter']}
