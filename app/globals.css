@@ -343,7 +343,7 @@ pre code {
     height: 40px;
     justify-content: flex-start;
     border-bottom: none;
-    overflow: hidden;
+    overflow: visible;
     backdrop-filter: none;
     font-size: 0;
   }
