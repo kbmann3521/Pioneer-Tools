@@ -3,17 +3,18 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { convertBase64 } from '@/lib/tools/base64-converter'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, Base64ConverterResult } from '@/lib/types/tools'
 
 export default function Base64ConverterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('base64-converter')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const { isCopied, copyToClipboard } = useClipboard()
   const [text, setText] = useState<string>('')
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
@@ -39,6 +40,8 @@ export default function Base64ConverterPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="base64-converter"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">

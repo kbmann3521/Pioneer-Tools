@@ -3,17 +3,18 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { convertColor } from '@/lib/tools/hex-rgba-converter'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, HexRgbaConverterResult } from '@/lib/types/tools'
 
 export default function HexRgbaConverterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('hex-rgba-converter')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const [hex, setHex] = useState<string>('#FF6B6B')
   const [rgb, setRgb] = useState<{ r: number; g: number; b: number }>({ r: 255, g: 107, b: 107 })
   const [alpha, setAlpha] = useState<number>(1)
