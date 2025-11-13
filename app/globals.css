@@ -865,12 +865,11 @@ pre code {
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
   }
 
-  .sidebar.open {
+  .main-container[data-sidebar-open="true"] .sidebar {
     transform: translateX(0);
   }
 
-  .sidebar-overlay.open {
-    display: block;
+  .main-container[data-sidebar-open="true"]::before {
     animation: fadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
