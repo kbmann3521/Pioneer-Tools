@@ -2216,11 +2216,30 @@ export default function DashboardPage() {
           .transaction-item {
             flex-direction: column;
             align-items: flex-start;
-            gap: 0.75rem;
+            gap: 0.5rem;
+            padding: 1rem;
+          }
+
+          .tx-info {
+            width: 100%;
+            flex: 1;
+          }
+
+          .tx-type {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
           }
 
           .tx-amount {
             align-self: flex-end;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+            text-align: right;
+          }
+
+          .tx-amount span {
+            font-size: 1.1rem;
           }
         }
       `}</style>
