@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
 import { useAuth } from '@/app/context/AuthContext'
@@ -561,6 +560,7 @@ export default function PhotoCensorPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="photo-censor"
+        showApiToggle={true}
       />
 
       <div className="tool-content">
@@ -723,8 +723,6 @@ export default function PhotoCensorPage(): JSX.Element {
           </div>
         )}
       </div>
-
-      <MobileApiToggle />
 
       <AboutToolAccordion
         toolId="photo-censor"
