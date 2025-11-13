@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useAuth } from '@/app/context/AuthContext'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, BlogGeneratorResult } from '@/lib/types/tools'
 
@@ -16,6 +16,7 @@ type BlogTitle = BlogGeneratorResult['titles'][number]
 export default function BlogGeneratorPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('blog-generator')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const { session } = useAuth()
   const [topic, setTopic] = useState<string>('')
   const [titles, setTitles] = useState<BlogTitle[]>([])
@@ -127,6 +128,8 @@ export default function BlogGeneratorPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="blog-generator"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content blog-content">

@@ -3,16 +3,17 @@
 import { useState, useRef, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { resizeImage, calculateHeightFromWidth } from '@/lib/tools/image-resizer'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps } from '@/lib/types/tools'
 
 export default function ImageResizerPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('image-resizer')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const [image, setImage] = useState<string | null>(null)
   const [width, setWidth] = useState(800)
   const [height, setHeight] = useState(600)
@@ -149,6 +150,8 @@ export default function ImageResizerPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="image-resizer"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">
