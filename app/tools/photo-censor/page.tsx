@@ -406,16 +406,14 @@ export default function PhotoCensorPage(): JSX.Element {
       }
     } else if (censorType === 'blur') {
       const blurAmount = intensity * 2
-      const tempCanvas2 = document.createElement('canvas')
-      tempCanvas2.width = tempCanvas.width
-      tempCanvas2.height = tempCanvas.height
-      const ctx2 = tempCanvas2.getContext('2d')
-      if (ctx2) {
-        ctx2.drawImage(tempCanvas, 0, 0)
-        ctx2.filter = `blur(${blurAmount}px)`
-        ctx2.drawImage(tempCanvas, censorBox.x, censorBox.y, censorBox.width, censorBox.height, censorBox.x, censorBox.y, censorBox.width, censorBox.height)
-        ctx.drawImage(tempCanvas2, censorBox.x, censorBox.y, censorBox.width, censorBox.height, censorBox.x, censorBox.y, censorBox.width, censorBox.height)
-      }
+      ctx.filter = `blur(${blurAmount}px)`
+      ctx.drawImage(originalImage, 0, 0, originalImage.width, originalImage.height)
+      ctx.filter = 'none'
+      // Redraw the non-censored parts
+      ctx.clearRect(0, 0, censorBox.x, tempCanvas.height)
+      ctx.clearRect(censorBox.x + censorBox.width, 0, tempCanvas.width - (censorBox.x + censorBox.width), tempCanvas.height)
+      ctx.clearRect(censorBox.x, 0, censorBox.width, censorBox.y)
+      ctx.clearRect(censorBox.x, censorBox.y + censorBox.height, censorBox.width, tempCanvas.height - (censorBox.y + censorBox.height))
     } else if (censorType === 'blackbar') {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.95)'
       ctx.fillRect(censorBox.x, censorBox.y, censorBox.width, censorBox.height)
