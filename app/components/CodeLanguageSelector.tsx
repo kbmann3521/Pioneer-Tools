@@ -42,10 +42,10 @@ export default function CodeLanguageSelector({ language, onLanguageChange }: Cod
       <style jsx>{`
         .language-selector-container {
           display: flex;
-          align-items: flex-start;
-          flex-direction: column;
+          align-items: center;
+          flex-direction: row;
           gap: 0.75rem;
-          margin-bottom: 1rem;
+          margin-bottom: 0;
         }
 
         .language-label {
@@ -76,7 +76,6 @@ export default function CodeLanguageSelector({ language, onLanguageChange }: Cod
           transition: all 0.2s ease;
           font-family: inherit;
           display: block;
-          width: 100%;
         }
 
         .language-dropdown:hover {
