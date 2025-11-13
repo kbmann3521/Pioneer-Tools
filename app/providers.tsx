@@ -16,6 +16,22 @@ interface ProvidersProps {
   children?: ReactNode
 }
 
+interface ToolPageContentProps {
+  theme: string
+  setTheme: (theme: string) => void
+  developerMode: boolean
+  setDeveloperMode: (mode: boolean) => void
+  sidebarOpen: boolean
+  setSidebarOpen: (open: boolean) => void
+  handleMainContainerClick: (e: React.MouseEvent<HTMLDivElement>) => void
+  endpoints: Record<string, string>
+  toolId: string
+  apiParams: Record<string, any>
+  children: ReactNode
+  favorites: string[]
+  toggleFavorite: (toolId: string) => void
+}
+
 function ToolPageContent({
   theme,
   setTheme,
@@ -27,8 +43,10 @@ function ToolPageContent({
   endpoints,
   toolId,
   apiParams,
-  children
-}: any) {
+  children,
+  favorites,
+  toggleFavorite
+}: ToolPageContentProps) {
   const { isOpen: apiPanelOpen } = useApiPanel()
 
   return (
@@ -36,8 +54,8 @@ function ToolPageContent({
       <Header theme={theme} setTheme={setTheme} developerMode={developerMode} setDeveloperMode={setDeveloperMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div className="main-container" data-sidebar-open={sidebarOpen} onClick={handleMainContainerClick}>
         <Sidebar
-          favorites={[]}
-          onToggleFavorite={() => {}}
+          favorites={favorites}
+          onToggleFavorite={toggleFavorite}
         />
         <main className="content">
           {children}
