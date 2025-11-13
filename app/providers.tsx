@@ -11,7 +11,6 @@ import Footer from './components/Footer'
 import Sidebar from './components/Sidebar'
 import ApiPreview from './components/ApiPreview'
 import Dashboard from './components/Dashboard'
-import FloatingApiButton from './components/FloatingApiButton'
 
 interface ProvidersProps {
   children?: ReactNode
@@ -83,7 +82,6 @@ function ToolPageContent({
           </div>
         )}
       </div>
-      <FloatingApiButton />
       <Footer />
     </div>
   )
