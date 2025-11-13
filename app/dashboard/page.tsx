@@ -477,6 +477,7 @@ export default function DashboardPage() {
     setRecharging(true)
     setError(null)
     setSuccess(null)
+    setRechargeStatus({ message: 'Processing recharge...', type: 'processing' })
 
     try {
       const response = await fetch('/api/account/auto-recharge', {
@@ -489,24 +490,24 @@ export default function DashboardPage() {
       const data = await response.json()
 
       if (response.ok) {
-        setSuccess(data.message || 'Auto-recharge successful!')
+        setRechargeStatus({ message: '✓ Recharge successful!', type: 'success' })
         loadData()
         loadAutoRechargeStatus()
-        // Auto-clear success message after 5 seconds
-        setTimeout(() => setSuccess(null), 5000)
+        // Auto-clear status message after 5 seconds
+        setTimeout(() => setRechargeStatus(null), 5000)
       } else {
-        setError(
-          data.error ||
+        const errorMsg = data.error ||
           (data.needsCheckout
             ? 'No payment method on file. Add funds via checkout first.'
-            : 'Auto-recharge failed')
-        )
-        // Auto-clear error message after 5 seconds
-        setTimeout(() => setError(null), 5000)
+            : 'Recharge failed')
+        setRechargeStatus({ message: errorMsg, type: 'error' })
+        // Auto-clear status message after 5 seconds
+        setTimeout(() => setRechargeStatus(null), 5000)
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to process auto-recharge')
-      setTimeout(() => setError(null), 5000)
+      const errorMsg = err.message || 'Failed to process auto-recharge'
+      setRechargeStatus({ message: errorMsg, type: 'error' })
+      setTimeout(() => setRechargeStatus(null), 5000)
     } finally {
       setRecharging(false)
     }
