@@ -112,7 +112,7 @@ input, textarea, select {
   line-height: 1;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   input, textarea, select {
     padding: 0.65rem;
   }
@@ -142,7 +142,7 @@ h1 {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   h1 {
     font-size: 1.5rem;
   }
@@ -159,7 +159,7 @@ h2 {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   h2 {
     font-size: 1.25rem;
   }
@@ -170,7 +170,7 @@ h3 {
   font-weight: 600;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   h3 {
     font-size: 1.1rem;
   }
@@ -316,7 +316,7 @@ pre code {
   z-index: 101;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .hamburger-menu {
     display: flex;
     position: absolute;
@@ -340,7 +340,7 @@ pre code {
   flex: 1;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .header-left {
     width: 100%;
     flex: 1;
@@ -361,7 +361,7 @@ pre code {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .header-search-container {
     max-width: 100%;
     flex: 1;
@@ -380,7 +380,7 @@ pre code {
   transition: all 0.2s ease;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .header-search-input {
     padding: 0.5rem 0.75rem;
     font-size: 0.85rem;
@@ -477,7 +477,7 @@ pre code {
   z-index: 100;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .home-btn {
     display: none;
   }
@@ -509,7 +509,7 @@ pre code {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .header-title {
     font-size: 1rem;
   }
@@ -544,7 +544,7 @@ pre code {
   gap: 1rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .header-right {
     display: none;
   }
@@ -560,7 +560,7 @@ pre code {
   cursor: pointer;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .theme-toggle {
     padding: 0.4rem 0.6rem;
     font-size: 0.8rem;
@@ -646,7 +646,7 @@ pre code {
   flex-direction: column;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .sidebar-content {
     padding: 1rem;
     margin-top: 0;
@@ -660,7 +660,7 @@ pre code {
   color: var(--text-primary);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .sidebar-title {
     font-size: 1.1rem;
     margin-bottom: 0.75rem;
@@ -808,7 +808,7 @@ pre code {
   transition: all 0.2s ease;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .tool-name {
     font-size: 0.8rem;
   }
@@ -875,7 +875,7 @@ pre code {
   margin-bottom: 1.5rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .tool-header-wrapper {
     margin-bottom: 1rem;
   }
@@ -895,7 +895,7 @@ pre code {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .tool-header {
     flex-direction: column;
     gap: 0.75rem;
@@ -927,7 +927,7 @@ pre code {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .tool-header-actions {
     width: 100%;
     flex-direction: column;
@@ -935,7 +935,7 @@ pre code {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .suggestion-btn,
   .save-tool-btn {
     width: 100%;
@@ -943,7 +943,7 @@ pre code {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .tool-header-actions {
     display: none;
   }
@@ -962,7 +962,7 @@ pre code {
   transition: all 0.2s ease;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .suggestion-btn,
   .save-tool-btn {
     padding: 0.5rem 0.75rem;
@@ -1042,7 +1042,7 @@ pre code {
   gap: 0.5rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .form-group {
     gap: 0.4rem;
   }
@@ -1117,7 +1117,7 @@ pre code {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .dashboard {
     padding: 0 1rem 1rem 1rem;
   }
@@ -1142,7 +1142,7 @@ pre code {
   font-size: 1.1rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .dashboard-header p {
     font-size: 0.95rem;
   }
@@ -1169,7 +1169,7 @@ pre code {
   transition: all 0.2s ease;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .dashboard-card {
     padding: 1rem;
   }
@@ -1277,7 +1277,7 @@ pre code {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .api-preview-language-selector {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1571,7 +1571,7 @@ select:focus {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .tool-container {
     padding: 1rem;
   }
@@ -1583,7 +1583,7 @@ select:focus {
   gap: 1.5rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .tool-content {
     gap: 1rem;
   }
@@ -1621,7 +1621,7 @@ select:focus {
   align-self: flex-start;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .convert-btn,
   .download-btn,
   .generate-btn {
@@ -1666,7 +1666,7 @@ select:focus {
   gap: 1rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .conversions-grid {
     grid-template-columns: 1fr;
   }
@@ -1733,7 +1733,7 @@ select:focus {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .stats-grid {
     grid-template-columns: 1fr;
   }
@@ -1795,7 +1795,7 @@ select:focus {
   transition: all 0.3s ease;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .color-preview-box {
     height: 150px;
     margin-bottom: 1rem;
@@ -1839,7 +1839,7 @@ select:focus {
   gap: 1rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .rgb-inputs {
     grid-template-columns: 1fr;
   }
@@ -1868,7 +1868,7 @@ select:focus {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .output-section {
     grid-template-columns: 1fr;
   }
@@ -1916,7 +1916,7 @@ select:focus {
   gap: 0.5rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .form-group {
     gap: 0.4rem;
   }
@@ -1967,7 +1967,7 @@ select:focus {
   overflow: hidden;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .preview-image {
     height: 150px;
   }
@@ -1986,7 +1986,7 @@ select:focus {
   justify-content: center;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .preview-text {
     padding: 0.75rem;
   }
@@ -1997,7 +1997,7 @@ select:focus {
   margin-bottom: 0.5rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .preview-text h4 {
     font-size: 1rem;
   }
@@ -2009,7 +2009,7 @@ select:focus {
   margin-bottom: 0.5rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .preview-text p {
     font-size: 0.85rem;
   }
@@ -2020,7 +2020,7 @@ select:focus {
   font-size: 0.8rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .preview-text small {
     font-size: 0.75rem;
   }
@@ -2032,7 +2032,7 @@ select:focus {
   gap: 1rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .meta-tags-output {
     gap: 0.75rem;
   }
@@ -2047,7 +2047,7 @@ select:focus {
   max-height: 400px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .code-block {
     padding: 0.75rem;
     font-size: 0.75rem;
@@ -2062,7 +2062,7 @@ select:focus {
   white-space: pre-wrap;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .code-block code {
     font-size: 0.75rem;
   }
@@ -2095,7 +2095,7 @@ select:focus {
   gap: 1.5rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .resize-controls {
     gap: 1rem;
   }
@@ -2141,7 +2141,7 @@ select:focus {
   justify-content: center;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .preview-box {
     height: 200px;
   }
@@ -2223,7 +2223,7 @@ select:focus {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .title-card {
     padding: 0.75rem;
     gap: 0.75rem;
@@ -2288,7 +2288,7 @@ select:focus {
   padding: 1.5rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .posts-tips {
     padding: 1rem;
   }
@@ -2527,7 +2527,7 @@ select:focus {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .stats-grid {
     grid-template-columns: 1fr;
   }
@@ -3396,7 +3396,7 @@ select:focus {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .upload-section label {
     font-size: 0.95rem;
   }
