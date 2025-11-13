@@ -604,6 +604,7 @@ pre code {
     border-right: none;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
     z-index: 40;
+    margin-top: 0;
   }
 
   .main-container[data-sidebar-open="true"] .sidebar {
