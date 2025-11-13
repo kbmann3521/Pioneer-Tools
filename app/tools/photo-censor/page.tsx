@@ -254,10 +254,27 @@ export default function PhotoCensorPage(): JSX.Element {
     }
   }
 
-  const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleCanvasTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (isCensored || !e.touches[0]) return
+
+    const touch = e.touches[0]
+    const coords = getCanvasCoordinates(touch.clientX, touch.clientY)
+    const handle = getHandleAtPoint(coords.x, coords.y)
+
+    if (handle) {
+      setIsDragging(handle)
+      setDragOffset({
+        x: coords.x - censorBox.x,
+        y: coords.y - censorBox.y,
+      })
+      e.preventDefault()
+    }
+  }
+
+  const performDragUpdate = (clientX: number, clientY: number) => {
     if (!isDragging) return
 
-    const coords = getCanvasCoordinates(e.clientX, e.clientY)
+    const coords = getCanvasCoordinates(clientX, clientY)
     const minSize = 20
 
     if (isDragging === 'move') {
@@ -300,7 +317,22 @@ export default function PhotoCensorPage(): JSX.Element {
     }
   }
 
+  const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    performDragUpdate(e.clientX, e.clientY)
+  }
+
+  const handleCanvasTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDragging || !e.touches[0]) return
+    const touch = e.touches[0]
+    performDragUpdate(touch.clientX, touch.clientY)
+    e.preventDefault()
+  }
+
   const handleCanvasMouseUp = () => {
+    setIsDragging(null)
+  }
+
+  const handleCanvasTouchEnd = () => {
     setIsDragging(null)
   }
 
@@ -373,16 +405,55 @@ export default function PhotoCensorPage(): JSX.Element {
         }
       }
     } else if (censorType === 'blur') {
-      const blurAmount = intensity * 2
-      const tempCanvas2 = document.createElement('canvas')
-      tempCanvas2.width = tempCanvas.width
-      tempCanvas2.height = tempCanvas.height
-      const ctx2 = tempCanvas2.getContext('2d')
-      if (ctx2) {
-        ctx2.drawImage(tempCanvas, 0, 0)
-        ctx2.filter = `blur(${blurAmount}px)`
-        ctx2.drawImage(tempCanvas, censorBox.x, censorBox.y, censorBox.width, censorBox.height, censorBox.x, censorBox.y, censorBox.width, censorBox.height)
-        ctx.drawImage(tempCanvas2, censorBox.x, censorBox.y, censorBox.width, censorBox.height, censorBox.x, censorBox.y, censorBox.width, censorBox.height)
+      const blurAmount = Math.max(3, Math.ceil(intensity * 2))
+      // Create a separate canvas for the censored region
+      const regionCanvas = document.createElement('canvas')
+      regionCanvas.width = censorBox.width
+      regionCanvas.height = censorBox.height
+      const regionCtx = regionCanvas.getContext('2d')
+      if (regionCtx) {
+        // Copy the region to blur
+        regionCtx.drawImage(
+          tempCanvas,
+          censorBox.x, censorBox.y, censorBox.width, censorBox.height,
+          0, 0, censorBox.width, censorBox.height
+        )
+        // Apply filter - test if supported
+        try {
+          regionCtx.filter = `blur(${blurAmount}px)`
+          regionCtx.drawImage(regionCanvas, 0, 0)
+          regionCtx.filter = 'none'
+        } catch (e) {
+          // Fallback: use pixelate if blur filter not supported (some mobile browsers)
+          const pixelSize = Math.max(2, Math.ceil(intensity * 1.5))
+          for (let i = 0; i < censorBox.height; i += pixelSize) {
+            for (let j = 0; j < censorBox.width; j += pixelSize) {
+              const pixelData = regionCtx.getImageData(
+                j, i,
+                Math.min(pixelSize, censorBox.width - j),
+                Math.min(pixelSize, censorBox.height - i),
+              )
+              let r = 0, g = 0, b = 0, count = 0
+              for (let k = 0; k < pixelData.data.length; k += 4) {
+                r += pixelData.data[k]
+                g += pixelData.data[k + 1]
+                b += pixelData.data[k + 2]
+                count++
+              }
+              r = Math.round(r / count)
+              g = Math.round(g / count)
+              b = Math.round(b / count)
+              for (let k = 0; k < pixelData.data.length; k += 4) {
+                pixelData.data[k] = r
+                pixelData.data[k + 1] = g
+                pixelData.data[k + 2] = b
+              }
+              regionCtx.putImageData(pixelData, j, i)
+            }
+          }
+        }
+        // Draw the processed region back
+        ctx.drawImage(regionCanvas, censorBox.x, censorBox.y)
       }
     } else if (censorType === 'blackbar') {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.95)'
@@ -511,6 +582,10 @@ export default function PhotoCensorPage(): JSX.Element {
                       }}
                       onMouseUp={handleCanvasMouseUp}
                       onMouseLeave={handleCanvasMouseUp}
+                      onTouchStart={handleCanvasTouchStart}
+                      onTouchMove={handleCanvasTouchMove}
+                      onTouchEnd={handleCanvasTouchEnd}
+                      style={{ touchAction: 'none' }}
                     />
                   )}
                 </div>

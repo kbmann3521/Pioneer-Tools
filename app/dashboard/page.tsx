@@ -643,9 +643,6 @@ export default function DashboardPage() {
     <div className="dashboard-wrapper" data-theme={theme}>
       <Header theme={theme} setTheme={setTheme} onSignOut={handleSignOut} developerMode={false} />
       <div className="dashboard-container">
-        <header className="dashboard-header">
-        </header>
-
       {profile && (
         <div className="dashboard-content">
           {/* Alerts */}
