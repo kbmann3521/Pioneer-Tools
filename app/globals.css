@@ -295,8 +295,8 @@ pre code {
 
 @media (max-width: 480px) {
   .header {
-    padding: 0.35rem 1rem;
-    height: 56px;
+    padding: 0.4rem 1rem;
+    height: 48px;
     justify-content: center;
   }
 }
