@@ -965,6 +965,27 @@ pre code {
   font-size: 0.95rem;
 }
 
+.view-api-link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.view-api-link:hover {
+  color: var(--color-primary-light);
+  text-decoration: underline;
+}
+
+.view-api-link:active {
+  transform: scale(0.98);
+}
+
 .tool-header-actions {
   display: flex;
   gap: 0.75rem;
