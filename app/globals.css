@@ -1283,6 +1283,61 @@ pre code {
   margin: 0;
 }
 
+/* Mobile API Toggle Button */
+.mobile-api-toggle {
+  display: none;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-api-toggle:hover {
+  background-color: var(--color-primary-dark);
+  opacity: 0.9;
+}
+
+.mobile-api-toggle:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 1024px) {
+  .mobile-api-toggle {
+    display: block;
+  }
+}
+
+/* Mobile API Panel Back Button */
+.api-preview-back-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.api-preview-back-btn:hover {
+  color: var(--color-primary-light);
+}
+
+@media (max-width: 1024px) {
+  .api-preview-back-btn {
+    display: block;
+  }
+}
+
 /* API Preview */
 .api-preview {
   padding: 1.5rem;
