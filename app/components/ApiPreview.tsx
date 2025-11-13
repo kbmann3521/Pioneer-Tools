@@ -405,8 +405,17 @@ echo json_encode($result, JSON_PRETTY_PRINT);
     }
   }
 
+  const { setOpen } = useApiPanel()
+
   return (
     <div className="api-preview">
+      <button
+        className="api-preview-back-btn"
+        onClick={() => setOpen(false)}
+        aria-label="Close API view"
+      >
+        ← Back to tool
+      </button>
       <div className="api-preview-header">
         <h3>API Call</h3>
         <p className="api-endpoint">{method} {endpoint}</p>
