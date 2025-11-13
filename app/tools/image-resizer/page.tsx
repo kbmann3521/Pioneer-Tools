@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
+import MobileApiToggle from '@/app/components/MobileApiToggle'
 import { resizeImage, calculateHeightFromWidth } from '@/lib/tools/image-resizer'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
@@ -246,6 +247,8 @@ export default function ImageResizerPage(): JSX.Element {
 
         <canvas ref={canvasRef} style={{ display: 'none' }} />
       </div>
+
+      <MobileApiToggle />
 
       <AboutToolAccordion
         toolId="image-resizer"
