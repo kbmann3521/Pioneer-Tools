@@ -30,13 +30,13 @@ export default function ToolHeader({ title, description, isSaved, onToggleSave, 
   return (
     <>
       <div className="tool-header-wrapper">
+        {showApiToggle && <MobileApiToggle />}
         <div className="tool-header">
           <div className="tool-header-text">
             <h2>{title}</h2>
             <p>{description}</p>
           </div>
           <div className="tool-header-actions">
-            {showApiToggle && <MobileApiToggle />}
             <SuggestionButton toolName={title} toolId={toolId} />
             <button
               className={`save-tool-btn ${isSaved ? 'saved' : ''}`}
