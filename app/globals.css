@@ -248,7 +248,7 @@ pre code {
   position: sticky;
   top: 70px;
   flex-shrink: 0;
-  transition: width 0.4s ease, opacity 0.4s ease, border-left 0.4s ease;
+  transition: width 0.165s ease, opacity 0.165s ease, border-left 0.165s ease;
 }
 
 @media (max-width: 640px) {
@@ -269,7 +269,7 @@ pre code {
     width: 380px;
     opacity: 1;
     background-color: var(--bg-secondary);
-    transition: all 0.4s ease !important;
+    transition: all 0.165s ease !important;
   }
 
   .right-sidebar.collapsed {
@@ -278,7 +278,7 @@ pre code {
     pointer-events: none;
     overflow: hidden;
     border-left: none;
-    transition: all 0.4s ease !important;
+    transition: all 0.165s ease !important;
   }
 }
 
@@ -317,7 +317,7 @@ pre code {
     border-bottom: none;
     z-index: 45;
     transform: translateX(100%);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+    transition: transform 0.165s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.165s ease;
     opacity: 0;
     pointer-events: none;
     overflow-y: auto;
