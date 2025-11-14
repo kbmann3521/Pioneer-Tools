@@ -31,6 +31,7 @@ export const PRICING = {
     'og-generator': 0.3, // $0.003
     'blog-generator': 0.5, // $0.005 - AI powered, gpt-4o-mini
     'json-formatter': 0.1, // $0.001
+    'html-minifier': 0.1, // $0.001
     'base64-converter': 0.1, // $0.001
     'url-encoder': 0.1, // $0.001
     'slug-generator': 0.1, // $0.001
