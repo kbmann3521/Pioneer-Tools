@@ -248,6 +248,7 @@ pre code {
   position: sticky;
   top: 70px;
   flex-shrink: 0;
+  transition: width 2s ease, opacity 2s ease, border-left 2s ease;
 }
 
 @media (max-width: 640px) {
