@@ -28,6 +28,9 @@ const toolsByCategory = {
     { id: 'slug-generator', name: 'Slug Generator', icon: '📝', category: 'Text Tools' },
     { id: 'password-generator', name: 'Password Generator', icon: '🔑', category: 'Text Tools' },
   ],
+  'Code Tools': [
+    { id: 'html-minifier', name: 'HTML Minifier', icon: '⚡', category: 'Code Tools' },
+  ],
   'Image Tools': [
     { id: 'image-resizer', name: 'Image Resizer', icon: '🖼️', category: 'Image Tools' },
     { id: 'image-average-color', name: 'Average Color Finder', icon: '🎨', category: 'Image Tools' },
