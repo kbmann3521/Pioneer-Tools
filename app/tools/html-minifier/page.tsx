@@ -45,7 +45,7 @@ export default function HtmlMinifierPage(): JSX.Element {
 
       <div className="tool-content">
         <div className="input-section">
-          <label htmlFor="html-input">Paste your HTML:</label>
+          <label htmlFor="html-input" style={{ display: 'block', fontWeight: '600' }}>Paste your HTML:</label>
           <textarea
             id="html-input"
             value={input}
@@ -60,7 +60,8 @@ export default function HtmlMinifierPage(): JSX.Element {
   </body>
 </html>`}
             className="text-input"
-            rows={8}
+            rows={12}
+            style={{ marginBottom: '38px' }}
           />
         </div>
 
