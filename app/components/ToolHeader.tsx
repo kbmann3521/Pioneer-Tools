@@ -39,7 +39,7 @@ export default function ToolHeader({ title, description, isSaved, onToggleSave, 
             <p>
               {description}
               {showViewApiLink && (
-                <>
+                <span className="view-api-section">
                   {' → '}
                   <button
                     onClick={onViewApi}
@@ -47,7 +47,7 @@ export default function ToolHeader({ title, description, isSaved, onToggleSave, 
                   >
                     View API
                   </button>
-                </>
+                </span>
               )}
             </p>
           </div>
