@@ -1117,7 +1117,7 @@ pre code {
 }
 
 @media (min-width: 769px) {
-  .view-api-link {
+  .view-api-section {
     display: none;
   }
 }
