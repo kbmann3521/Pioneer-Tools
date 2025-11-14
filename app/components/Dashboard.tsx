@@ -15,7 +15,7 @@ export default function Dashboard({ theme, setTheme }: DashboardProps) {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
-          <h1>Your Toolkit for Productivity & Development</h1>
+          <h1><p>Everyday tools. Developer DNA</p></h1>
           <p className="hero-subtitle">Free, fast, and powerful online tools for everyone. Perfect for everyday tasks and developer workflows.</p>
           <p className="hero-tagline">No sign-up required. No ads. All tools work in your browser.</p>
         </div>
