@@ -50,7 +50,15 @@ export default function HtmlMinifierPage(): JSX.Element {
             id="html-input"
             value={input}
             onChange={e => setInput(e.target.value)}
-            placeholder='<!DOCTYPE html>\n<html>\n  <head>\n    <title>Example</title>\n  </head>\n</html>'
+            placeholder={`<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example</title>
+  </head>
+  <body>
+    <h1>Hello World</h1>
+  </body>
+</html>`}
             className="text-input"
             rows={8}
           />
