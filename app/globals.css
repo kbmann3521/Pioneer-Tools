@@ -243,7 +243,6 @@ pre code {
   background-color: var(--bg-secondary);
   overflow-y: auto;
   overflow-x: hidden;
-  transition: all 2s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 1;
   max-height: calc(100vh - 70px);
   position: sticky;
