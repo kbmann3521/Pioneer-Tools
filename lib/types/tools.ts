@@ -270,6 +270,7 @@ export type ToolParams =
   | ImageAverageColorParams
   | ImageColorExtractorParams
   | PhotoCensorParams
+  | HtmlMinifierParams
 
 export type ToolResult =
   | CaseConverterResult
@@ -286,6 +287,7 @@ export type ToolResult =
   | ImageAverageColorResult
   | ImageColorExtractorResult
   | PhotoCensorResult
+  | HtmlMinifierResult
 
 /* ============================================
    API RESPONSE TYPES
