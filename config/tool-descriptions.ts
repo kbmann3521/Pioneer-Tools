@@ -534,4 +534,52 @@ export const toolDescriptions: Record<string, string> = {
       <li><strong>Smart Redaction:</strong> Combine with face detection to automatically censor detected faces</li>
     </ul>
   `,
+
+  'html-minifier': `
+    <h3>What is an HTML Minifier?</h3>
+    <p>An HTML minifier is a code optimization tool that reduces the file size of HTML documents by removing unnecessary characters like whitespace, comments, and line breaks while preserving functionality. Smaller HTML files load faster, improving website performance and user experience.</p>
+
+    <h3>Why Use HTML Minifier?</h3>
+    <p>HTML minification is a critical optimization technique for web performance. Smaller file sizes mean faster downloads, reduced bandwidth usage, and improved page load speeds. Every millisecond counts for SEO rankings and user satisfaction. Minifying HTML is essential for production websites and APIs that serve HTML responses.</p>
+
+    <h3>How to Use</h3>
+    <p>Paste your HTML code and instantly see the minified version with compression statistics. See exactly how many bytes you're saving and what percentage of the file size is reduced. Copy the minified HTML with one click for use in your projects.</p>
+
+    <h3>What Gets Minified?</h3>
+    <ul>
+      <li><strong>Comments:</strong> HTML comments are completely removed</li>
+      <li><strong>Whitespace:</strong> Extra spaces, tabs, and line breaks between tags are removed</li>
+      <li><strong>Redundant Spaces:</strong> Multiple spaces are collapsed into single spaces</li>
+      <li><strong>Formatting:</strong> All unnecessary formatting characters are stripped</li>
+    </ul>
+
+    <h3>Key Features</h3>
+    <ul>
+      <li><strong>Instant Minification:</strong> See results immediately as you paste</li>
+      <li><strong>Size Reduction:</strong> Displays original size, minified size, and percentage saved</li>
+      <li><strong>Byte Savings:</strong> See exact number of bytes reduced</li>
+      <li><strong>One-Click Copy:</strong> Copy minified HTML directly to clipboard</li>
+      <li><strong>Safe Minification:</strong> Preserves all HTML functionality while reducing size</li>
+    </ul>
+
+    <h3>Common Use Cases</h3>
+    <ul>
+      <li><strong>Website Optimization:</strong> Reduce HTML file sizes for faster page loads</li>
+      <li><strong>Performance Improvement:</strong> Lower bandwidth usage and improve Core Web Vitals</li>
+      <li><strong>Email Templates:</strong> Minify HTML email templates for faster delivery</li>
+      <li><strong>Single Page Applications:</strong> Optimize HTML shells and templates</li>
+      <li><strong>Static Site Generation:</strong> Minify generated HTML for production builds</li>
+      <li><strong>Build Pipelines:</strong> Integrate HTML minification into deployment workflows</li>
+    </ul>
+
+    <h3>API Endpoint Use Cases</h3>
+    <ul>
+      <li><strong>Dynamic HTML Generation:</strong> Minify HTML generated server-side before sending to clients</li>
+      <li><strong>Template Compilation:</strong> Optimize HTML templates during build or rendering process</li>
+      <li><strong>Email Services:</strong> Minify HTML email templates for faster transmission and rendering</li>
+      <li><strong>Web Scraping:</strong> Minify scraped HTML for storage and processing</li>
+      <li><strong>Content Delivery:</strong> Reduce file sizes for content distribution networks and caching</li>
+      <li><strong>Batch Processing:</strong> Minify multiple HTML files in automated workflows</li>
+    </ul>
+  `,
 }
