@@ -268,8 +268,8 @@ pre code {
 
 @media (min-width: 1025px) {
   .right-sidebar {
-    /* Smooth slideout animation on desktop */
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-left 0.3s ease, opacity 0.3s ease;
+    /* Smooth slideout animation on desktop - SLOW for testing */
+    transition: width 2s cubic-bezier(0.4, 0, 0.2, 1), border-left 2s ease, opacity 2s ease;
   }
 
   .right-sidebar.collapsed {
