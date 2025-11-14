@@ -16,15 +16,12 @@ export async function POST(request: NextRequest) {
   try {
     // Get auth token from request headers
     const authHeader = request.headers.get('Authorization')
-    console.log('Authorization header:', authHeader ? 'present' : 'missing')
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('Missing or invalid auth header')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const token = authHeader.replace('Bearer ', '')
-    console.log('Token length:', token.length)
 
     // Extract user ID from JWT token
     let userId: string | null = null
@@ -38,16 +35,12 @@ export async function POST(request: NextRequest) {
         userId = decoded.sub // 'sub' is the user ID claim in Supabase JWT
       }
     } catch (parseError) {
-      console.log('Failed to decode token:', parseError)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     if (!userId) {
-      console.log('Could not extract user ID from token')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-
-    console.log('Authenticated user:', userId)
 
     const body = await request.json()
     const { amount } = body

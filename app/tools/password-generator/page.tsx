@@ -3,17 +3,18 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import CopyFeedback from '@/app/components/CopyFeedback'
 import { createPassword } from '@/lib/tools/password-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, PasswordGeneratorResult } from '@/lib/types/tools'
 
 export default function PasswordGeneratorPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('password-generator')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const [length, setLength] = useState<number>(16)
   const [useUppercase, setUseUppercase] = useState<boolean>(true)
   const [useLowercase, setUseLowercase] = useState<boolean>(true)
@@ -21,7 +22,7 @@ export default function PasswordGeneratorPage(): JSX.Element {
   const [useSpecialChars, setUseSpecialChars] = useState<boolean>(true)
   const [password, setPassword] = useState<string>('')
   const [strength, setStrength] = useState<PasswordGeneratorResult | null>(null)
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const { isCopied, copyToClipboard } = useClipboard()
 
   // Generate initial password
   useEffect(() => {
@@ -52,8 +53,8 @@ export default function PasswordGeneratorPage(): JSX.Element {
     }
   }
 
-  const handleCopyPassword = (event: React.MouseEvent) => {
-    copyToClipboard(password, event)
+  const handleCopyPassword = async () => {
+    await copyToClipboard(password)
   }
 
   const getStrengthColor = (strengthLevel: string) => {
@@ -79,6 +80,8 @@ export default function PasswordGeneratorPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="password-generator"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">
@@ -157,7 +160,7 @@ export default function PasswordGeneratorPage(): JSX.Element {
                   title="Copy password"
                   type="button"
                 >
-                  Copy
+                  {isCopied ? 'Copied!' : 'Copy'}
                 </button>
               </div>
               <div className="password-output">
@@ -185,7 +188,6 @@ export default function PasswordGeneratorPage(): JSX.Element {
           </div>
         )}
 
-        <CopyFeedback message={copyMessage} position={copyPosition} />
       </div>
 
       <AboutToolAccordion

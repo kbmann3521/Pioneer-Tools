@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useAuth } from './context/AuthContext'
 import { FavoritesProvider } from './context/FavoritesContext'
 import { ApiParamsProvider } from './context/ApiParamsContext'
+import { ApiPanelProvider, useApiPanel } from './context/ApiPanelContext'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Sidebar from './components/Sidebar'
@@ -13,6 +14,77 @@ import Dashboard from './components/Dashboard'
 
 interface ProvidersProps {
   children?: ReactNode
+}
+
+interface ToolPageContentProps {
+  theme: string
+  setTheme: (theme: string) => void
+  developerMode: boolean
+  setDeveloperMode: (mode: boolean) => void
+  sidebarOpen: boolean
+  setSidebarOpen: (open: boolean) => void
+  handleMainContainerClick: (e: React.MouseEvent<HTMLDivElement>) => void
+  endpoints: Record<string, string>
+  toolId: string
+  apiParams: Record<string, any>
+  children: ReactNode
+  favorites: string[]
+  toggleFavorite: (toolId: string) => void
+}
+
+function ToolPageContent({
+  theme,
+  setTheme,
+  developerMode,
+  setDeveloperMode,
+  sidebarOpen,
+  setSidebarOpen,
+  handleMainContainerClick,
+  endpoints,
+  toolId,
+  apiParams,
+  children,
+  favorites,
+  toggleFavorite
+}: ToolPageContentProps) {
+  const { isOpen: apiPanelOpen, setOpen: setApiPanelOpen } = useApiPanel()
+
+  const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close API panel when clicking on the backdrop (outside the sidebar)
+    if (apiPanelOpen && e.target === e.currentTarget) {
+      setApiPanelOpen(false)
+      return
+    }
+    // Close sidebar when clicking on the overlay backdrop
+    handleMainContainerClick(e)
+  }
+
+  return (
+    <div className="app" data-theme={theme}>
+      <Header theme={theme} setTheme={setTheme} developerMode={developerMode} setDeveloperMode={setDeveloperMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="main-container" data-sidebar-open={sidebarOpen} data-api-panel-open={apiPanelOpen} onClick={handleContainerClick}>
+        <Sidebar
+          favorites={favorites}
+          onToggleFavorite={toggleFavorite}
+          onCloseApiPanel={() => setApiPanelOpen(false)}
+        />
+        <main className="content">
+          {children}
+        </main>
+        {endpoints[toolId] && (
+          <div className={`right-sidebar ${!developerMode ? 'collapsed' : ''}`} data-api-panel-open={apiPanelOpen}>
+            <ApiPreview
+              endpoint={endpoints[toolId]}
+              params={apiParams}
+              toolName={toolId}
+              enableCodeExecution={true}
+            />
+          </div>
+        )}
+      </div>
+      <Footer />
+    </div>
+  )
 }
 
 export function RootProvider({ children }: ProvidersProps) {
@@ -48,9 +120,12 @@ export function RootProvider({ children }: ProvidersProps) {
     const loadFavorites = async () => {
       if (!user || !session) {
         // Clear favorites if user logs out
+        console.log('No user or session - clearing favorites')
         setFavorites([])
         return
       }
+
+      console.log('Loading favorites for user:', user.id)
 
       try {
         // GET favorites from Supabase
@@ -62,12 +137,14 @@ export function RootProvider({ children }: ProvidersProps) {
         })
 
         if (!response.ok) {
-          console.error('Failed to fetch favorites from Supabase')
+          const errorText = await response.text()
+          console.error('Failed to fetch favorites from Supabase:', response.status, errorText)
           return
         }
 
         const data = await response.json()
-        const supabaseFavorites = data.favorites || []
+        const supabaseFavorites = data.data?.favorites || data.favorites || []
+        console.log('Loaded favorites from Supabase:', supabaseFavorites)
         setFavorites(supabaseFavorites)
       } catch (error) {
         console.error('Error loading favorites from Supabase:', error)
@@ -115,47 +192,61 @@ export function RootProvider({ children }: ProvidersProps) {
     )
 
     // Sync to Supabase if user is logged in
-    if (user && session?.access_token) {
-      try {
-        if (isFavorited) {
-          // Remove from favorites
-          const response = await fetch(`/api/favorites/${toolId}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${session.access_token}`,
-            },
-          })
+    if (!user) {
+      console.log('Not logged in - favorite will not persist')
+      return
+    }
 
-          if (!response.ok) {
-            console.error('Error removing favorite:', response.status)
-            // Revert local change on error
-            setFavorites(prev => [...prev, toolId])
-          }
+    if (!session?.access_token) {
+      console.log('No access token available')
+      return
+    }
+
+    try {
+      if (isFavorited) {
+        // Remove from favorites
+        const response = await fetch(`/api/favorites/${toolId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+        })
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          console.error(`Error removing favorite: ${response.status}`, errorText)
+          // Revert local change on error
+          setFavorites(prev => [...prev, toolId])
         } else {
-          // Add to favorites
-          const response = await fetch('/api/favorites', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${session.access_token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ toolId }),
-          })
-
-          // 409 means already favorited, which is fine - just continue
-          if (!response.ok && response.status !== 409) {
-            console.error('Error adding favorite:', response.status)
-            // Revert local change on error
-            setFavorites(prev => prev.filter(id => id !== toolId))
-          }
+          console.log(`Successfully removed ${toolId} from favorites`)
         }
-      } catch (error) {
-        console.error('Error syncing favorite to Supabase:', error)
-        // Revert local change on error
-        setFavorites(prev =>
-          prev.includes(toolId) ? prev.filter(id => id !== toolId) : [...prev, toolId]
-        )
+      } else {
+        // Add to favorites
+        const response = await fetch('/api/favorites', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ toolId }),
+        })
+
+        // 409 means already favorited, which is fine - just continue
+        if (!response.ok && response.status !== 409) {
+          const errorText = await response.text()
+          console.error(`Error adding favorite: ${response.status}`, errorText)
+          // Revert local change on error
+          setFavorites(prev => prev.filter(id => id !== toolId))
+        } else {
+          console.log(`Successfully added ${toolId} to favorites`)
+        }
       }
+    } catch (error) {
+      console.error('Error syncing favorite to Supabase:', error)
+      // Revert local change on error
+      setFavorites(prev =>
+        prev.includes(toolId) ? prev.filter(id => id !== toolId) : [...prev, toolId]
+      )
     }
   }
 
@@ -196,52 +287,65 @@ export function RootProvider({ children }: ProvidersProps) {
       'word-counter': '/api/tools/word-counter',
       'hex-rgba-converter': '/api/tools/hex-rgba-converter',
       'image-resizer': '/api/tools/image-resizer',
+      'image-average-color': '/api/tools/image-average-color',
+      'image-color-extractor': '/api/tools/image-color-extractor',
+      'photo-censor': '/api/tools/photo-censor',
       'og-generator': '/api/tools/og-generator',
       'blog-generator': '/api/tools/blog-generator',
       'json-formatter': '/api/tools/json-formatter',
+      'html-minifier': '/api/tools/html-minifier',
       'base64-converter': '/api/tools/base64-converter',
       'url-encoder': '/api/tools/url-encoder',
       'slug-generator': '/api/tools/slug-generator',
       'password-generator': '/api/tools/password-generator',
     }
 
+    const handleMainContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      // Close sidebar when clicking on the overlay backdrop
+      if (sidebarOpen && e.target === e.currentTarget) {
+        setSidebarOpen(false)
+      }
+    }
+
     return (
       <FavoritesProvider favorites={favorites} toggleFavorite={toggleFavorite}>
         <ApiParamsProvider updateParams={setApiParams}>
-          <div className="app" data-theme={theme}>
-            <Header theme={theme} setTheme={setTheme} developerMode={developerMode} setDeveloperMode={setDeveloperMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-            <div className="main-container" data-sidebar-open={sidebarOpen}>
-              <Sidebar
-                favorites={favorites}
-                onToggleFavorite={toggleFavorite}
-              />
-              <main className="content">
-                {children}
-              </main>
-              {endpoints[toolId] && (
-                <div className={`right-sidebar ${!developerMode ? 'collapsed' : ''}`}>
-                  <ApiPreview
-                    endpoint={endpoints[toolId]}
-                    params={apiParams}
-                    toolName={toolId}
-                    enableCodeExecution={true}
-                  />
-                </div>
-              )}
-            </div>
-            <Footer />
-          </div>
+          <ApiPanelProvider>
+            <ToolPageContent
+              theme={theme}
+              setTheme={setTheme}
+              developerMode={developerMode}
+              setDeveloperMode={setDeveloperMode}
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+              handleMainContainerClick={handleMainContainerClick}
+              endpoints={endpoints}
+              toolId={toolId}
+              apiParams={apiParams}
+              favorites={favorites}
+              toggleFavorite={toggleFavorite}
+            >
+              {children}
+            </ToolPageContent>
+          </ApiPanelProvider>
         </ApiParamsProvider>
       </FavoritesProvider>
     )
   }
 
   // Default: render home page with sidebar and dashboard
+  const handleMainContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close sidebar when clicking on the overlay backdrop
+    if (sidebarOpen && e.target === e.currentTarget) {
+      setSidebarOpen(false)
+    }
+  }
+
   return (
     <FavoritesProvider favorites={favorites} toggleFavorite={toggleFavorite}>
       <div className="app" data-theme={theme}>
         <Header theme={theme} setTheme={setTheme} developerMode={developerMode} setDeveloperMode={setDeveloperMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        <div className="main-container" data-sidebar-open={sidebarOpen}>
+        <div className="main-container" data-sidebar-open={sidebarOpen} onClick={handleMainContainerClick}>
           <Sidebar
             favorites={favorites}
             onToggleFavorite={toggleFavorite}

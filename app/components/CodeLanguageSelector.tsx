@@ -22,9 +22,9 @@ const LANGUAGES: { value: CodeLanguage; label: string }[] = [
 
 export default function CodeLanguageSelector({ language, onLanguageChange }: CodeLanguageSelectorProps) {
   return (
-    <div className="language-selector-wrapper">
+    <div className="language-selector-container">
       <label htmlFor="language-select" className="language-label">
-        Select Language:
+        <p>Language:</p>
       </label>
       <select
         id="language-select"
@@ -40,18 +40,28 @@ export default function CodeLanguageSelector({ language, onLanguageChange }: Cod
       </select>
 
       <style jsx>{`
-        .language-selector-wrapper {
+        .language-selector-container {
           display: flex;
           align-items: center;
+          flex-direction: row;
           gap: 0.75rem;
-          margin-bottom: 1rem;
+          margin-bottom: 0;
         }
 
         .language-label {
+          display: block;
           font-size: 0.9rem;
           font-weight: 500;
           color: var(--text-primary);
           white-space: nowrap;
+          text-wrap: nowrap;
+        }
+
+        .language-label p {
+          margin: 0;
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: var(--text-primary);
         }
 
         .language-dropdown {
@@ -65,7 +75,7 @@ export default function CodeLanguageSelector({ language, onLanguageChange }: Cod
           cursor: pointer;
           transition: all 0.2s ease;
           font-family: inherit;
-          min-width: 200px;
+          display: block;
         }
 
         .language-dropdown:hover {
@@ -79,14 +89,19 @@ export default function CodeLanguageSelector({ language, onLanguageChange }: Cod
         }
 
         @media (max-width: 640px) {
-          .language-selector-wrapper {
-            flex-direction: column;
-            align-items: flex-start;
+          .language-selector-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.75rem;
+          }
+
+          .language-label {
+            margin: auto auto auto 0;
           }
 
           .language-dropdown {
-            width: 100%;
-            min-width: unset;
+            margin-left: auto;
           }
         }
       `}</style>

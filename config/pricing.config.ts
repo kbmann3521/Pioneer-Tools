@@ -24,17 +24,21 @@ export const PRICING = {
   // Examples: 0.5 = $0.005, 0.25 = $0.0025, 2 = $0.002
   // Sub-penny costs are aggregated and only deducted when total >= 1 cent
   TOOL_COSTS: {
-    'case-converter': 0.2, // $0.002 per call (aggregated)
-    'word-counter': 0.2,
-    'hex-rgba-converter': 0.2,
-    'image-resizer': 0.5, // $0.005 - more expensive due to processing
+    'case-converter': 0.1, // $0.002 per call (aggregated)
+    'word-counter': 0.1,
+    'hex-rgba-converter': 0.1,
+    'image-resizer': 0.3, // $0.005 - more expensive due to processing
     'og-generator': 0.3, // $0.003
-    'blog-generator': 50, // $0.50 - AI powered, more expensive
+    'blog-generator': 0.5, // $0.005 - AI powered, gpt-4o-mini
     'json-formatter': 0.1, // $0.001
+    'html-minifier': 0.1, // $0.001
     'base64-converter': 0.1, // $0.001
     'url-encoder': 0.1, // $0.001
     'slug-generator': 0.1, // $0.001
     'password-generator': 0.1, // $0.001
+    'image-average-color': 0.3, // $0.003 - image processing
+    'image-color-extractor': 0.3, // $0.005 - multiple colors extraction
+    'photo-censor': 0.3, // $0.005 - image manipulation with multiple regions
   } as Record<string, number>,
 }
 

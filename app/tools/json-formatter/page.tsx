@@ -3,18 +3,19 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import CopyFeedback from '@/app/components/CopyFeedback'
 import { formatJson } from '@/lib/tools/json-formatter'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, JsonFormatterResult } from '@/lib/types/tools'
 
 export default function JsonFormatterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('json-formatter')
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const { setOpen: setApiPanelOpen } = useApiPanel()
+  const { isCopied, copyToClipboard } = useClipboard()
   const [input, setInput] = useState<string>('')
   const [result, setResult] = useState<JsonFormatterResult | null>(null)
 
@@ -38,6 +39,8 @@ export default function JsonFormatterPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="json-formatter"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">
@@ -63,11 +66,11 @@ export default function JsonFormatterPage(): JSX.Element {
                       <h3>Formatted JSON</h3>
                       <button
                         className="copy-btn"
-                        onClick={(e) => copyToClipboard(result.formatted!, e)}
+                        onClick={() => copyToClipboard(result.formatted!)}
                         title="Copy formatted JSON"
                         type="button"
                       >
-                        Copy
+                        {isCopied ? 'Copied!' : 'Copy'}
                       </button>
                     </div>
                     <pre className="code-output">{result.formatted}</pre>
@@ -80,11 +83,11 @@ export default function JsonFormatterPage(): JSX.Element {
                       <h3>Minified JSON</h3>
                       <button
                         className="copy-btn"
-                        onClick={(e) => copyToClipboard(result.minified!, e)}
+                        onClick={() => copyToClipboard(result.minified!)}
                         title="Copy minified JSON"
                         type="button"
                       >
-                        Copy
+                        {isCopied ? 'Copied!' : 'Copy'}
                       </button>
                     </div>
                     <pre className="code-output">{result.minified}</pre>
@@ -118,8 +121,6 @@ export default function JsonFormatterPage(): JSX.Element {
             )}
           </div>
         )}
-
-        <CopyFeedback message={copyMessage} position={copyPosition} />
       </div>
 
       <AboutToolAccordion

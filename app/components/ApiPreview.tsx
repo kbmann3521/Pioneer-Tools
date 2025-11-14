@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import CodeLanguageSelector, { type CodeLanguage } from '@/app/components/CodeLanguageSelector'
 import CodePreview from '@/app/components/CodePreview'
 import PricingCard from '@/app/components/PricingCard'
@@ -100,6 +101,11 @@ export default function ApiPreview({ endpoint, method = 'POST', params = {}, too
           }),
         })
 
+        if (!response.ok) {
+          setLiveResponse(null)
+          return
+        }
+
         const data = await response.json()
         setLiveResponse(data)
       } catch (error) {
@@ -169,32 +175,20 @@ console.log(result)`
   -d '${paramString.replace(/'/g, "'\\''")}'`
 
       case 'python':
-        return `import urllib.request
+        return `import requests
 import json
 
 headers = {
-    'Authorization': 'Bearer ${apiKey}',
-    'Content-Type': 'application/json'
+    'Authorization': 'Bearer ${apiKey}'
 }
 
 data = ${paramStringCompact}
-json_data = json.dumps(data).encode('utf-8')
 
-request = urllib.request.Request(
-    '${absoluteUrl}',
-    data=json_data,
-    headers=headers,
-    method='${method}'
-)
+response = requests.${method.toLowerCase()}('${absoluteUrl}', json=data, headers=headers, timeout=5)
+response.raise_for_status()
 
-try:
-    with urllib.request.urlopen(request, timeout=5) as response:
-        result = json.loads(response.read().decode('utf-8'))
-        print(json.dumps(result, indent=2))
-except urllib.error.HTTPError as e:
-    print(f"HTTP Error: {e.code} {e.reason}")
-except Exception as e:
-    print(f"Error: {type(e).__name__}: {str(e)}")`
+result = response.json()
+print(json.dumps(result, indent=2))`
 
       case 'java':
         return `import java.net.http.HttpClient;
@@ -202,21 +196,26 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
 
-HttpClient client = HttpClient.newHttpClient();
+try {
+    HttpClient client = HttpClient.newHttpClient();
 
-String body = ${paramStringCompact.replace(/"/g, '\\"')};
+    String body = ${paramStringCompact.replace(/"/g, '\\"')};
 
-HttpRequest request = HttpRequest.newBuilder()
-    .uri(URI.create("${absoluteUrl}"))
-    .header("Content-Type", "application/json")
-    .header("Authorization", "Bearer ${apiKey}")
-    .method("${method}", HttpRequest.BodyPublishers.ofString(body))
-    .build();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("${absoluteUrl}"))
+        .header("Content-Type", "application/json")
+        .header("Authorization", "Bearer ${apiKey}")
+        .method("${method}", HttpRequest.BodyPublishers.ofString(body))
+        .timeout(java.time.Duration.ofSeconds(10))
+        .build();
 
-HttpResponse<String> response = client.send(request,
-    HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> response = client.send(request,
+        HttpResponse.BodyHandlers.ofString());
 
-System.out.println(response.body());`
+    System.out.println(response.body());
+} catch (Exception e) {
+    System.err.println("Error: " + e.getMessage());
+}`
 
       case 'go':
         return `package main
@@ -226,6 +225,7 @@ import (
     "encoding/json"
     "fmt"
     "io"
+    "log"
     "net/http"
 )
 
@@ -234,21 +234,34 @@ func main() {
 ${Object.entries(params).map(([k, v]) => `        "${k}": ${typeof v === 'string' ? `"${v}"` : v},`).join('\n')}
     }
 
-    jsonData, _ := json.Marshal(data)
+    jsonData, err := json.Marshal(data)
+    if err != nil {
+        log.Fatal("Marshal error:", err)
+    }
 
-    req, _ := http.NewRequest("${method}", "${absoluteUrl}", bytes.NewBuffer(jsonData))
+    req, err := http.NewRequest("${method}", "${absoluteUrl}", bytes.NewBuffer(jsonData))
+    if err != nil {
+        log.Fatal("Request error:", err)
+    }
     req.Header.Set("Content-Type", "application/json")
     req.Header.Set("Authorization", "Bearer ${apiKey}")
 
     client := &http.Client{}
-    resp, _ := client.Do(req)
+    resp, err := client.Do(req)
+    if err != nil {
+        log.Fatal("Do error:", err)
+    }
     defer resp.Body.Close()
 
-    body, _ := io.ReadAll(resp.Body)
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        log.Fatal("ReadAll error:", err)
+    }
     fmt.Println(string(body))
 }`
 
-      case 'csharp':
+      case 'csharp': {
+        const methodName = method === 'POST' ? 'PostAsync' : method === 'GET' ? 'GetAsync' : method === 'PUT' ? 'PutAsync' : 'PostAsync'
         return `using System;
 using System.Net.Http;
 using System.Text;
@@ -256,54 +269,57 @@ using System.Threading.Tasks;
 
 class Program {
     static async Task Main() {
-        var client = new HttpClient();
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Authorization", "Bearer ${apiKey}");
 
         var json = @"${paramStringCompact.replace(/"/g, '""')}";
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        client.DefaultRequestHeaders.Add("Authorization", "Bearer ${apiKey}");
-
-        var response = await client.${method.charAt(0) + method.slice(1).toLowerCase()}Async(
-            "${absoluteUrl}",
-            content
-        );
+        var response = await client.${methodName}("${absoluteUrl}", content);
+        response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadAsStringAsync();
         Console.WriteLine(result);
     }
 }`
+      }
 
-      case 'ruby':
+      case 'ruby': {
+        const methodClass = method === 'POST' ? 'Post' : method === 'GET' ? 'Get' : method === 'PUT' ? 'Put' : 'Post'
+        // Convert JSON to Ruby hash syntax with hash rockets (=>)
+        const jsonToRubyHash = (json: string) => {
+          return json.replace(/"/g, "'").replace(/:/g, ' =>')
+        }
+        const rubyHashSyntax = jsonToRubyHash(paramStringCompact)
         return `require 'net/http'
 require 'json'
 require 'uri'
 
 uri = URI("${absoluteUrl}")
-
-data = ${paramStringCompact}
+data = ${rubyHashSyntax}
 
 http = Net::HTTP.new(uri.host, uri.port)
 http.use_ssl = (uri.scheme == 'https')
 
-request = Net::HTTP::${method.charAt(0) + method.slice(1).toLowerCase()}(uri.path)
-request["Content-Type"] = "application/json"
-request["Authorization"] = "Bearer ${apiKey}"
+request = Net::HTTP::${methodClass}.new(uri.path)
+request['Content-Type'] = 'application/json'
+request['Authorization'] = 'Bearer ${apiKey}'
 request.body = JSON.generate(data)
 
 response = http.request(request)
-puts JSON.parse(response.body)`
+puts JSON.pretty_generate(JSON.parse(response.body))`
+      }
 
       case 'php': {
         const escapedJson = paramStringCompact.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
         return `<?php
 
 $url = "${absoluteUrl}";
-$data = ${paramStringCompact};
+$data = json_decode('${escapedJson}', true);
 
 $ch = curl_init();
-
 curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, '${method}');
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -312,11 +328,10 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 ));
 
 $response = curl_exec($ch);
-$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 $result = json_decode($response, true);
-var_dump($result);
+echo json_encode($result, JSON_PRETTY_PRINT);
 ?>`
       }
 
@@ -345,28 +360,37 @@ var_dump($result);
         }),
       })
 
-      if (!response.ok) {
-        const errorText = await response.text()
+      let result: any
+      try {
+        result = await response.json()
+      } catch (parseErr) {
         setExecutionResult({
           success: false,
-          error: `Server error (${response.status}): ${errorText.substring(0, 100)}`,
+          error: `Failed to parse response: ${parseErr instanceof Error ? parseErr.message : 'Invalid JSON'}`,
           executionTime: 0,
         })
         setIsRunning(false)
         return
       }
 
-      const result = await response.json()
-      if (result.success) {
+      if (response.ok && result.success) {
         setExecutionResult({
           success: true,
           output: JSON.stringify(result.result || result, null, 2),
           executionTime: 0,
         })
       } else {
+        let errorMessage = `Server error (${response.status}): ${response.statusText}`
+        if (result.error) {
+          if (typeof result.error === 'object' && result.error.message) {
+            errorMessage = result.error.message
+          } else if (typeof result.error === 'string') {
+            errorMessage = result.error
+          }
+        }
         setExecutionResult({
           success: false,
-          error: result.error || 'Unknown error occurred',
+          error: errorMessage,
           executionTime: 0,
         })
       }
@@ -381,14 +405,29 @@ var_dump($result);
     }
   }
 
+  const { setOpen } = useApiPanel()
+
   return (
     <div className="api-preview">
+      <div
+        className="api-preview-back-btn"
+        onClick={() => setOpen(false)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            setOpen(false)
+          }
+        }}
+        aria-label="Close API view"
+      >
+        ← Back to tool
+      </div>
       <div className="api-preview-header">
-        <h3>API Call</h3>
         <p className="api-endpoint">{method} {endpoint}</p>
       </div>
 
-      <div className="language-selector-wrapper">
+      <div className="api-language-selector-wrapper">
         <CodeLanguageSelector language={language} onLanguageChange={setLanguage} />
 
         {validationStatus && (
@@ -445,14 +484,9 @@ var_dump($result);
         <div className="api-test-section">
           <button
             onClick={runCode}
-            disabled={isRunning || ['curl', 'java', 'go', 'csharp', 'ruby', 'php'].includes(language)}
+            disabled={isRunning}
             className="run-code-btn"
-            title={
-              language === 'curl' ? 'cURL examples must be run manually in your terminal' :
-              ['java', 'go', 'csharp'].includes(language) ? 'Compiled languages must be run locally with their compiler' :
-              ['ruby', 'php'].includes(language) ? 'Network-based languages must be run locally with their runtime' :
-              'Execute this code in a sandboxed environment'
-            }
+            title="Test the API endpoint"
           >
             {isRunning ? 'Running...' : 'Run Test'}
           </button>
@@ -506,17 +540,33 @@ var_dump($result);
           overflow-y: auto;
         }
 
+        .api-preview-back-btn {
+          display: none;
+          color: var(--color-primary);
+          font-weight: 600;
+          margin-bottom: 1rem;
+          padding: 0.5rem 0;
+          background: none;
+          border: none;
+          cursor: pointer;
+          transition: opacity 0.2s ease;
+        }
+
+        .api-preview-back-btn:hover {
+          opacity: 0.8;
+        }
+
+        @media (max-width: 1024px) {
+          .api-preview-back-btn {
+            display: block;
+          }
+        }
+
         .api-preview-header {
           display: flex;
           flex-direction: column;
           gap: 0.1rem;
-        }
-
-        .api-preview-header h3 {
-          margin: 0;
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: var(--text-primary);
+          margin-bottom: 1rem;
         }
 
         .api-endpoint {
@@ -525,6 +575,10 @@ var_dump($result);
           color: var(--text-secondary);
           font-family: 'Monaco', 'Courier New', monospace;
           font-weight: 600;
+          background-color: var(--bg-primary);
+          border-radius: 4px;
+          padding: 0.5rem 0.75rem;
+          word-break: break-all;
         }
 
         .api-preview-language-selector {
@@ -721,7 +775,7 @@ var_dump($result);
           border-top: 1px solid var(--border-color);
         }
 
-        .language-selector-wrapper {
+        .api-language-selector-wrapper {
           display: flex;
           align-items: center;
           gap: 1rem;

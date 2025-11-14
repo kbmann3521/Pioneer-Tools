@@ -6,17 +6,21 @@ import AboutToolAccordion from '@/app/components/AboutToolAccordion'
 import { resizeImage, calculateHeightFromWidth } from '@/lib/tools/image-resizer'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps } from '@/lib/types/tools'
 
 export default function ImageResizerPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('image-resizer')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const [image, setImage] = useState<string | null>(null)
   const [width, setWidth] = useState(800)
   const [height, setHeight] = useState(600)
   const [keepAspect, setKeepAspect] = useState(true)
   const [originalDimensions, setOriginalDimensions] = useState<{ width: number; height: number } | null>(null)
+  const [dragActive, setDragActive] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   // Update API params whenever dimensions change
@@ -30,21 +34,63 @@ export default function ImageResizerPage(): JSX.Element {
     })
   }, [width, height, keepAspect, originalDimensions, updateParams])
 
+  const processImageFile = (file: File) => {
+    const reader = new FileReader()
+    reader.onload = event => {
+      const img = new Image()
+      img.onload = () => {
+        setImage(event.target?.result as string)
+        setOriginalDimensions({ width: img.width, height: img.height })
+        setWidth(img.width)
+        setHeight(img.height)
+      }
+      img.src = event.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onload = event => {
-        const img = new Image()
-        img.onload = () => {
-          setImage(event.target?.result as string)
-          setOriginalDimensions({ width: img.width, height: img.height })
-          setWidth(img.width)
-          setHeight(img.height)
-        }
-        img.src = event.target?.result as string
-      }
-      reader.readAsDataURL(file)
+      processImageFile(file)
+    }
+  }
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+
+    const files = e.dataTransfer.files
+    if (files && files.length > 0) {
+      processImageFile(files[0])
+    }
+  }
+
+  const handleClearImage = () => {
+    setImage(null)
+    setOriginalDimensions(null)
+    setWidth(800)
+    setHeight(600)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
     }
   }
 
@@ -104,20 +150,32 @@ export default function ImageResizerPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="image-resizer"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">
         <div className="upload-section">
-          <label htmlFor="image-upload" className="upload-label">
-            Choose Image
-          </label>
-          <input
-            id="image-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="file-input"
-          />
+          <label htmlFor="image-upload">Upload an image:</label>
+          <div
+            className={`file-input-wrapper ${dragActive ? 'drag-active' : ''}`}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            <input
+              ref={fileInputRef}
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="file-input"
+            />
+            <label htmlFor="image-upload" className="file-input-label">
+              Choose Image or Drag & Drop
+            </label>
+          </div>
         </div>
 
         {image && (
@@ -162,6 +220,9 @@ export default function ImageResizerPage(): JSX.Element {
                     alt="Preview"
                     style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
                   />
+                  <button className="clear-image-btn" onClick={handleClearImage}>
+                    ✕ Change Image
+                  </button>
                 </div>
                 <div className="dimensions">
                   {width}px × {height}px

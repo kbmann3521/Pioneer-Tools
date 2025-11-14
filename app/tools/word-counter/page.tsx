@@ -6,12 +6,14 @@ import AboutToolAccordion from '@/app/components/AboutToolAccordion'
 import { countWords } from '@/lib/tools/word-counter'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, WordCounterResult } from '@/lib/types/tools'
 
 export default function WordCounterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('word-counter')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const [text, setText] = useState<string>('')
   const [stats, setStats] = useState<WordCounterResult | null>(null)
 
@@ -43,6 +45,8 @@ export default function WordCounterPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="word-counter"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">

@@ -5,7 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/app/context/AuthContext'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import CopyFeedback from '@/app/components/CopyFeedback'
+import SaveFeedback from '@/app/components/SaveFeedback'
 import Header from '@/app/components/Header'
+import Sidebar from '@/app/components/Sidebar'
 import { supabase } from '@/lib/supabaseClient'
 import { formatBalance, PRICING, formatCost } from '@/config/pricing.config'
 
@@ -42,6 +44,7 @@ export default function DashboardPage() {
   const searchParams = useSearchParams()
   const { user, session, loading: authLoading, signOut } = useAuth()
   const [theme, setTheme] = useState<string>('dark')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([])
   const [transactions, setTransactions] = useState<BillingTransaction[]>([])
@@ -51,6 +54,11 @@ export default function DashboardPage() {
   const [createdKey, setCreatedKey] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+
+  // Save feedback messages for each section
+  const [budgetSaveMessage, setBudgetSaveMessage] = useState<string | null>(null)
+  const [autoRechargeSaveMessage, setAutoRechargeSaveMessage] = useState<string | null>(null)
+  const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null)
 
   // Auto-recharge form state
   const [showAutoRechargeForm, setShowAutoRechargeForm] = useState(false)
@@ -86,6 +94,10 @@ export default function DashboardPage() {
     lastAttempt: string | null
   } | null>(null)
   const [recharging, setRecharging] = useState(false)
+  const [rechargeStatus, setRechargeStatus] = useState<{
+    message: string
+    type: 'processing' | 'success' | 'error'
+  } | null>(null)
 
   // Load theme from localStorage on mount
   useEffect(() => {
@@ -311,6 +323,49 @@ export default function DashboardPage() {
     }
   }
 
+  const toggleAutoRecharge = async (enabled: boolean) => {
+    try {
+      setError(null)
+      setAutoRechargeEnabled(enabled)
+
+      if (!enabled) {
+        // When unchecking, immediately save the disabled state
+        const { error: updateError } = await supabase
+          .from('users_profile')
+          .update({
+            auto_recharge_enabled: false,
+            auto_recharge_threshold: null,
+            auto_recharge_amount: null,
+          })
+          .eq('id', user?.id)
+
+        if (updateError) throw updateError
+
+        // Update local state instead of reloading
+        if (profile) {
+          setProfile({
+            ...profile,
+            auto_recharge_enabled: false,
+            auto_recharge_threshold: null,
+            auto_recharge_amount: null,
+          })
+        }
+
+        setAutoRechargeSaveMessage('Auto-recharge disabled')
+        setShowAutoRechargeForm(false)
+
+        // Auto-clear message after 3 seconds
+        setTimeout(() => setAutoRechargeSaveMessage(null), 3000)
+      } else {
+        // When checking, just show the form to configure
+        setShowAutoRechargeForm(true)
+      }
+    } catch (err: any) {
+      setError(err.message)
+      setAutoRechargeEnabled(!enabled) // Revert on error
+    }
+  }
+
   const updateAutoRecharge = async () => {
     try {
       setError(null)
@@ -332,9 +387,22 @@ export default function DashboardPage() {
         .eq('id', user?.id)
 
       if (updateError) throw updateError
-      setSuccess('Auto-recharge settings updated!')
+
+      // Update local state instead of reloading
+      if (profile) {
+        setProfile({
+          ...profile,
+          auto_recharge_enabled: autoRechargeEnabled,
+          auto_recharge_threshold: autoRechargeEnabled ? thresholdCents : null,
+          auto_recharge_amount: autoRechargeEnabled ? rechargeAmountCents : null,
+        })
+      }
+
+      setAutoRechargeSaveMessage('Auto-recharge settings updated!')
       setShowAutoRechargeForm(false)
-      loadData()
+
+      // Auto-clear message after 3 seconds
+      setTimeout(() => setAutoRechargeSaveMessage(null), 3000)
     } catch (err: any) {
       setError(err.message)
     }
@@ -358,9 +426,20 @@ export default function DashboardPage() {
         .eq('id', user?.id)
 
       if (updateError) throw updateError
-      setSuccess('Monthly budget updated!')
+
+      // Update local state instead of reloading
+      if (profile) {
+        setProfile({
+          ...profile,
+          monthly_spending_limit: budgetCents || null,
+        })
+      }
+
+      setBudgetSaveMessage('Monthly budget updated!')
       setShowBudgetForm(false)
-      loadData()
+
+      // Auto-clear message after 3 seconds
+      setTimeout(() => setBudgetSaveMessage(null), 3000)
     } catch (err: any) {
       setError(err.message)
     }
@@ -400,6 +479,7 @@ export default function DashboardPage() {
     setRecharging(true)
     setError(null)
     setSuccess(null)
+    setRechargeStatus({ message: 'Processing recharge...', type: 'processing' })
 
     try {
       const response = await fetch('/api/account/auto-recharge', {
@@ -412,24 +492,24 @@ export default function DashboardPage() {
       const data = await response.json()
 
       if (response.ok) {
-        setSuccess(data.message || 'Auto-recharge successful!')
+        setRechargeStatus({ message: '✓ Recharge successful!', type: 'success' })
         loadData()
         loadAutoRechargeStatus()
-        // Auto-clear success message after 5 seconds
-        setTimeout(() => setSuccess(null), 5000)
+        // Auto-clear status message after 5 seconds
+        setTimeout(() => setRechargeStatus(null), 5000)
       } else {
-        setError(
-          data.error ||
+        const errorMsg = data.error ||
           (data.needsCheckout
             ? 'No payment method on file. Add funds via checkout first.'
-            : 'Auto-recharge failed')
-        )
-        // Auto-clear error message after 5 seconds
-        setTimeout(() => setError(null), 5000)
+            : 'Recharge failed')
+        setRechargeStatus({ message: errorMsg, type: 'error' })
+        // Auto-clear status message after 5 seconds
+        setTimeout(() => setRechargeStatus(null), 5000)
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to process auto-recharge')
-      setTimeout(() => setError(null), 5000)
+      const errorMsg = err.message || 'Failed to process auto-recharge'
+      setRechargeStatus({ message: errorMsg, type: 'error' })
+      setTimeout(() => setRechargeStatus(null), 5000)
     } finally {
       setRecharging(false)
     }
@@ -488,10 +568,12 @@ export default function DashboardPage() {
     }
   }
 
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const { isCopied, copyToClipboard } = useClipboard()
 
-  const copyKeyToClipboard = (key: string, event: React.MouseEvent) => {
-    copyToClipboard(key, event)
+  const copyKeyToClipboard = async (key: string, keyId: string) => {
+    await copyToClipboard(key)
+    setCopiedKeyId(keyId)
+    setTimeout(() => setCopiedKeyId(null), 3000)
   }
 
   const handleSignOut = async () => {
@@ -559,13 +641,18 @@ export default function DashboardPage() {
     return <div className="dashboard-loading">Loading...</div>
   }
 
+  const handleMainContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (sidebarOpen && e.target === e.currentTarget) {
+      setSidebarOpen(false)
+    }
+  }
+
   return (
     <div className="dashboard-wrapper" data-theme={theme}>
-      <Header theme={theme} setTheme={setTheme} onSignOut={handleSignOut} developerMode={false} />
-      <div className="dashboard-container">
-        <header className="dashboard-header">
-        </header>
-
+      <Header theme={theme} setTheme={setTheme} onSignOut={handleSignOut} developerMode={false} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="main-container" data-sidebar-open={sidebarOpen} onClick={handleMainContainerClick}>
+        <Sidebar favorites={[]} onToggleFavorite={() => {}} />
+        <div className="dashboard-container">
       {profile && (
         <div className="dashboard-content">
           {/* Alerts */}
@@ -637,6 +724,8 @@ export default function DashboardPage() {
               </div>
             </div>
 
+            <SaveFeedback message={budgetSaveMessage} />
+
             {showBudgetForm && (
               <div className="form-card">
                 <h4>Set Monthly Spending Limit</h4>
@@ -672,7 +761,7 @@ export default function DashboardPage() {
                 type="checkbox"
                 id="enable-recharge"
                 checked={autoRechargeEnabled}
-                onChange={(e) => setAutoRechargeEnabled(e.target.checked)}
+                onChange={(e) => toggleAutoRecharge(e.target.checked)}
               />
               <label htmlFor="enable-recharge">Enable auto-recharge when balance drops below threshold</label>
             </div>
@@ -689,6 +778,8 @@ export default function DashboardPage() {
                 </div>
               </div>
             )}
+
+            <SaveFeedback message={autoRechargeSaveMessage} />
 
             {showAutoRechargeForm && (
               <div className="form-card">
@@ -791,23 +882,45 @@ export default function DashboardPage() {
                   </div>
                 )}
 
-                {autoRechargeStatus.hasPaymentMethod && autoRechargeStatus.failedAttempts > 0 && (
-                  <div className="alert alert-error" style={{ marginTop: '1rem' }}>
-                    <p>
-                      <strong>Auto-recharge has failed {autoRechargeStatus.failedAttempts} time(s).</strong> This usually means your payment method is declined. Try adding a different payment method or manually recharging.
-                    </p>
-                  </div>
-                )}
 
                 {autoRechargeStatus.hasPaymentMethod && (
-                  <button
-                    className="btn-primary"
-                    onClick={triggerManualRecharge}
-                    disabled={recharging}
-                    style={{ marginTop: '1rem', width: '100%' }}
-                  >
-                    {recharging ? 'Processing...' : 'Recharge Now'}
-                  </button>
+                  <>
+                    {rechargeStatus && (
+                      <div
+                        className="alert"
+                        style={{
+                          marginTop: '1rem',
+                          backgroundColor: rechargeStatus.type === 'success'
+                            ? 'rgba(52, 211, 153, 0.1)'
+                            : rechargeStatus.type === 'error'
+                              ? 'rgba(239, 68, 68, 0.1)'
+                              : 'rgba(59, 130, 246, 0.1)',
+                          border: `1px solid ${
+                            rechargeStatus.type === 'success'
+                              ? '#34d399'
+                              : rechargeStatus.type === 'error'
+                                ? '#ef4444'
+                                : '#3b82f6'
+                          }`,
+                          color: rechargeStatus.type === 'success'
+                            ? '#34d399'
+                            : rechargeStatus.type === 'error'
+                              ? '#ef4444'
+                              : '#3b82f6',
+                        }}
+                      >
+                        <p>{rechargeStatus.message}</p>
+                      </div>
+                    )}
+                    <button
+                      className="btn-primary"
+                      onClick={triggerManualRecharge}
+                      disabled={recharging}
+                      style={{ marginTop: '1rem', width: '100%' }}
+                    >
+                      {recharging ? 'Processing...' : 'Recharge Now'}
+                    </button>
+                  </>
                 )}
               </div>
             )}
@@ -833,9 +946,9 @@ export default function DashboardPage() {
                   <code>{createdKey}</code>
                   <button
                     className="btn-secondary"
-                    onClick={(e) => copyKeyToClipboard(createdKey, e)}
+                    onClick={() => copyKeyToClipboard(createdKey, 'created')}
                   >
-                    Copy
+                    {copiedKeyId === 'created' ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
                 <p className="key-warning">⚠️ Save this key somewhere safe. You won't see it again!</p>
@@ -871,40 +984,76 @@ export default function DashboardPage() {
             {apiKeys.length === 0 ? (
               <p className="empty-state">No API keys yet. Create one to get started.</p>
             ) : (
-              <div className="keys-table">
-                <div className="table-header">
-                  <div>Label</div>
-                  <div>Key</div>
-                  <div>Created</div>
-                  <div>Last Used</div>
-                  <div>Actions</div>
-                </div>
-                {apiKeys.map((key) => (
-                  <div key={key.id} className="table-row">
-                    <div className="label-cell">{key.label}</div>
-                    <div className="key-cell">
-                      <code>{key.key.substring(0, 20)}...</code>
-                    </div>
-                    <div className="date-cell">
-                      {new Date(key.created_at).toLocaleDateString()}
-                    </div>
-                    <div className="date-cell">
-                      {key.last_used ? new Date(key.last_used).toLocaleDateString() : 'Never'}
-                    </div>
-                    <div className="actions-cell">
-                      <button
-                        className="btn-secondary"
-                        onClick={(e) => copyKeyToClipboard(key.key, e)}
-                      >
-                        Copy
-                      </button>
-                      <button className="btn-delete" onClick={() => deleteKey(key.id)}>
-                        Delete
-                      </button>
-                    </div>
+              <>
+                <div className="keys-table">
+                  <div className="table-header">
+                    <div>Label</div>
+                    <div>Key</div>
+                    <div>Created</div>
+                    <div>Last Used</div>
+                    <div>Actions</div>
                   </div>
-                ))}
-              </div>
+                  {apiKeys.map((key) => (
+                    <div key={key.id} className="table-row">
+                      <div className="label-cell">{key.label}</div>
+                      <div className="key-cell">
+                        <code>{key.key.substring(0, 20)}...</code>
+                      </div>
+                      <div className="date-cell">
+                        {new Date(key.created_at).toLocaleDateString()}
+                      </div>
+                      <div className="date-cell">
+                        {key.last_used ? new Date(key.last_used).toLocaleDateString() : 'Never'}
+                      </div>
+                      <div className="actions-cell">
+                        <button
+                          className="btn-secondary"
+                          onClick={() => copyKeyToClipboard(key.key, key.id)}
+                        >
+                          {copiedKeyId === key.id ? 'Copied!' : 'Copy'}
+                        </button>
+                        <button className="btn-delete" onClick={() => deleteKey(key.id)}>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="keys-cards">
+                  {apiKeys.map((key) => (
+                    <div key={key.id} className="key-card">
+                      <div className="key-card-header">
+                        <h4 className="key-card-label">{key.label}</h4>
+                        <button className="btn-delete btn-delete-sm" onClick={() => deleteKey(key.id)}>
+                          Delete
+                        </button>
+                      </div>
+                      <div className="key-card-content">
+                        <div className="key-card-item">
+                          <label>Key</label>
+                          <code>{key.key.substring(0, 20)}...</code>
+                          <button
+                            className="btn-copy-sm"
+                            onClick={() => copyKeyToClipboard(key.key, key.id)}
+                          >
+                            {copiedKeyId === key.id ? '✓ Copied!' : 'Copy'}
+                          </button>
+                        </div>
+                        <div className="key-card-dates">
+                          <div className="key-card-item">
+                            <label>Created</label>
+                            <p>{new Date(key.created_at).toLocaleDateString()}</p>
+                          </div>
+                          <div className="key-card-item">
+                            <label>Last Used</label>
+                            <p>{key.last_used ? new Date(key.last_used).toLocaleDateString() : 'Never'}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </section>
 
@@ -918,7 +1067,8 @@ export default function DashboardPage() {
                   className={`tab-btn ${activeActivityTab === 'payments' ? 'active' : ''}`}
                   onClick={() => setActiveActivityTab('payments')}
                 >
-                  Payments & Recharges
+                  <span className="tab-text-desktop">Payments & Recharges</span>
+                  <span className="tab-text-mobile">Payments</span>
                 </button>
                 <button
                   className={`tab-btn ${activeActivityTab === 'calls' ? 'active' : ''}`}
@@ -1136,8 +1286,7 @@ export default function DashboardPage() {
           </section>
         </div>
       )}
-
-      <CopyFeedback message={copyMessage} position={copyPosition} />
+      </div>
 
       <style jsx>{`
         .dashboard-wrapper {
@@ -1146,6 +1295,37 @@ export default function DashboardPage() {
           flex-direction: column;
           background: var(--bg-primary);
           color: var(--text-primary);
+        }
+
+        .main-container {
+          display: flex;
+          flex: 1;
+          position: relative;
+        }
+
+        @media (max-width: 768px) {
+          .main-container {
+            position: relative;
+          }
+
+          .main-container[data-sidebar-open="false"] aside.sidebar {
+            display: none;
+          }
+
+          .main-container[data-sidebar-open="true"] {
+            overflow: hidden;
+          }
+
+          .main-container[data-sidebar-open="true"]::after {
+            content: '';
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 44;
+          }
         }
 
         .dashboard-container {
@@ -1515,6 +1695,8 @@ export default function DashboardPage() {
         .actions-cell {
           display: flex;
           gap: 0.5rem;
+          justify-content: flex-end;
+          align-items: center;
         }
 
         .btn-delete {
@@ -1542,11 +1724,17 @@ export default function DashboardPage() {
         .transaction-item {
           display: flex;
           justify-content: space-between;
-          align-items: center;
-          padding: 1rem;
+          align-items: flex-start;
+          padding: 1.25rem;
           background: var(--bg-primary);
-          border-radius: 6px;
+          border-radius: 8px;
           border-left: 4px solid var(--color-primary);
+          gap: 1rem;
+          transition: all 0.2s ease;
+        }
+
+        .transaction-item:hover {
+          background: var(--bg-secondary);
         }
 
         .tx-info p {
@@ -1555,28 +1743,34 @@ export default function DashboardPage() {
         }
 
         .tx-type {
-          font-weight: 600;
+          font-weight: 700;
           color: var(--text-primary);
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
         }
 
         .tx-tool {
-          font-size: 0.85rem;
+          font-size: 0.8rem;
           color: var(--text-secondary);
+          margin-bottom: 0.25rem;
         }
 
         .tx-desc {
           font-size: 0.8rem;
           color: var(--text-tertiary);
+          line-height: 1.4;
         }
 
         .tx-amount {
           text-align: right;
+          flex-shrink: 0;
         }
 
         .tx-amount span {
           display: block;
-          font-weight: 600;
-          font-size: 1.1rem;
+          font-weight: 700;
+          font-size: 1.15rem;
+          margin-bottom: 0.35rem;
         }
 
         .tx-amount .negative {
@@ -1588,7 +1782,7 @@ export default function DashboardPage() {
         }
 
         .tx-date {
-          margin: 0.25rem 0 0 0;
+          margin: 0;
           font-size: 0.8rem;
           color: var(--text-tertiary);
         }
@@ -1598,6 +1792,8 @@ export default function DashboardPage() {
           gap: 0.5rem;
           margin-bottom: 1.5rem;
           border-bottom: 1px solid var(--border-color);
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
         }
 
         .tab-btn {
@@ -1610,6 +1806,8 @@ export default function DashboardPage() {
           border-bottom: 3px solid transparent;
           transition: all 0.2s;
           font-size: 0.95rem;
+          white-space: nowrap;
+          flex-shrink: 0;
         }
 
         .tab-btn:hover {
@@ -1621,6 +1819,106 @@ export default function DashboardPage() {
           border-bottom-color: var(--color-primary);
         }
 
+        .tab-text-desktop {
+          display: inline;
+        }
+
+        .tab-text-mobile {
+          display: none;
+        }
+
+        @media (max-width: 768px) {
+          .tab-text-desktop {
+            display: none;
+          }
+
+          .tab-text-mobile {
+            display: inline;
+          }
+          .activity-tabs {
+            gap: 0;
+            margin-bottom: 1rem;
+          }
+
+          .tab-btn {
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-bottom-width: 3px;
+          }
+
+          .call-group-header {
+            padding: 0.9rem;
+            gap: 0.75rem;
+          }
+
+          .call-group-info {
+            gap: 0.5rem;
+          }
+
+          .call-group-details {
+            padding: 0.65rem;
+          }
+
+          .call-detail-item {
+            padding: 0.45rem 0;
+            font-size: 0.88rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .tab-btn {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+          }
+
+          .call-group-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 0.85rem;
+            gap: 0.75rem;
+          }
+
+          .call-group-info {
+            width: 100%;
+            gap: 0.5rem;
+          }
+
+          .group-stats {
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+          }
+
+          .call-group-details {
+            margin-left: 1.5rem;
+            padding: 0.5rem 0.5rem;
+            margin-top: -0.25rem;
+          }
+
+          .call-detail-item {
+            padding: 0.4rem 0;
+            font-size: 0.85rem;
+          }
+
+          .group-title {
+            font-size: 0.9rem;
+          }
+
+          .group-date {
+            font-size: 0.75rem;
+          }
+
+          .call-count {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+          }
+
+          .call-total {
+            font-size: 0.9rem;
+          }
+        }
+
         .call-group-header {
           padding: 1rem;
           background: var(--bg-primary);
@@ -1629,8 +1927,10 @@ export default function DashboardPage() {
           cursor: pointer;
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-start;
+          gap: 1rem;
           transition: all 0.2s;
+          margin-bottom: 0.5rem;
         }
 
         .call-group-header:hover {
@@ -1639,9 +1939,10 @@ export default function DashboardPage() {
 
         .call-group-info {
           display: flex;
-          align-items: center;
-          gap: 1rem;
+          align-items: flex-start;
+          gap: 0.75rem;
           flex: 1;
+          min-width: 0;
         }
 
         .group-toggle {
@@ -1649,25 +1950,30 @@ export default function DashboardPage() {
           color: var(--text-tertiary);
           display: inline-block;
           width: 1rem;
+          flex-shrink: 0;
+          margin-top: 0.2rem;
         }
 
         .group-title {
-          font-weight: 600;
+          font-weight: 700;
           color: var(--text-primary);
           margin: 0;
           font-size: 0.95rem;
+          word-break: break-word;
         }
 
         .group-date {
           font-size: 0.8rem;
           color: var(--text-tertiary);
           margin: 0.25rem 0 0 0;
+          word-break: break-word;
         }
 
         .group-stats {
           display: flex;
           gap: 1rem;
           align-items: center;
+          flex-shrink: 0;
         }
 
         .call-count {
@@ -1676,19 +1982,22 @@ export default function DashboardPage() {
           background: var(--bg-secondary);
           padding: 0.25rem 0.75rem;
           border-radius: 4px;
+          white-space: nowrap;
         }
 
         .call-total {
-          font-weight: 600;
+          font-weight: 700;
           color: #ff3b30;
           font-size: 0.95rem;
+          white-space: nowrap;
         }
 
         .call-group-details {
           background: var(--bg-secondary);
           border-radius: 0 0 6px 6px;
-          padding: 1rem;
+          padding: 0.75rem;
           margin-top: -0.5rem;
+          margin-left: 1.75rem;
         }
 
         .call-detail-item {
@@ -1698,6 +2007,7 @@ export default function DashboardPage() {
           padding: 0.5rem 0;
           border-bottom: 1px solid var(--border-color);
           font-size: 0.9rem;
+          gap: 0.5rem;
         }
 
         .call-detail-item:last-child {
@@ -1904,6 +2214,102 @@ export default function DashboardPage() {
           opacity: 0.5;
         }
 
+        .keys-cards {
+          display: none;
+        }
+
+        .keys-table {
+          display: block;
+        }
+
+        .btn-delete-sm {
+          padding: 0.5rem 1rem;
+          font-size: 0.8rem;
+        }
+
+        .btn-copy-sm {
+          padding: 0.5rem 0.75rem;
+          background: var(--color-primary);
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 0.8rem;
+          font-weight: 600;
+          transition: all 0.2s;
+          margin-top: 0.5rem;
+        }
+
+        .btn-copy-sm:hover {
+          background: var(--color-primary-dark);
+        }
+
+        .key-card {
+          background: var(--bg-primary);
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          padding: 1rem;
+          margin-bottom: 1rem;
+        }
+
+        .key-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 1rem;
+          gap: 0.75rem;
+        }
+
+        .key-card-label {
+          margin: 0;
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+
+        .key-card-content {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .key-card-item {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+        }
+
+        .key-card-item label {
+          font-size: 0.75rem;
+          color: var(--text-tertiary);
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .key-card-item code {
+          background: var(--bg-secondary);
+          padding: 0.5rem;
+          border-radius: 4px;
+          font-family: monospace;
+          font-size: 0.85rem;
+          color: var(--text-secondary);
+          word-break: break-all;
+          margin-bottom: 0.25rem;
+        }
+
+        .key-card-item p {
+          margin: 0;
+          font-size: 0.9rem;
+          color: var(--text-secondary);
+        }
+
+        .key-card-dates {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.75rem;
+        }
+
         @media (max-width: 768px) {
           .dashboard-header {
             flex-direction: column;
@@ -1916,20 +2322,41 @@ export default function DashboardPage() {
             gap: 1rem;
           }
 
-          .table-header,
-          .table-row {
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
+          .keys-table {
+            display: none;
+          }
+
+          .keys-cards {
+            display: block;
           }
 
           .transaction-item {
             flex-direction: column;
             align-items: flex-start;
-            gap: 0.75rem;
+            gap: 0.5rem;
+            padding: 1rem;
+          }
+
+          .tx-info {
+            width: 100%;
+            flex: 1;
+          }
+
+          .tx-type {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
           }
 
           .tx-amount {
             align-self: flex-end;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+            text-align: right;
+          }
+
+          .tx-amount span {
+            font-size: 1.1rem;
           }
         }
       `}</style>

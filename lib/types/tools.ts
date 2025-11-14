@@ -173,11 +173,89 @@ export interface BlogGeneratorResult {
   }>
 }
 
+export interface ImageAverageColorParams {
+  imageData: string
+  algorithm?: 'simple' | 'square-root' | 'dominant'
+}
+
+export interface ImageAverageColorResult {
+  hex: string
+  rgb: string
+  rgba: string
+  hsl: string
+  hsla: string
+  r: number
+  g: number
+  b: number
+  algorithm: 'simple' | 'square-root' | 'dominant'
+  error?: string
+}
+
+export interface ExtractedColor {
+  hex: string
+  rgb: string
+  r: number
+  g: number
+  b: number
+  percentage: number
+}
+
+export interface ImageColorExtractorParams {
+  imageData: string
+  colorCount: number
+}
+
+export interface ImageColorExtractorResult {
+  colors: ExtractedColor[]
+  error?: string
+}
+
+export interface CensorRegion {
+  x: number
+  y: number
+  width: number
+  height: number
+  type: 'pixelate' | 'blur' | 'blackbar'
+  intensity: number
+}
+
+export interface PhotoCensorParams {
+  imageData: string
+  regions: CensorRegion[]
+}
+
+export interface PhotoCensorResult {
+  censoredImageUrl?: string
+  censoredImageData?: string
+  regionsApplied: number
+  imageWidth: number
+  imageHeight: number
+  expiresIn?: number
+  error?: string
+}
+
+export interface HtmlMinifierParams {
+  html: string
+}
+
+export interface HtmlMinifierResult {
+  minified: string
+  original: string
+  isValid: boolean
+  error?: string
+  stats?: {
+    originalSize: number
+    minifiedSize: number
+    reduction: number
+    reductionPercent: number
+  }
+}
+
 /* ============================================
    GENERIC TOOL TYPES
    ============================================ */
 
-export type ToolParams = 
+export type ToolParams =
   | CaseConverterParams
   | Base64ConverterParams
   | JsonFormatterParams
@@ -189,6 +267,10 @@ export type ToolParams =
   | ImageResizerParams
   | WordCounterParams
   | BlogGeneratorParams
+  | ImageAverageColorParams
+  | ImageColorExtractorParams
+  | PhotoCensorParams
+  | HtmlMinifierParams
 
 export type ToolResult =
   | CaseConverterResult
@@ -202,6 +284,10 @@ export type ToolResult =
   | ImageResizerResult
   | WordCounterResult
   | BlogGeneratorResult
+  | ImageAverageColorResult
+  | ImageColorExtractorResult
+  | PhotoCensorResult
+  | HtmlMinifierResult
 
 /* ============================================
    API RESPONSE TYPES

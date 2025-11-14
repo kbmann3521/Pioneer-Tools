@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useAuth } from '@/app/context/AuthContext'
 import SuggestionButton from './SuggestionButton'
 import AuthModal from './AuthModal'
+import MobileApiToggle from './MobileApiToggle'
 
 interface ToolHeaderProps {
   title: string
@@ -11,9 +12,12 @@ interface ToolHeaderProps {
   isSaved: boolean
   onToggleSave: () => void
   toolId: string
+  showApiToggle?: boolean
+  showViewApiLink?: boolean
+  onViewApi?: () => void
 }
 
-export default function ToolHeader({ title, description, isSaved, onToggleSave, toolId }: ToolHeaderProps) {
+export default function ToolHeader({ title, description, isSaved, onToggleSave, toolId, showApiToggle = false, showViewApiLink = false, onViewApi }: ToolHeaderProps) {
   const { user } = useAuth()
   const [showAuthModal, setShowAuthModal] = useState(false)
 
@@ -28,10 +32,24 @@ export default function ToolHeader({ title, description, isSaved, onToggleSave, 
   return (
     <>
       <div className="tool-header-wrapper">
+        {showApiToggle && <MobileApiToggle />}
         <div className="tool-header">
           <div className="tool-header-text">
             <h2>{title}</h2>
-            <p>{description}</p>
+            <p>
+              {description}
+              {showViewApiLink && (
+                <span className="view-api-section">
+                  {' → '}
+                  <button
+                    onClick={onViewApi}
+                    className="view-api-link"
+                  >
+                    View API
+                  </button>
+                </span>
+              )}
+            </p>
           </div>
           <div className="tool-header-actions">
             <SuggestionButton toolName={title} toolId={toolId} />

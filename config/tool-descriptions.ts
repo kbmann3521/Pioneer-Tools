@@ -367,10 +367,10 @@ export const toolDescriptions: Record<string, string> = {
   'password-generator': `
     <h3>What is a Password Generator?</h3>
     <p>A password generator creates strong, random passwords tailored to your security requirements. Customize length (4-128 characters), character types (uppercase, lowercase, numbers, symbols), and generate instantly with strength indicators.</p>
-    
+
     <h3>Why Use Password Generator?</h3>
     <p>Strong, unique passwords are essential for account security. A password generator eliminates weak, predictable passwords and ensures you create different passwords for each account. Protecting your accounts with strong passwords prevents unauthorized access and data breaches.</p>
-    
+
     <h3>How to Use</h3>
     <p>Set your password requirements (length and character types), click Generate, and see a strong password instantly. The strength indicator shows your password security level. Copy to clipboard and use immediately or generate again for a different password.</p>
 
@@ -381,7 +381,7 @@ export const toolDescriptions: Record<string, string> = {
       <li><strong>Good:</strong> Long passwords with uppercase, lowercase, and numbers</li>
       <li><strong>Strong:</strong> Very long passwords with all character types including symbols</li>
     </ul>
-    
+
     <h3>Customization Options</h3>
     <ul>
       <li><strong>Length:</strong> Set password length from 4 to 128 characters</li>
@@ -390,7 +390,7 @@ export const toolDescriptions: Record<string, string> = {
       <li><strong>Numbers:</strong> Include 0-9 digits</li>
       <li><strong>Symbols:</strong> Include special characters for maximum security</li>
     </ul>
-    
+
     <h3>Common Use Cases</h3>
     <ul>
       <li><strong>Account Creation:</strong> Generate passwords for new accounts</li>
@@ -407,6 +407,179 @@ export const toolDescriptions: Record<string, string> = {
       <li><strong>API Key Generation:</strong> Create secure API keys and tokens for third-party integrations</li>
       <li><strong>Database Backup Scripts:</strong> Generate strong passwords for database backup tool configurations</li>
       <li><strong>Automated Security:</strong> Generate default credentials for automated deployments and testing environments</li>
+    </ul>
+  `,
+
+  'image-average-color': `
+    <h3>What is an Image Average Color Finder?</h3>
+    <p>An Image Average Color Finder extracts the dominant or average color from any image and provides it in multiple formats. Get color values in HEX, RGB, RGBA, HSL, and individual RGB component values instantly from any image you upload.</p>
+
+    <h3>Why Extract Average Colors?</h3>
+    <p>Extracting average colors from images is useful for design, branding, and image analysis. Get the primary color from photos for color palette generation, theme matching, or design inspiration. Perfect for designers, developers, and content creators who need to work with image colors programmatically.</p>
+
+    <h3>How to Use</h3>
+    <p>Upload an image file and instantly see the average color displayed with all format conversions. Copy any format (HEX, RGB, RGBA, HSL) with one click to use in your design tools, CSS, or applications.</p>
+
+    <h3>Color Formats Provided</h3>
+    <ul>
+      <li><strong>HEX:</strong> Hexadecimal color code (e.g., #FF5733) - perfect for CSS and design tools</li>
+      <li><strong>RGB:</strong> Red, Green, Blue values (e.g., rgb(255, 87, 51)) - standard for digital displays</li>
+      <li><strong>RGBA:</strong> RGB with alpha transparency (e.g., rgba(255, 87, 51, 1)) - for CSS with transparency</li>
+      <li><strong>HSL:</strong> Hue, Saturation, Lightness (e.g., hsl(15, 100%, 60%)) - intuitive for designers</li>
+      <li><strong>RGB Components:</strong> Individual R, G, B values for programmatic use</li>
+    </ul>
+
+    <h3>Common Use Cases</h3>
+    <ul>
+      <li><strong>Design Systems:</strong> Extract brand colors from images for design system palettes</li>
+      <li><strong>Theme Generation:</strong> Automatically generate color themes matching uploaded images</li>
+      <li><strong>Color Palettes:</strong> Create color palettes from product photos or artwork</li>
+      <li><strong>Image Analysis:</strong> Analyze dominant colors for image categorization and tagging</li>
+      <li><strong>Web Design:</strong> Match website colors to brand images or product photos</li>
+    </ul>
+
+    <h3>API Endpoint Use Cases</h3>
+    <ul>
+      <li><strong>Automated Theme Generation:</strong> Extract dominant colors from product images to auto-generate category page themes</li>
+      <li><strong>Brand Color Analysis:</strong> Analyze uploaded brand logos to extract primary colors for style guides</li>
+      <li><strong>Image Metadata:</strong> Add color metadata to images for search, filtering, and organization</li>
+      <li><strong>Dynamic UI Theming:</strong> Generate dynamic color schemes based on user-uploaded images</li>
+      <li><strong>Content Recommendation:</strong> Use extracted colors to recommend similar images or products with matching color palettes</li>
+    </ul>
+  `,
+
+  'image-color-extractor': `
+    <h3>What is an Image Color Extractor?</h3>
+    <p>An Image Color Extractor analyzes any image and extracts the top dominant colors in order of prominence. Select how many colors you want (1-10) and see them displayed with their percentage of the image, all in HEX and RGB formats. Perfect for creating color palettes from your images.</p>
+
+    <h3>Why Extract Multiple Colors?</h3>
+    <p>Extract a complete color palette from an image to understand its color composition. Identify dominant colors for design inspiration, brand color development, or image analysis. Multiple colors give you a more complete picture of the image's color scheme than a single average color.</p>
+
+    <h3>How to Use</h3>
+    <p>Upload an image, select how many colors you want to extract (1-10 colors), and see them displayed in order of prominence. The higher the percentage, the more prevalent that color is in the image. Click on any color to see its detailed values in HEX, RGB, and components. Colors update in real-time as you change the color count.</p>
+
+    <h3>Key Features</h3>
+    <ul>
+      <li><strong>Color Count:</strong> Choose 1-10 colors to extract from your image</li>
+      <li><strong>Prominence Order:</strong> Colors displayed from most to least prevalent</li>
+      <li><strong>Percentage Display:</strong> See what percentage of the image each color represents</li>
+      <li><strong>Real-time Updates:</strong> Colors refresh instantly when you change the color count</li>
+      <li><strong>Multiple Formats:</strong> Get colors in HEX and RGB formats with individual component values</li>
+    </ul>
+
+    <h3>Common Use Cases</h3>
+    <ul>
+      <li><strong>Color Palette Creation:</strong> Extract complete color palettes from inspiration images</li>
+      <li><strong>Design Systems:</strong> Build comprehensive color systems from existing images</li>
+      <li><strong>Brand Development:</strong> Extract color schemes from competitor or inspiration images</li>
+      <li><strong>Photo Analysis:</strong> Understand the dominant colors in your photos</li>
+      <li><strong>Web Design:</strong> Create color harmonies for websites based on uploaded imagery</li>
+      <li><strong>Product Photography:</strong> Extract colors from product images for catalog design</li>
+    </ul>
+
+    <h3>API Endpoint Use Cases</h3>
+    <ul>
+      <li><strong>Dynamic Palette Generation:</strong> Automatically extract color palettes from user-uploaded images for design tools</li>
+      <li><strong>Color Harmony Systems:</strong> Build intelligent color matching based on extracted image colors</li>
+      <li><strong>Image Tagging:</strong> Tag images by color composition for search and filtering</li>
+      <li><strong>Design Inspiration:</strong> Create design brief palettes from reference images</li>
+      <li><strong>E-Commerce Filtering:</strong> Filter products by color based on image analysis</li>
+      <li><strong>Content Recommendation:</strong> Recommend content with matching color schemes</li>
+    </ul>
+  `,
+
+  'photo-censor': `
+    <h3>What is a Photo Censor?</h3>
+    <p>A Photo Censor is a privacy protection tool that allows you to hide sensitive information in images by applying effects like pixelation, blurring, or black bars to specific regions. Perfect for protecting faces, license plates, passwords, or any other sensitive content before sharing images online.</p>
+
+    <h3>Why Use Photo Censor?</h3>
+    <p>Protecting privacy is essential before sharing photos online. Whether you need to hide personal information, protect identities, or comply with privacy regulations, a photo censor provides quick, effective redaction. Apply multiple effects to different regions of the same image for comprehensive privacy protection.</p>
+
+    <h3>How to Use</h3>
+    <p>Upload your image, select a censor type (pixelate, blur, or black bar), adjust the intensity, and drag to select the regions you want to hide. Add as many regions as needed using different effects for each area. Download your censored image when satisfied with the result.</p>
+
+    <h3>Censoring Effects</h3>
+    <ul>
+      <li><strong>Pixelate:</strong> Replace region with large blocks, making content unrecognizable while preserving outline</li>
+      <li><strong>Blur:</strong> Apply a soft blur effect to obscure details while maintaining some visibility</li>
+      <li><strong>Black Bar:</strong> Cover the region with a solid black overlay for complete concealment</li>
+    </ul>
+
+    <h3>Key Features</h3>
+    <ul>
+      <li><strong>Multiple Effects:</strong> Use different censor types in the same image</li>
+      <li><strong>Adjustable Intensity:</strong> Control the strength of pixelation and blur (1-10 scale)</li>
+      <li><strong>Unlimited Regions:</strong> Add as many censor regions as needed</li>
+      <li><strong>Easy Editing:</strong> Remove or adjust regions before downloading</li>
+      <li><strong>Instant Preview:</strong> See exactly how your image will look censored</li>
+    </ul>
+
+    <h3>Common Use Cases</h3>
+    <ul>
+      <li><strong>Privacy Protection:</strong> Hide faces and personal information before sharing on social media</li>
+      <li><strong>Document Redaction:</strong> Protect sensitive text in photos of documents</li>
+      <li><strong>License Plate Hiding:</strong> Conceal vehicle information in street photos</li>
+      <li><strong>Password Protection:</strong> Hide passwords and sensitive data in screenshots</li>
+      <li><strong>Legal Compliance:</strong> Comply with privacy regulations before publishing images</li>
+      <li><strong>Media Preparation:</strong> Prepare images for news articles and publications</li>
+    </ul>
+
+    <h3>API Endpoint Use Cases</h3>
+    <ul>
+      <li><strong>Automated Privacy:</strong> Apply automatic censoring to user-uploaded images before public display</li>
+      <li><strong>Batch Processing:</strong> Censor multiple images with predefined regions for content moderation</li>
+      <li><strong>Legal Document Processing:</strong> Redact sensitive information from scanned documents automatically</li>
+      <li><strong>User Privacy:</strong> Protect personally identifiable information in user-submitted content</li>
+      <li><strong>Media Workflows:</strong> Integrate censoring into image processing pipelines for content management</li>
+      <li><strong>Smart Redaction:</strong> Combine with face detection to automatically censor detected faces</li>
+    </ul>
+  `,
+
+  'html-minifier': `
+    <h3>What is an HTML Minifier?</h3>
+    <p>An HTML minifier is a code optimization tool that reduces the file size of HTML documents by removing unnecessary characters like whitespace, comments, and line breaks while preserving functionality. Smaller HTML files load faster, improving website performance and user experience.</p>
+
+    <h3>Why Use HTML Minifier?</h3>
+    <p>HTML minification is a critical optimization technique for web performance. Smaller file sizes mean faster downloads, reduced bandwidth usage, and improved page load speeds. Every millisecond counts for SEO rankings and user satisfaction. Minifying HTML is essential for production websites and APIs that serve HTML responses.</p>
+
+    <h3>How to Use</h3>
+    <p>Paste your HTML code and instantly see the minified version with compression statistics. See exactly how many bytes you're saving and what percentage of the file size is reduced. Copy the minified HTML with one click for use in your projects.</p>
+
+    <h3>What Gets Minified?</h3>
+    <ul>
+      <li><strong>Comments:</strong> HTML comments are completely removed</li>
+      <li><strong>Whitespace:</strong> Extra spaces, tabs, and line breaks between tags are removed</li>
+      <li><strong>Redundant Spaces:</strong> Multiple spaces are collapsed into single spaces</li>
+      <li><strong>Formatting:</strong> All unnecessary formatting characters are stripped</li>
+    </ul>
+
+    <h3>Key Features</h3>
+    <ul>
+      <li><strong>Instant Minification:</strong> See results immediately as you paste</li>
+      <li><strong>Size Reduction:</strong> Displays original size, minified size, and percentage saved</li>
+      <li><strong>Byte Savings:</strong> See exact number of bytes reduced</li>
+      <li><strong>One-Click Copy:</strong> Copy minified HTML directly to clipboard</li>
+      <li><strong>Safe Minification:</strong> Preserves all HTML functionality while reducing size</li>
+    </ul>
+
+    <h3>Common Use Cases</h3>
+    <ul>
+      <li><strong>Website Optimization:</strong> Reduce HTML file sizes for faster page loads</li>
+      <li><strong>Performance Improvement:</strong> Lower bandwidth usage and improve Core Web Vitals</li>
+      <li><strong>Email Templates:</strong> Minify HTML email templates for faster delivery</li>
+      <li><strong>Single Page Applications:</strong> Optimize HTML shells and templates</li>
+      <li><strong>Static Site Generation:</strong> Minify generated HTML for production builds</li>
+      <li><strong>Build Pipelines:</strong> Integrate HTML minification into deployment workflows</li>
+    </ul>
+
+    <h3>API Endpoint Use Cases</h3>
+    <ul>
+      <li><strong>Dynamic HTML Generation:</strong> Minify HTML generated server-side before sending to clients</li>
+      <li><strong>Template Compilation:</strong> Optimize HTML templates during build or rendering process</li>
+      <li><strong>Email Services:</strong> Minify HTML email templates for faster transmission and rendering</li>
+      <li><strong>Web Scraping:</strong> Minify scraped HTML for storage and processing</li>
+      <li><strong>Content Delivery:</strong> Reduce file sizes for content distribution networks and caching</li>
+      <li><strong>Batch Processing:</strong> Minify multiple HTML files in automated workflows</li>
     </ul>
   `,
 }

@@ -5,6 +5,7 @@ import { useState } from 'react'
 const tools = [
   { id: 'case-converter', name: 'Case Converter', icon: '🔤' },
   { id: 'word-counter', name: 'Letter/Word Counter', icon: '📊' },
+  { id: 'html-minifier', name: 'HTML Minifier', icon: '⚡' },
   { id: 'image-resizer', name: 'Image Resizer', icon: '🖼️' },
   { id: 'hex-rgba-converter', name: 'HEX ↔ RGBA', icon: '🎨' },
   { id: 'og-generator', name: 'OG Meta Tag Gen', icon: '📊' },

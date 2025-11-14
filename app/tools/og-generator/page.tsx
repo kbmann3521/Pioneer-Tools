@@ -6,6 +6,7 @@ import AboutToolAccordion from '@/app/components/AboutToolAccordion'
 import { generateOGTags, type OGGeneratorOutput } from '@/lib/tools/og-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps } from '@/lib/types/tools'
@@ -13,6 +14,7 @@ import type { ToolPageProps } from '@/lib/types/tools'
 export default function OGGeneratorPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('og-generator')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const [formData, setFormData] = useState({
     title: 'My Awesome Website',
     description: 'A description of my website',
@@ -23,7 +25,7 @@ export default function OGGeneratorPage(): JSX.Element {
   })
 
   const [result, setResult] = useState<OGGeneratorOutput | null>(null)
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const { isCopied, copyToClipboard } = useClipboard()
 
   // Update API params whenever form data changes
   useEffect(() => {
@@ -49,6 +51,8 @@ export default function OGGeneratorPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="og-generator"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content og-content">
@@ -159,21 +163,13 @@ export default function OGGeneratorPage(): JSX.Element {
               <pre className="code-block">
                 <code>{metaTags}</code>
               </pre>
-              <button className="copy-btn" onClick={(e) => copyToClipboard(metaTags, e)}>
-                Copy All Tags
+              <button className="copy-btn" onClick={() => copyToClipboard(metaTags)}>
+                {isCopied ? 'Copied!' : 'Copy All Tags'}
               </button>
             </div>
           </>
         )}
       </div>
-      {copyMessage && copyPosition && (
-        <div
-          className="copy-feedback-toast"
-          style={{ left: `${copyPosition.x}px`, top: `${copyPosition.y}px` }}
-        >
-          {copyMessage}
-        </div>
-      )}
 
       <AboutToolAccordion
         toolId="og-generator"

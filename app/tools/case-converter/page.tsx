@@ -3,32 +3,34 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import CopyFeedback from '@/app/components/CopyFeedback'
 import { convertCase } from '@/lib/tools/case-converter'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, CaseConverterResult } from '@/lib/types/tools'
 
 export default function CaseConverterPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('case-converter')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const [text, setText] = useState<string>('')
   const [results, setResults] = useState<CaseConverterResult | null>(null)
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const { isCopied, copyToClipboard } = useClipboard()
 
-  // Update API params whenever text changes
+  // Update API params and convert cases in real-time whenever text changes
   useEffect(() => {
     updateParams({ text: text || 'hello world' })
-  }, [text, updateParams])
 
-  const handleConvert = () => {
     if (text.trim()) {
       const result = convertCase({ text })
       setResults(result)
+    } else {
+      setResults(null)
     }
-  }
+  }, [text, updateParams])
 
 
   return (
@@ -39,6 +41,8 @@ export default function CaseConverterPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="case-converter"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">
@@ -52,9 +56,6 @@ export default function CaseConverterPage(): JSX.Element {
             className="text-input"
             rows={5}
           />
-          <button className="convert-btn" onClick={handleConvert}>
-            Convert
-          </button>
         </div>
 
         {results && (
@@ -74,17 +75,20 @@ export default function CaseConverterPage(): JSX.Element {
                   </div>
                   <button
                     className="copy-btn"
-                    onClick={(e) => copyToClipboard(value as string, e)}
+                    onClick={() => {
+                      copyToClipboard(value as string)
+                      setCopiedKey(key)
+                      setTimeout(() => setCopiedKey(null), 3000)
+                    }}
                     disabled={!(value as string)}
                   >
-                    Copy
+                    {copiedKey === key ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
               ))}
           </div>
         )}
       </div>
-      <CopyFeedback message={copyMessage} position={copyPosition} />
 
       <AboutToolAccordion
         toolId="case-converter"

@@ -3,21 +3,22 @@
 import { useState, useEffect } from 'react'
 import ToolHeader from '@/app/components/ToolHeader'
 import AboutToolAccordion from '@/app/components/AboutToolAccordion'
-import CopyFeedback from '@/app/components/CopyFeedback'
 import { createSlug, generateSlug } from '@/lib/tools/slug-generator'
 import { useFavorites } from '@/app/hooks/useFavorites'
 import { useClipboard } from '@/app/hooks/useClipboard'
 import { useApiParams } from '@/app/context/ApiParamsContext'
+import { useApiPanel } from '@/app/context/ApiPanelContext'
 import { toolDescriptions } from '@/config/tool-descriptions'
 import type { ToolPageProps, SlugGeneratorResult } from '@/lib/types/tools'
 
 export default function SlugGeneratorPage(): JSX.Element {
   const { updateParams } = useApiParams()
   const { isSaved, toggleSave } = useFavorites('slug-generator')
+  const { setOpen: setApiPanelOpen } = useApiPanel()
   const [text, setText] = useState<string>('')
   const [separator, setSeparator] = useState<string>('-')
   const [result, setResult] = useState<SlugGeneratorResult | null>(null)
-  const { copyMessage, copyPosition, copyToClipboard } = useClipboard()
+  const { isCopied, copyToClipboard } = useClipboard()
 
   // Update API params and generate slug
   useEffect(() => {
@@ -40,6 +41,8 @@ export default function SlugGeneratorPage(): JSX.Element {
         isSaved={isSaved}
         onToggleSave={toggleSave}
         toolId="slug-generator"
+        showViewApiLink={true}
+        onViewApi={() => setApiPanelOpen(true)}
       />
 
       <div className="tool-content">
@@ -78,11 +81,11 @@ export default function SlugGeneratorPage(): JSX.Element {
                 <h3>Generated Slug</h3>
                 <button
                   className="copy-btn"
-                  onClick={(e) => copyToClipboard(result.slug, e)}
+                  onClick={() => copyToClipboard(result.slug)}
                   title="Copy slug"
                   type="button"
                 >
-                  Copy
+                  {isCopied ? 'Copied!' : 'Copy'}
                 </button>
               </div>
               <div className="slug-output">
@@ -102,8 +105,6 @@ export default function SlugGeneratorPage(): JSX.Element {
             </div>
           </div>
         )}
-
-        <CopyFeedback message={copyMessage} position={copyPosition} />
       </div>
 
       <AboutToolAccordion

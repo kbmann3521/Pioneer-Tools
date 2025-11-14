@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '@/app/context/AuthContext'
@@ -8,6 +8,7 @@ import { useAuth } from '@/app/context/AuthContext'
 interface SidebarProps {
   favorites: string[]
   onToggleFavorite: (toolId: string) => void
+  onCloseApiPanel?: () => void
 }
 
 interface Tool {
@@ -27,8 +28,14 @@ const toolsByCategory = {
     { id: 'slug-generator', name: 'Slug Generator', icon: '📝', category: 'Text Tools' },
     { id: 'password-generator', name: 'Password Generator', icon: '🔑', category: 'Text Tools' },
   ],
+  'Code Tools': [
+    { id: 'html-minifier', name: 'HTML Minifier', icon: '⚡', category: 'Code Tools' },
+  ],
   'Image Tools': [
     { id: 'image-resizer', name: 'Image Resizer', icon: '🖼️', category: 'Image Tools' },
+    { id: 'image-average-color', name: 'Average Color Finder', icon: '🎨', category: 'Image Tools' },
+    { id: 'image-color-extractor', name: 'Color Extractor', icon: '🌈', category: 'Image Tools' },
+    { id: 'photo-censor', name: 'Photo Censor', icon: '🔒', category: 'Image Tools' },
   ],
   'Color Tools': [
     { id: 'hex-rgba-converter', name: 'HEX ↔ RGBA', icon: '🎨', category: 'Color Tools' },
@@ -43,18 +50,26 @@ const toolsByCategory = {
 
 type CategoryKey = keyof typeof toolsByCategory
 
-export default function Sidebar({ favorites, onToggleFavorite }: SidebarProps) {
+export default function Sidebar({ favorites, onToggleFavorite, onCloseApiPanel }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const { user } = useAuth()
+  const isDashboard = pathname?.startsWith('/dashboard')
+  const [lastTool, setLastTool] = useState<string | null>(null)
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
     'Favorite Tools': false,
     'Text Tools': false,
+    'Code Tools': false,
     'Image Tools': false,
     'Color Tools': false,
     'Social Media Tools': false,
     'Blog Tools': false,
   })
+
+  useEffect(() => {
+    const saved = localStorage.getItem('lastTool')
+    setLastTool(saved)
+  }, [])
 
   const currentTool = pathname?.startsWith('/tools/') ? pathname.replace('/tools/', '') : null
 
@@ -74,15 +89,94 @@ export default function Sidebar({ favorites, onToggleFavorite }: SidebarProps) {
       key={tool.id}
       href={`/tools/${tool.id}`}
       className={`tool-item ${currentTool === tool.id ? 'active' : ''}`}
+      onClick={() => onCloseApiPanel?.()}
     >
       <span className="tool-icon">{tool.icon}</span>
       <span className="tool-name">{tool.name}</span>
     </Link>
   )
 
+  const { signOut } = useAuth()
+
+  const handleAuthClick = (mode: 'login' | 'signup') => {
+    router.push(`/auth?mode=${mode}`)
+  }
+
+  const handleNavigate = (path: string) => {
+    router.push(path)
+  }
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      router.push('/')
+    } catch (error) {
+      console.error('Sign out error:', error)
+    }
+  }
+
   return (
     <aside className="sidebar">
       <div className="sidebar-content">
+        <div className="sidebar-auth">
+          {user ? (
+            <>
+              {isDashboard ? (
+                <button
+                  type="button"
+                  className="sidebar-auth-btn tools-btn"
+                  onClick={() => {
+                    if (lastTool) {
+                      handleNavigate(`/tools/${lastTool}`)
+                    } else {
+                      handleNavigate('/')
+                    }
+                  }}
+                  title="Back to tools"
+                >
+                  Tools
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="sidebar-auth-btn dashboard-btn"
+                  onClick={() => handleNavigate('/dashboard')}
+                  title="View your dashboard"
+                >
+                  Dashboard
+                </button>
+              )}
+              <button
+                type="button"
+                className="sidebar-auth-btn signout-btn"
+                onClick={handleSignOut}
+                title="Sign out"
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="sidebar-auth-btn login-btn"
+                onClick={() => handleAuthClick('login')}
+                title="Log in to your account"
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                className="sidebar-auth-btn signup-btn"
+                onClick={() => handleAuthClick('signup')}
+                title="Create a new account"
+              >
+                Sign Up
+              </button>
+            </>
+          )}
+        </div>
+
         <h2 className="sidebar-title">Tools</h2>
 
         <div className="category-accordion">

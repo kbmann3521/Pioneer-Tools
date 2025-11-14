@@ -34,8 +34,14 @@ export async function GET(request: NextRequest) {
       .eq('id', userId)
       .single()
 
-    if (profileError) {
-      return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500 })
+    if (profileError || !profile) {
+      // Profile doesn't exist or error fetching - return 200 with no payment method
+      return NextResponse.json({
+        hasPaymentMethod: false,
+        successfulAttempts: 0,
+        failedAttempts: 0,
+        lastAttempt: null,
+      })
     }
 
     const hasPaymentMethod = !!(
@@ -113,7 +119,10 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (profileError || !profile) {
-      return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500 })
+      return NextResponse.json(
+        { error: 'User profile not found. Please log out and log back in.' },
+        { status: 400 }
+      )
     }
 
     // Check if user has payment method on file

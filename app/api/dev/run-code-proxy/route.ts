@@ -71,14 +71,22 @@ function getClientIp(request: NextRequest): string {
 function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false
 
+  // Allow any localhost origin for development
+  if (origin.startsWith('http://localhost:')) {
+    return true
+  }
+
+  // Allow any Fly.io deployment for development/staging
+  if (origin.includes('.fly.dev')) {
+    return true
+  }
+
   // Remove trailing slashes for comparison
   const normalizeUrl = (url: string) => url.replace(/\/$/, '')
 
   const allowedOrigins = [
     process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
     process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
-    // Allow deployed domain (Fly.io)
-    'https://ea3f199fe2a34d64b21cbb86f83a93e7-5aec9aef666d4bafbc5ecac8d.fly.dev',
   ].map(normalizeUrl)
 
   const originBase = normalizeUrl(origin)

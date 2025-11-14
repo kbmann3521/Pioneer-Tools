@@ -30,7 +30,7 @@ export default function HeaderThemeToggle({ theme, setTheme }: HeaderThemeToggle
 
       <style jsx>{`
         .theme-toggle {
-          padding: 0.5rem 1rem;
+          padding: 0.5rem 0.75rem;
           border-radius: 8px;
           border: 2px solid var(--border-color);
           background: var(--bg-secondary);
@@ -42,11 +42,12 @@ export default function HeaderThemeToggle({ theme, setTheme }: HeaderThemeToggle
           font-family: inherit;
           display: flex;
           align-items: center;
-          gap: 0.75rem;
+          gap: 0.5rem;
         }
 
         .theme-toggle:hover {
           border-color: var(--color-primary);
+          background: var(--bg-primary);
         }
 
         .theme-toggle.active .toggle-switch {
@@ -63,10 +64,10 @@ export default function HeaderThemeToggle({ theme, setTheme }: HeaderThemeToggle
           display: inline-flex;
           align-items: center;
           justify-content: flex-start;
-          width: 44px;
-          height: 24px;
+          width: 40px;
+          height: 22px;
           background-color: var(--bg-tertiary);
-          border-radius: 12px;
+          border-radius: 11px;
           padding: 2px;
           transition: background-color 0.3s ease;
           position: relative;
@@ -74,8 +75,8 @@ export default function HeaderThemeToggle({ theme, setTheme }: HeaderThemeToggle
 
         .toggle-circle {
           display: inline-block;
-          width: 20px;
-          height: 20px;
+          width: 18px;
+          height: 18px;
           background-color: white;
           border-radius: 50%;
           transition: all 0.3s ease;
@@ -84,8 +85,41 @@ export default function HeaderThemeToggle({ theme, setTheme }: HeaderThemeToggle
 
         @media (max-width: 768px) {
           .theme-toggle {
-            padding: 0.6rem 1rem;
-            font-size: 0.85rem;
+            padding: 0.4rem 0.5rem;
+            gap: 0.4rem;
+          }
+
+          .toggle-label {
+            display: none;
+          }
+
+          .toggle-switch {
+            width: 38px;
+            height: 20px;
+            border-radius: 10px;
+          }
+
+          .toggle-circle {
+            width: 16px;
+            height: 16px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .theme-toggle {
+            padding: 0.35rem 0.4rem;
+          }
+
+          .toggle-switch {
+            width: 36px;
+            height: 18px;
+            border-radius: 9px;
+            padding: 1.5px;
+          }
+
+          .toggle-circle {
+            width: 15px;
+            height: 15px;
           }
         }
       `}</style>
