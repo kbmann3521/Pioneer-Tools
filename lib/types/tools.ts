@@ -234,6 +234,23 @@ export interface PhotoCensorResult {
   error?: string
 }
 
+export interface HtmlMinifierParams {
+  html: string
+}
+
+export interface HtmlMinifierResult {
+  minified: string
+  original: string
+  isValid: boolean
+  error?: string
+  stats?: {
+    originalSize: number
+    minifiedSize: number
+    reduction: number
+    reductionPercent: number
+  }
+}
+
 /* ============================================
    GENERIC TOOL TYPES
    ============================================ */
