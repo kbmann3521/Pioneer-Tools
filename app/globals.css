@@ -269,7 +269,7 @@ pre code {
     width: 380px;
     opacity: 1;
     background-color: var(--bg-secondary);
-    transition: all 2s ease !important;
+    transition: all 0.4s ease !important;
   }
 
   .right-sidebar.collapsed {
@@ -278,8 +278,7 @@ pre code {
     pointer-events: none;
     overflow: hidden;
     border-left: none;
-    background-color: red;
-    transition: all 2s ease !important;
+    transition: all 0.4s ease !important;
   }
 }
 
