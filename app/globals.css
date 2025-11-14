@@ -267,12 +267,30 @@ pre code {
 }
 
 @media (min-width: 1025px) {
+  .right-sidebar {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .right-sidebar.collapsed {
     width: 0;
     border-left: none;
     opacity: 0;
     pointer-events: none;
     transform: translateX(100%);
+  }
+
+  .right-sidebar[data-api-panel-open="false"] {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .right-sidebar[data-api-panel-open="true"] {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
   }
 }
 
