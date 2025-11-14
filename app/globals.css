@@ -266,17 +266,19 @@ pre code {
 
 @media (min-width: 1025px) {
   .right-sidebar {
-    /* Smooth slideout animation on desktop - SLOW for testing */
-    transition: opacity 2s ease, transform 2s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateX(0);
-    visibility: visible;
+    position: relative;
+    width: 380px;
+    border-left: 1px solid var(--border-color);
+    opacity: 1;
+    transition: width 2s ease, opacity 2s ease, border-left 2s ease;
   }
 
   .right-sidebar.collapsed {
-    transform: translateX(100%);
+    width: 0;
+    border-left: none;
     opacity: 0;
-    visibility: hidden;
     pointer-events: none;
+    overflow: hidden;
   }
 }
 
