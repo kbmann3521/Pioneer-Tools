@@ -266,19 +266,18 @@ pre code {
 
 @media (min-width: 1025px) {
   .right-sidebar {
-    position: relative;
     width: 380px;
-    border-left: 1px solid var(--border-color);
     opacity: 1;
-    transition: width 2s ease, opacity 2s ease, border-left 2s ease;
+    transition: opacity 2s ease !important;
   }
 
   .right-sidebar.collapsed {
     width: 0;
-    border-left: none;
     opacity: 0;
     pointer-events: none;
     overflow: hidden;
+    border-left: none;
+    transition: opacity 2s ease, width 2s ease !important;
   }
 }
 
