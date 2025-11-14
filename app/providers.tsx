@@ -293,6 +293,7 @@ export function RootProvider({ children }: ProvidersProps) {
       'og-generator': '/api/tools/og-generator',
       'blog-generator': '/api/tools/blog-generator',
       'json-formatter': '/api/tools/json-formatter',
+      'html-minifier': '/api/tools/html-minifier',
       'base64-converter': '/api/tools/base64-converter',
       'url-encoder': '/api/tools/url-encoder',
       'slug-generator': '/api/tools/slug-generator',
