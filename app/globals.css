@@ -268,9 +268,9 @@ pre code {
 
 @media (min-width: 1025px) {
   .right-sidebar {
+    position: relative;
     transform: translateX(0);
-    opacity: 1;
-    pointer-events: auto;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .right-sidebar.collapsed {
@@ -278,19 +278,7 @@ pre code {
     border-left: none;
     opacity: 0;
     pointer-events: none;
-    transform: translateX(100%);
-  }
-
-  .right-sidebar[data-api-panel-open="false"] {
-    transform: translateX(100%);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .right-sidebar[data-api-panel-open="true"] {
-    transform: translateX(0);
-    opacity: 1;
-    pointer-events: auto;
+    overflow: hidden;
   }
 }
 
