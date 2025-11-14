@@ -3,3 +3,7 @@ Each tool should have it's own css module so cusomizing each tool's look doesn't
 All file upload boxes should look like the one in the image resizer tool. Don't deviate from this!
 
 When building/working on tools, don't forget to create the correct styling/colors for both dark and light mode.
+
+When building/working on tools, don't forget to optimize designs for both tablet and mobile.
+
+When creating new tools, always add the API View right sidebar. 
