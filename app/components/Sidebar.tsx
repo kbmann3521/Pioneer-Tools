@@ -59,6 +59,7 @@ export default function Sidebar({ favorites, onToggleFavorite, onCloseApiPanel }
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
     'Favorite Tools': false,
     'Text Tools': false,
+    'Code Tools': false,
     'Image Tools': false,
     'Color Tools': false,
     'Social Media Tools': false,
